@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Geekbrains.Android.Weather</string>
+    <string name="city">Москва</string>
+    <string name="currentDegrees">22°</string>
+    <string name="dayNightDegrees">22° / 13°</string>
+    <string name="weatherState">Немного облачно</string>
+    <string name="tomorrow">Завтра, 31 июл.</string>
+    <string name="tomorrowDayNightDegrees">19° / 13°</string>
+    <string name="saturday">Сб, 1 авг.</string>
+    <string name="saturdayDayNightDegrees">18° / 11°</string>
+    <string name="cityHeader">Город</string>
+    <string name="applyButton">Применить</string>
+    <string name="city1">Москва</string>
+    <string name="city2">Санкт-Петербург</string>
+    <string name="city3">Хабаровск</string>
+    <string name="cityInput">Введите город</string>
+    <string name="settingsHeader">Настройки</string>
+    <string name="humidityCheckbox">Влажность</string>
+    <string name="windSpeedCheckbox">Скорость ветра</string>
+    <string name="pressureCheckbox">Давление</string>
+    <string name="lightThemeSwitch">Светлая тема</string>
+    <string name="enterTheCity">введите город</string>
+</resources>
