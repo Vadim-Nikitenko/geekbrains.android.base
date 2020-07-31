@@ -21,4 +21,6 @@
     <string name="lightThemeSwitch">Светлая тема</string>
     <string name="enterTheCity">введите город</string>
     <string name="increase_temperature">Увеличить температуру</string>
+    <string name="cities_btn_text">Города</string>
+    <string name="settings_btn_text">Настройки</string>
 </resources>

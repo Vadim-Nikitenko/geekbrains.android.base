@@ -1,5 +1,6 @@
 package com.example.geekbrainsandroidweather;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
     private TextView temperature;
     private Button increaseTemperatureBtn;
+    private Button settingsBtn;
+    private Button citiesBtn;
     private final String counterDataKey = "counterDataKey";
 
     @Override
@@ -19,11 +22,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         init();
         setOnIncreaseTemperatureBtnBehaviour();
+        setOnBtnClickBehaviour(citiesBtn, CitiesActivity.class);
+        setOnBtnClickBehaviour(settingsBtn, SettingsActivity.class);
     }
 
     private void init() {
         temperature = findViewById(R.id.temperature);
+        settingsBtn = findViewById(R.id.settingsBtn);
+        citiesBtn = findViewById(R.id.citiesBtn);
         increaseTemperatureBtn = findViewById(R.id.increaseTemperatureBtn);
+    }
+
+    private void setOnBtnClickBehaviour(Button button, final Class activity) {
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), activity);
+                startActivity(intent);
+            }
+        });
     }
 
     private void setOnIncreaseTemperatureBtnBehaviour() {
