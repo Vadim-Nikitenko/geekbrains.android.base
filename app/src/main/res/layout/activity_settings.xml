@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorGrey"
     tools:context=".SettingsActivity">
 
     <TextView
@@ -11,8 +12,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/default_vertical_margin"
-        android:textColor="@color/colorWhite"
         android:text="@string/settingsHeader"
+        android:textColor="@color/colorWhite"
         android:textSize="@dimen/default_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +25,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_horizontal_margin"
         android:layout_marginTop="@dimen/default_vertical_margin"
+        android:buttonTint="@color/colorWhite"
         android:text="@string/humidityCheckbox"
+        android:checked="true"
+        android:textColor="@color/colorWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settingsHeader" />
 
@@ -34,7 +38,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_horizontal_margin"
         android:layout_marginTop="@dimen/default_horizontal_margin"
+        android:buttonTint="@color/colorWhite"
         android:text="@string/windSpeedCheckbox"
+        android:checked="true"
+        android:textColor="@color/colorWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/humidityCheckbox" />
 
@@ -44,7 +51,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_horizontal_margin"
         android:layout_marginTop="@dimen/default_vertical_margin"
+        android:buttonTint="@color/colorWhite"
         android:text="@string/pressureCheckbox"
+        android:checked="true"
+        android:textColor="@color/colorWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/windSpeedCheckbox" />
 
@@ -56,6 +66,34 @@
         android:layout_marginTop="@dimen/default_horizontal_margin"
         android:switchPadding="@dimen/default_switch_padding"
         android:text="@string/lightThemeSwitch"
+        android:textColor="@color/colorWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pressureCheckbox" />
+
+    <EditText
+        android:id="@+id/temperatureEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_horizontal_margin"
+        android:layout_marginTop="@dimen/default_vertical_margin"
+        android:ems="10"
+        android:hint="@string/enter_temperature"
+        android:inputType="textPersonName"
+        android:textColor="@color/colorWhite"
+        android:textColorHint="@color/colorHint"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lightThemeSwitch" />
+
+    <Button
+        android:id="@+id/applySettingsBtn"
+        android:layout_width="@dimen/zero_width"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_horizontal_margin"
+        android:layout_marginEnd="@dimen/default_horizontal_margin"
+        android:layout_marginBottom="@dimen/default_vertical_margin"
+        android:text="@string/apply_settings"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
