@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Geekbrains.Android.Weather</string>
     <string name="city">Москва</string>
-    <string name="currentDegrees">22°</string>
-    <string name="dayNightDegrees">22° / 13°</string>
-    <string name="weatherState">Немного облачно</string>
+    <string name="current_degrees">22°</string>
+    <string name="day_night_degrees">22° / 13°</string>
+    <string name="weather_state">Немного облачно</string>
     <string name="tomorrow">Завтра, 31 июл.</string>
-    <string name="tomorrowDayNightDegrees">19° / 13°</string>
+    <string name="tomorrow_day_night_degrees">19° / 13°</string>
     <string name="saturday">Сб, 1 авг.</string>
-    <string name="saturdayDayNightDegrees">18° / 11°</string>
+    <string name="saturday_day_night_degrees">18° / 11°</string>
     <string name="cityHeader">Город</string>
     <string name="applyButton">Применить</string>
     <string name="city1">Москва</string>
@@ -20,4 +20,14 @@
     <string name="pressureCheckbox">Давление</string>
     <string name="lightThemeSwitch">Светлая тема</string>
     <string name="enterTheCity">введите город</string>
+    <string name="increase_temperature">Увеличить температуру</string>
+    <string name="cities_btn_text">Города</string>
+    <string name="settings_btn_text">Настройки</string>
+    <string name="open_url">Яндекс Погода</string>
+    <string name="yandex_pogoda" translatable="false">https://yandex.ru/pogoda/moscow</string>
+    <string name="apply_settings">Применить настройки</string>
+    <string name="enter_temperature">Введите температуру</string>
+    <string name="humidity_value">Влажность: 50%</string>
+    <string name="wind_speed_value">Скорость ветра: 12 м/c</string>
+    <string name="pressure_value">Давление: 750 мм рт.ст.</string>
 </resources>
