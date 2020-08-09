@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CitiesActivity"
+        <activity android:name=".CitiesDetailsActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -18,14 +18,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity"
-            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"
-            android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
