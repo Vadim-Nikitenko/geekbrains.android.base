@@ -10,8 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.geekbrainsandroidweather.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
+import com.example.geekbrainsandroidweather.RecyclerDataAdapter;
 import com.example.geekbrainsandroidweather.SettingsActivity;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 
@@ -19,8 +24,8 @@ import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
-public class CitiesDetailsFragment extends Fragment {
-    private static TextView city;
+public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
+    private TextView city;
     private TextView settingsTextView;
     private TextView temperature;
     private TextView pressureTextView;
@@ -32,6 +37,8 @@ public class CitiesDetailsFragment extends Fragment {
     private static boolean isPressureVisible;
     private static boolean isHumidityVisible;
     private static boolean isWindSpeedVisible;
+    private RecyclerView recyclerCitiesView;
+    private RecyclerDataAdapter recyclerDataAdapter;
 
 
     static CitiesDetailsFragment create(CityDetailsData cityDetails) {
@@ -62,9 +69,22 @@ public class CitiesDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
+        setupRecyclerView();
         setOnSettingsClickBehaviour();
         getSettingParameters();
         setCityParameters();
+    }
+
+    private void setupRecyclerView() {
+        String[] weatherForTheWeek = getResources().getStringArray(R.array.weatherForTheWeek);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration decorator = new DividerItemDecoration(Objects.requireNonNull(getContext()),
+                LinearLayoutManager.VERTICAL);
+        decorator.setDrawable(Objects.requireNonNull(getContext().getDrawable(R.drawable.decorator_item)));
+        recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
+        recyclerCitiesView.setLayoutManager(linearLayoutManager);
+        recyclerCitiesView.addItemDecoration(decorator);
+        recyclerCitiesView.setAdapter(recyclerDataAdapter);
     }
 
     private void setCityParameters() {
@@ -83,6 +103,7 @@ public class CitiesDetailsFragment extends Fragment {
         windSpeedTextView = view.findViewById(R.id.windSpeedTextView);
         stateTextView = view.findViewById(R.id.weatherState);
         dayAndNightTemperatureTextView = view.findViewById(R.id.dayNightTemperature);
+        recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
     }
 
     // слушатель события на кнопку
@@ -190,4 +211,13 @@ public class CitiesDetailsFragment extends Fragment {
         setParameterVisibility(getArguments().getBoolean(SettingsActivity.windSpeedDataKey), windSpeedTextView);
     }
 
+    @Override
+    public void onItemClicked(String text, int position) {
+
+    }
+
+    @Override
+    public void changeItem(TextView view) {
+        view.setTextColor(getResources().getColor(R.color.colorWhite));
+    }
 }

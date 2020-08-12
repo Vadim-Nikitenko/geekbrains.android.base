@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
+    public final static int requestCode = 12345;
     private EditText temperatureEditText;
     private CheckBox pressureCheckbox;
     private CheckBox windSpeedCheckbox;

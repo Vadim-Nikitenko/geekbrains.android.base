@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Geekbrains.Android.Weather</string>
+    <string name="app_name">Погода</string>
     <string name="city">Москва</string>
     <string name="current_degrees">22°</string>
     <string name="day_night_degrees">22° / 13°</string>
@@ -30,4 +30,5 @@
     <string name="humidity_value">Влажность: 50%</string>
     <string name="wind_speed_value">Скорость ветра: 12 м/c</string>
     <string name="pressure_value">Давление: 750 мм рт.ст.</string>
+    <string name="settings_icon">⋮</string>
 </resources>

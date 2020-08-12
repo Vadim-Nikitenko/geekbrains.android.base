@@ -3,28 +3,32 @@ package com.example.geekbrainsandroidweather.fragments;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.CitiesDetailsActivity;
+import com.example.geekbrainsandroidweather.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
+import com.example.geekbrainsandroidweather.RecyclerDataAdapter;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 
 import java.util.Objects;
 
-public class CitiesFragment extends Fragment {
-    private ListView listView;
+public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private TextView emptyTextView;
+    private RecyclerView recyclerCitiesView;
+    private RecyclerDataAdapter recyclerDataAdapter;
 
     private boolean isCityDetailsExists;
     private int currentPosition = 0;
@@ -41,34 +45,25 @@ public class CitiesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        initList();
+        setupRecyclerView();
+    }
+
+    private void setupRecyclerView() {
+        String[] cities = getResources().getStringArray(R.array.cities);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration decorator = new DividerItemDecoration(Objects.requireNonNull(getContext()),
+                LinearLayoutManager.VERTICAL);
+        decorator.setDrawable(Objects.requireNonNull(getContext().getDrawable(R.drawable.decorator_item_1)));
+        recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
+        recyclerCitiesView.setLayoutManager(linearLayoutManager);
+        recyclerCitiesView.addItemDecoration(decorator);
+        recyclerCitiesView.setAdapter(recyclerDataAdapter);
     }
 
     // инициализация views
     private void initViews(@NonNull View view) {
         emptyTextView = view.findViewById(R.id.emptyCityTextView);
-        listView = view.findViewById(R.id.cityList);
-    }
-
-    // создаем стандартный адаптер для работы с ListView
-    // устанавливаем пустую view, если массив городов будет пустой
-    // устанавливаем слушатель на клик по каждой view листа: сохраняем позицию по которой кликнули
-    // и вызываем метод, который выводит фрагмент с подробной информацией о городе
-    private void initList() {
-        ArrayAdapter adapter =
-                ArrayAdapter.createFromResource(Objects.requireNonNull(getActivity()), R.array.cities,
-                        android.R.layout.simple_list_item_activated_1);
-        listView.setAdapter(adapter);
-
-        listView.setEmptyView(emptyTextView);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                currentPosition = position;
-                showCitiesDetails();
-            }
-        });
+        recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
     }
 
     // проверяем ориентацию устройства и устанавливаем флаг isCityDetailsExists
@@ -91,7 +86,7 @@ public class CitiesFragment extends Fragment {
 
     // если гор. ориентация подсвечиваем выбранный item из ListView
     // создаем фрагмент CitiesDetailsFragment
-    private void showCitiesDetails() {
+    public void showCitiesDetails() {
         if (isCityDetailsExists) {
             CitiesDetailsFragment fragment = (CitiesDetailsFragment)
                     Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.citiesDetailsContainer);
@@ -118,8 +113,8 @@ public class CitiesFragment extends Fragment {
                 .withCityName(cities[currentPosition])
                 .withPosition(currentPosition)
                 .withState(states[currentPosition])
-                .withDayAndNightTemperature((int)(Math.random()*40) + "° / " + (int)(Math.random()*40) + "°")
-                .withTemperature((int)(Math.random()*40));
+                .withDayAndNightTemperature((int) (Math.random() * 40) + "° / " + (int) (Math.random() * 40) + "°")
+                .withTemperature((int) (Math.random() * 40));
     }
 
     // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
@@ -129,6 +124,15 @@ public class CitiesFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public void onItemClicked(String text, int position) {
+        currentPosition = position;
+        showCitiesDetails();
+    }
 
-
+    @Override
+    public void changeItem(TextView view) {
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(R.dimen.default_text_size));
+    }
 }
