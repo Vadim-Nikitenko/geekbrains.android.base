@@ -57,9 +57,9 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
                     .getStringArray(R.array.cities)));
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        DividerItemDecoration decorator = new DividerItemDecoration(Objects.requireNonNull(getContext()),
+        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
                 LinearLayoutManager.VERTICAL);
-        decorator.setDrawable(Objects.requireNonNull(getContext().getDrawable(R.drawable.decorator_item_1)));
+        decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item_1)));
         recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
         recyclerCitiesView.setLayoutManager(linearLayoutManager);
         recyclerCitiesView.addItemDecoration(decorator);
@@ -97,7 +97,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     public void showCitiesDetails() {
         if (isCityDetailsExists) {
             CitiesDetailsFragment fragment = (CitiesDetailsFragment)
-                    Objects.requireNonNull(getFragmentManager()).findFragmentById(R.id.citiesDetailsContainer);
+                    requireFragmentManager().findFragmentById(R.id.citiesDetailsContainer);
             if (fragment == null || fragment.getIndex() != currentPosition) {
                 fragment = CitiesDetailsFragment.create(getCityDetails());
 
@@ -108,7 +108,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
             }
         } else {
             Intent intent = new Intent();
-            intent.setClass(Objects.requireNonNull(getActivity()), CitiesDetailsActivity.class);
+            intent.setClass(requireActivity(), CitiesDetailsActivity.class);
             intent.putExtra("index", getCityDetails());
             intent.putExtra("CitiesList", cities);
             startActivity(intent);

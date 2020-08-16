@@ -40,7 +40,6 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     private static boolean isHumidityVisible;
     private static boolean isWindSpeedVisible;
     private RecyclerView recyclerCitiesView;
-    private RecyclerDataAdapter recyclerDataAdapter;
 
     static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
@@ -85,10 +84,10 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         ArrayList<String> weatherForTheWeek = new ArrayList<>(Arrays.asList(getResources()
                 .getStringArray(R.array.weatherForTheWeek)));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        DividerItemDecoration decorator = new DividerItemDecoration(Objects.requireNonNull(getContext()),
+        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
                 LinearLayoutManager.VERTICAL);
-        decorator.setDrawable(Objects.requireNonNull(getContext().getDrawable(R.drawable.decorator_item)));
-        recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
+        decorator.setDrawable(requireContext().getDrawable(R.drawable.decorator_item));
+        RecyclerDataAdapter recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
         recyclerCitiesView.setLayoutManager(linearLayoutManager);
         recyclerCitiesView.addItemDecoration(decorator);
         recyclerCitiesView.setAdapter(recyclerDataAdapter);
@@ -166,7 +165,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     int getIndex() {
-        CityDetailsData cityDetailsData = (CityDetailsData) Objects.requireNonNull(getArguments())
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
                 .getSerializable("index");
         try {
             return Objects.requireNonNull(cityDetailsData).getPosition();
@@ -176,7 +175,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     private String getCityName() {
-        CityDetailsData cityDetailsData = (CityDetailsData) Objects.requireNonNull(getArguments())
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
                 .getSerializable("index");
         try {
             return Objects.requireNonNull(cityDetailsData).getCityName();
@@ -186,7 +185,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     private String getTemperature() {
-        CityDetailsData cityDetailsData = (CityDetailsData) Objects.requireNonNull(getArguments())
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
                 .getSerializable("index");
         try {
             return Objects.requireNonNull(cityDetailsData).getTemperature() + "°";
@@ -196,7 +195,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     private String getState() {
-        CityDetailsData cityDetailsData = (CityDetailsData) Objects.requireNonNull(getArguments())
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
                 .getSerializable("index");
         try {
             return Objects.requireNonNull(cityDetailsData).getState();
@@ -206,7 +205,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     private String getDayAndNightTemperature() {
-        CityDetailsData cityDetailsData = (CityDetailsData) Objects.requireNonNull(getArguments())
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
                 .getSerializable("index");
         try {
             return Objects.requireNonNull(cityDetailsData).getDayAndNightTemperature();
