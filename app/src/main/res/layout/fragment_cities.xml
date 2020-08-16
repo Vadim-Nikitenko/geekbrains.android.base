@@ -8,12 +8,11 @@
 
     <TextView
         android:id="@+id/cityHeader"
+        style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_horizontal_margin"
-        android:layout_marginTop="@dimen/default_vertical_margin"
         android:text="@string/cityHeader"
-        android:textColor="@color/colorBlack"
         android:textSize="@dimen/header_text_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,12 +29,11 @@
 
     <TextView
         android:id="@+id/emptyCityTextView"
+        style="@style/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/default_horizontal_margin"
-        android:layout_marginTop="@dimen/default_vertical_margin"
         android:text=""
-        android:textColor="@color/colorWhite"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerCitiesView" />
 

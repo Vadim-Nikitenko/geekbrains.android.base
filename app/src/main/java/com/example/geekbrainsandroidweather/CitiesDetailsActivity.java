@@ -8,10 +8,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.geekbrainsandroidweather.fragments.CitiesDetailsFragment;
 
 public class CitiesDetailsActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (SettingsActivity.isDarkTheme) {
+            setTheme(R.style.DarkTheme);
+        } else {
+            setTheme(R.style.AppTheme);
+        }
+
         setContentView(R.layout.activity_cities_details);
 
         if (savedInstanceState == null) {
@@ -28,6 +34,10 @@ public class CitiesDetailsActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
 }

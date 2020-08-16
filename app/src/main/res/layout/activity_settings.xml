@@ -4,72 +4,90 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorGrey"
     tools:context=".SettingsActivity">
 
-    <TextView
-        android:id="@+id/settingsHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/default_vertical_margin"
-        android:text="@string/settingsHeader"
-        android:textColor="@color/colorWhite"
-        android:textSize="@dimen/default_text_size"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/humidityCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_horizontal_margin"
-        android:layout_marginTop="@dimen/default_vertical_margin"
-        android:buttonTint="@color/colorWhite"
-        android:text="@string/humidityCheckbox"
-        android:checked="true"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settingsHeader" />
+            <TextView
+                android:id="@+id/settingsHeader"
+                style="@style/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_horizontal_margin"
+                android:text="@string/settingsHeader"/>
 
-    <CheckBox
-        android:id="@+id/windSpeedCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_horizontal_margin"
-        android:layout_marginTop="@dimen/default_horizontal_margin"
-        android:buttonTint="@color/colorWhite"
-        android:text="@string/windSpeedCheckbox"
-        android:checked="true"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/humidityCheckbox" />
+            <CheckBox
+                android:id="@+id/humidityCheckbox"
+                style="@style/textViewWeatherParams"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/humidityCheckbox"
+                android:checked="true"/>
 
-    <CheckBox
-        android:id="@+id/pressureCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_horizontal_margin"
-        android:layout_marginTop="@dimen/default_vertical_margin"
-        android:buttonTint="@color/colorWhite"
-        android:text="@string/pressureCheckbox"
-        android:checked="true"
-        android:textColor="@color/colorWhite"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/windSpeedCheckbox" />
+            <CheckBox
+                android:id="@+id/windSpeedCheckbox"
+                style="@style/textViewWeatherParams"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/windSpeedCheckbox"
+                android:checked="true" />
 
-    <EditText
-        android:id="@+id/temperatureEditText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/default_horizontal_margin"
-        android:layout_marginTop="@dimen/default_vertical_margin"
-        android:ems="10"
-        android:hint="@string/enter_temperature"
-        android:inputType="number"
-        android:textColor="@color/colorWhite"
-        android:textColorHint="@color/colorHint"
+            <CheckBox
+                android:id="@+id/pressureCheckbox"
+                style="@style/textViewWeatherParams"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pressureCheckbox"
+                android:checked="true" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/temperatureInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/default_horizontal_margin"
+                android:layout_marginTop="@dimen/default_vertical_margin"
+                android:layout_marginEnd="@dimen/default_horizontal_margin"
+                app:errorEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/temperatureEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColorHint="@color/colorDefault"
+                    android:hint="@string/temperature_settings_input"
+                    android:inputType="number"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Switch
+                android:id="@+id/darkThemeSwitch"
+                style="@style/textViewWeatherParams"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dark_theme"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+        </LinearLayout>
+    </ScrollView>
+
+    <fragment
+        android:id="@+id/developersInfoFragment"
+        android:name="com.example.geekbrainsandroidweather.fragments.BottomMenuFragment"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pressureCheckbox" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="0.3"
+        android:layout_width="0dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

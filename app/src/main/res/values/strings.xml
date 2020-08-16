@@ -31,4 +31,10 @@
     <string name="wind_speed_value">Скорость ветра: 12 м/c</string>
     <string name="pressure_value">Давление: 750 мм рт.ст.</string>
     <string name="settings_icon">⋮</string>
+    <string name="temperature_settings_input">Температура</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="home_screen">Главная</string>
+    <string name="Settings_screen">Настройки</string>
+    <string name="info_screen">Разрабочики</string>
+    <string name="developers_text">Версия приложения Погода 1.0\nCopyright @ Вадим Никитенко Co., Ltd. 2020.\nВсе права защищены</string>
 </resources>

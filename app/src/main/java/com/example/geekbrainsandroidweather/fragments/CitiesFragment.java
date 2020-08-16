@@ -22,13 +22,17 @@ import com.example.geekbrainsandroidweather.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.RecyclerDataAdapter;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private TextView emptyTextView;
     private RecyclerView recyclerCitiesView;
     private RecyclerDataAdapter recyclerDataAdapter;
+    private ArrayList<String> cities;
 
     private boolean isCityDetailsExists;
     private int currentPosition = 0;
@@ -45,11 +49,13 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        setupRecyclerView();
     }
 
     private void setupRecyclerView() {
-        String[] cities = getResources().getStringArray(R.array.cities);
+        if (cities == null) {
+            cities = new ArrayList<>(Arrays.asList(getResources()
+                    .getStringArray(R.array.cities)));
+        }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         DividerItemDecoration decorator = new DividerItemDecoration(Objects.requireNonNull(getContext()),
                 LinearLayoutManager.VERTICAL);
@@ -77,11 +83,13 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
 
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt("CurrentCity", 0);
+            cities = savedInstanceState.getStringArrayList("CitiesList");
         }
 
         if (isCityDetailsExists) {
             showCitiesDetails();
         }
+        setupRecyclerView();
     }
 
     // если гор. ориентация подсвечиваем выбранный item из ListView
@@ -102,6 +110,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
             Intent intent = new Intent();
             intent.setClass(Objects.requireNonNull(getActivity()), CitiesDetailsActivity.class);
             intent.putExtra("index", getCityDetails());
+            intent.putExtra("CitiesList", cities);
             startActivity(intent);
         }
     }
@@ -121,13 +130,21 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putInt("CurrentCity", currentPosition);
+        outState.putStringArrayList("CitiesList", cities);
         super.onSaveInstanceState(outState);
     }
 
+
     @Override
-    public void onItemClicked(String text, int position) {
+    public void onItemClicked(View view, String text, int position) {
         currentPosition = position;
         showCitiesDetails();
+    }
+
+    @Override
+    public void onItemLongPressed(View view) {
+        TextView textView = (TextView) view;
+        deleteItem(textView);
     }
 
     @Override
@@ -135,4 +152,17 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
         view.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                 getResources().getDimensionPixelSize(R.dimen.default_text_size));
     }
+
+    public void deleteItem(final TextView view) {
+        Snackbar.make(view, "Удалить город?", Snackbar.LENGTH_LONG)
+                .setAction("Удалить", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String cityName = view.getText().toString();
+                        recyclerDataAdapter.remove(cityName);
+                        cities.remove(cityName);
+                    }
+                }).show();
+    }
+
 }

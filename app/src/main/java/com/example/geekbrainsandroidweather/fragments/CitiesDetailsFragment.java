@@ -20,6 +20,8 @@ import com.example.geekbrainsandroidweather.RecyclerDataAdapter;
 import com.example.geekbrainsandroidweather.SettingsActivity;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -40,7 +42,6 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     private RecyclerView recyclerCitiesView;
     private RecyclerDataAdapter recyclerDataAdapter;
 
-
     static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
 
@@ -57,10 +58,15 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         if (savedInstanceState != null) {
             setParameterVisibility(savedInstanceState.getBoolean(SettingsActivity.pressureDataKey), pressureTextView);
+            setParameterVisibility(getArguments().getBoolean(SettingsActivity.pressureDataKey), pressureTextView);
             setParameterVisibility(savedInstanceState.getBoolean(SettingsActivity.humidityDataKey), humidityTextView);
             setParameterVisibility(savedInstanceState.getBoolean(SettingsActivity.windSpeedDataKey), windSpeedTextView);
+            if (temperature != null) {
+                temperature.setText(savedInstanceState.getString(SettingsActivity.temperatureDataKey));
+            }
         }
         return inflater.inflate(R.layout.fragment_cities_details, container, false);
     }
@@ -76,7 +82,8 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     private void setupRecyclerView() {
-        String[] weatherForTheWeek = getResources().getStringArray(R.array.weatherForTheWeek);
+        ArrayList<String> weatherForTheWeek = new ArrayList<>(Arrays.asList(getResources()
+                .getStringArray(R.array.weatherForTheWeek)));
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         DividerItemDecoration decorator = new DividerItemDecoration(Objects.requireNonNull(getContext()),
                 LinearLayoutManager.VERTICAL);
@@ -106,7 +113,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
     }
 
-    // слушатель события на кнопку
+    // слушатель события на кнопку настроек
     private void setOnSettingsClickBehaviour() {
         settingsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,7 +128,9 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == this.requestCode && resultCode == RESULT_OK && data != null) {
+
             String temperatureData = data.getStringExtra(SettingsActivity.temperatureDataKey);
             if (temperatureData != null) temperature.setText(temperatureData);
 
@@ -141,6 +150,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         outState.putBoolean(SettingsActivity.pressureDataKey, isPressureVisible);
         outState.putBoolean(SettingsActivity.humidityDataKey, isHumidityVisible);
         outState.putBoolean(SettingsActivity.windSpeedDataKey, isWindSpeedVisible);
+//        outState.putString(SettingsActivity.temperatureDataKey, temperature.getText().toString());
         super.onSaveInstanceState(outState);
     }
 
@@ -212,12 +222,18 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     @Override
-    public void onItemClicked(String text, int position) {
+    public void onItemClicked(View view, String text, int position) {
+
+    }
+
+    @Override
+    public void onItemLongPressed(View view) {
 
     }
 
     @Override
     public void changeItem(TextView view) {
-        view.setTextColor(getResources().getColor(R.color.colorWhite));
     }
+
+
 }
