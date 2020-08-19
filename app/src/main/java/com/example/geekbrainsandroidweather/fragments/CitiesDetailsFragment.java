@@ -1,5 +1,6 @@
 package com.example.geekbrainsandroidweather.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,13 +11,19 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.SettingsActivity;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
+import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -70,25 +77,24 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-//        setupRecyclerView();
+        setupRecyclerView();
         setOnSettingsClickBehaviour();
         getSettingParameters(savedInstanceState);
         setCityParameters();
     }
 
-//    private void setupRecyclerView() {
-//        ArrayList<String> weatherForTheWeek = new ArrayList<>(Arrays.asList(getResources()
-//                .getStringArray(R.array.weatherForTheWeek)));
-//
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-//        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-//                LinearLayoutManager.VERTICAL);
-//        decorator.setDrawable(requireContext().getDrawable(R.drawable.decorator_item));
-//        RecyclerDataAdapter recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
-//        recyclerCitiesView.setLayoutManager(linearLayoutManager);
-//        recyclerCitiesView.addItemDecoration(decorator);
-//        recyclerCitiesView.setAdapter(recyclerDataAdapter);
-//    }
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void setupRecyclerView() {
+        ArrayList<String> weatherForTheWeek = OpenWeatherMap.weatherForTheWeek;
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
+                LinearLayoutManager.VERTICAL);
+        decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item)));
+        RecyclerDataAdapter recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
+        recyclerCitiesView.setLayoutManager(linearLayoutManager);
+        recyclerCitiesView.addItemDecoration(decorator);
+        recyclerCitiesView.setAdapter(recyclerDataAdapter);
+    }
 
     private void setCityParameters() {
         city.setText(getCityName());

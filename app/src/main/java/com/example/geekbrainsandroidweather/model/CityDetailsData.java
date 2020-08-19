@@ -2,7 +2,7 @@ package com.example.geekbrainsandroidweather.model;
 
 import java.io.Serializable;
 
-public class CityDetailsData implements Serializable {
+public class CityDetailsData implements Serializable, Requestable{
     private String cityName;
     private int position;
     private String temperature;

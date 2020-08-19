@@ -17,7 +17,7 @@
             style="@style/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/city"
+            tools:text="Москва"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-thin"
-            android:text="@string/current_degrees"
+            tools:text="18"
             android:textSize="@dimen/double_default_text_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_vertical_margin"
-            android:text="@string/day_night_degrees"
+            tools:text="18 / 20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/temperature" />
@@ -80,7 +80,7 @@
             style="@style/textViewWeatherParams"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/humidity_value"
+            tools:text="Влажность"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerCitiesView" />
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            android:text="@string/wind_speed_value"
+            tools:text="Ветер"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/humidityTextView" />
 
@@ -100,7 +100,7 @@
             style="@style/textViewWeatherParams"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/pressure_value"
+            tools:text="Давление"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView" />

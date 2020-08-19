@@ -21,7 +21,7 @@ import com.example.geekbrainsandroidweather.CitiesDetailsActivity;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
-import com.example.geekbrainsandroidweather.network.Network;
+import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private ArrayList<String> cities;
     private TextView cityItem;
     private String[] citiesList;
-
+    private OpenWeatherMap openWeatherMap;
 
     private boolean isCityDetailsExists;
     private int currentPosition = 0;
@@ -99,12 +99,12 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     // если гор. ориентация подсвечиваем выбранный item из ListView
     // создаем фрагмент CitiesDetailsFragment
     public void showCitiesDetails(String cityName) {
-        Network network = new Network(cityName);
+        openWeatherMap = new OpenWeatherMap(cityName);
         if (isCityDetailsExists) {
             CitiesDetailsFragment fragment = (CitiesDetailsFragment)
                     requireFragmentManager().findFragmentById(R.id.citiesDetailsContainer);
             if (fragment == null || fragment.getIndex() != currentPosition) {
-                fragment = CitiesDetailsFragment.create(network.getCityDetailsData());
+                fragment = CitiesDetailsFragment.create(openWeatherMap.getCityDetailsData());
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
@@ -114,22 +114,11 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
         } else {
             Intent intent = new Intent();
             intent.setClass(requireActivity(), CitiesDetailsActivity.class);
-            intent.putExtra("index", network.getCityDetailsData());
+            intent.putExtra("index", openWeatherMap.getCityDetailsData());
             intent.putExtra("CitiesList", cities);
             startActivity(intent);
         }
     }
-
-//    private CityDetailsData getCityDetails() {
-//        String[] cities = getResources().getStringArray(R.array.cities);
-//        String[] states = getResources().getStringArray(R.array.states);
-//        return new CityDetailsData()
-//                .withCityName(cities[currentPosition])
-//                .withPosition(currentPosition)
-//                .withState(states[currentPosition])
-//                .withDayAndNightTemperature((int) (Math.random() * 40) + "° / " + (int) (Math.random() * 40) + "°")
-//                .withTemperature((int) (Math.random() * 40));
-//    }
 
     // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
     @Override
