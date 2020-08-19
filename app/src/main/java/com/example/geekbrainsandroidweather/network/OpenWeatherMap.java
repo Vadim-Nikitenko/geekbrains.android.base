@@ -6,7 +6,6 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
-import com.example.geekbrainsandroidweather.model.ForecastData;
 import com.example.geekbrainsandroidweather.model.forecast.ForecastRequest;
 import com.example.geekbrainsandroidweather.model.weather.WeatherRequest;
 import com.google.gson.Gson;
@@ -135,7 +134,7 @@ public class OpenWeatherMap {
             String state = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getWeather().get(0).getMain());
 
-            weatherForTheWeek.add(date + " " + dayAndNightTemperature  + " " +  state);
+            weatherForTheWeek.add(date + " " + dayAndNightTemperature + " " + state);
         }
     }
 
