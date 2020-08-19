@@ -134,8 +134,12 @@ public class OpenWeatherMap {
             String state = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getWeather().get(0).getMain());
 
-            weatherForTheWeek.add(date + " " + dayAndNightTemperature + " " + state);
+            weatherForTheWeek.add(removeLastChars(date, 9) + "  " + dayAndNightTemperature + "  " + state);
         }
+    }
+
+    public static String removeLastChars(String str, int chars) {
+        return str.substring(0, str.length() - chars);
     }
 
 }
