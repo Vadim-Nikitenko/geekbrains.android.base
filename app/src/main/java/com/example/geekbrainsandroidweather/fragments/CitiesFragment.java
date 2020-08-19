@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.CitiesDetailsActivity;
-import com.example.geekbrainsandroidweather.IRVOnItemClick;
+import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
-import com.example.geekbrainsandroidweather.RecyclerDataAdapter;
-import com.example.geekbrainsandroidweather.model.CityDetailsData;
+import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
+import com.example.geekbrainsandroidweather.network.Network;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -33,6 +33,9 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private RecyclerView recyclerCitiesView;
     private RecyclerDataAdapter recyclerDataAdapter;
     private ArrayList<String> cities;
+    private TextView cityItem;
+    private String[] citiesList;
+
 
     private boolean isCityDetailsExists;
     private int currentPosition = 0;
@@ -70,6 +73,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private void initViews(@NonNull View view) {
         emptyTextView = view.findViewById(R.id.emptyCityTextView);
         recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
+        citiesList = getResources().getStringArray(R.array.cities);
     }
 
     // проверяем ориентацию устройства и устанавливаем флаг isCityDetailsExists
@@ -87,19 +91,20 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
         }
 
         if (isCityDetailsExists) {
-            showCitiesDetails();
+            showCitiesDetails(citiesList[currentPosition]);
         }
         setupRecyclerView();
     }
 
     // если гор. ориентация подсвечиваем выбранный item из ListView
     // создаем фрагмент CitiesDetailsFragment
-    public void showCitiesDetails() {
+    public void showCitiesDetails(String cityName) {
+        Network network = new Network(cityName);
         if (isCityDetailsExists) {
             CitiesDetailsFragment fragment = (CitiesDetailsFragment)
                     requireFragmentManager().findFragmentById(R.id.citiesDetailsContainer);
             if (fragment == null || fragment.getIndex() != currentPosition) {
-                fragment = CitiesDetailsFragment.create(getCityDetails());
+                fragment = CitiesDetailsFragment.create(network.getCityDetailsData());
 
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
@@ -109,22 +114,22 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
         } else {
             Intent intent = new Intent();
             intent.setClass(requireActivity(), CitiesDetailsActivity.class);
-            intent.putExtra("index", getCityDetails());
+            intent.putExtra("index", network.getCityDetailsData());
             intent.putExtra("CitiesList", cities);
             startActivity(intent);
         }
     }
 
-    private CityDetailsData getCityDetails() {
-        String[] cities = getResources().getStringArray(R.array.cities);
-        String[] states = getResources().getStringArray(R.array.states);
-        return new CityDetailsData()
-                .withCityName(cities[currentPosition])
-                .withPosition(currentPosition)
-                .withState(states[currentPosition])
-                .withDayAndNightTemperature((int) (Math.random() * 40) + "° / " + (int) (Math.random() * 40) + "°")
-                .withTemperature((int) (Math.random() * 40));
-    }
+//    private CityDetailsData getCityDetails() {
+//        String[] cities = getResources().getStringArray(R.array.cities);
+//        String[] states = getResources().getStringArray(R.array.states);
+//        return new CityDetailsData()
+//                .withCityName(cities[currentPosition])
+//                .withPosition(currentPosition)
+//                .withState(states[currentPosition])
+//                .withDayAndNightTemperature((int) (Math.random() * 40) + "° / " + (int) (Math.random() * 40) + "°")
+//                .withTemperature((int) (Math.random() * 40));
+//    }
 
     // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
     @Override
@@ -136,9 +141,9 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
 
 
     @Override
-    public void onItemClicked(View view, String text, int position) {
+    public void onItemClicked(View view, int position) {
         currentPosition = position;
-        showCitiesDetails();
+        showCitiesDetails(citiesList[position]);
     }
 
     @Override
@@ -164,5 +169,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
                     }
                 }).show();
     }
+
 
 }

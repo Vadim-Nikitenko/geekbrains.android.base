@@ -37,4 +37,7 @@
     <string name="Settings_screen">Настройки</string>
     <string name="info_screen">Разрабочики</string>
     <string name="developers_text">Версия приложения Погода 1.0\nCopyright @ Вадим Никитенко Co., Ltd. 2020.\nВсе права защищены</string>
+    <string name="wind_speed_city_details">Wind speed:</string>
+    <string name="pressure_city_details">Pressure:</string>
+    <string name="humidity_city_details">Humidity:</string>
 </resources>

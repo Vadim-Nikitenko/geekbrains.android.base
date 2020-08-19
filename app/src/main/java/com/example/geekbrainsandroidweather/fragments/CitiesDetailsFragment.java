@@ -10,18 +10,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.geekbrainsandroidweather.IRVOnItemClick;
+import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
-import com.example.geekbrainsandroidweather.RecyclerDataAdapter;
 import com.example.geekbrainsandroidweather.SettingsActivity;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -35,6 +30,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     private TextView windSpeedTextView;
     private TextView stateTextView;
     private TextView dayAndNightTemperatureTextView;
+    private TextView weatherMainState;
     private final int requestCode = 12345;
     private static boolean isPressureVisible;
     private static boolean isHumidityVisible;
@@ -74,30 +70,35 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
-        setupRecyclerView();
+//        setupRecyclerView();
         setOnSettingsClickBehaviour();
-        getSettingParameters();
+        getSettingParameters(savedInstanceState);
         setCityParameters();
     }
 
-    private void setupRecyclerView() {
-        ArrayList<String> weatherForTheWeek = new ArrayList<>(Arrays.asList(getResources()
-                .getStringArray(R.array.weatherForTheWeek)));
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-                LinearLayoutManager.VERTICAL);
-        decorator.setDrawable(requireContext().getDrawable(R.drawable.decorator_item));
-        RecyclerDataAdapter recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
-        recyclerCitiesView.setLayoutManager(linearLayoutManager);
-        recyclerCitiesView.addItemDecoration(decorator);
-        recyclerCitiesView.setAdapter(recyclerDataAdapter);
-    }
+//    private void setupRecyclerView() {
+//        ArrayList<String> weatherForTheWeek = new ArrayList<>(Arrays.asList(getResources()
+//                .getStringArray(R.array.weatherForTheWeek)));
+//
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+//        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
+//                LinearLayoutManager.VERTICAL);
+//        decorator.setDrawable(requireContext().getDrawable(R.drawable.decorator_item));
+//        RecyclerDataAdapter recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
+//        recyclerCitiesView.setLayoutManager(linearLayoutManager);
+//        recyclerCitiesView.addItemDecoration(decorator);
+//        recyclerCitiesView.setAdapter(recyclerDataAdapter);
+//    }
 
     private void setCityParameters() {
         city.setText(getCityName());
         temperature.setText(getTemperature());
         stateTextView.setText(getState());
         dayAndNightTemperatureTextView.setText(getDayAndNightTemperature());
+        humidityTextView.setText(getHumidity());
+        pressureTextView.setText(getPressure());
+        windSpeedTextView.setText(getWindSpeed());
+        weatherMainState.setText(getWeatherMainState());
     }
 
     private void initViews(@NonNull View view) {
@@ -109,6 +110,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         windSpeedTextView = view.findViewById(R.id.windSpeedTextView);
         stateTextView = view.findViewById(R.id.weatherState);
         dayAndNightTemperatureTextView = view.findViewById(R.id.dayNightTemperature);
+        weatherMainState = view.findViewById(R.id.weatherMainState);
         recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
     }
 
@@ -188,7 +190,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
                 .getSerializable("index");
         try {
-            return Objects.requireNonNull(cityDetailsData).getTemperature() + "°";
+            return Objects.requireNonNull(cityDetailsData).getTemperature();
         } catch (Exception e) {
             return "0";
         }
@@ -204,6 +206,46 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         }
     }
 
+    private String getWeatherMainState() {
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
+                .getSerializable("index");
+        try {
+            return Objects.requireNonNull(cityDetailsData).getWeatherMainState();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private String getHumidity() {
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
+                .getSerializable("index");
+        try {
+            return getString(R.string.humidity_city_details) + Objects.requireNonNull(cityDetailsData).getHumidity();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private String getPressure() {
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
+                .getSerializable("index");
+        try {
+            return getString(R.string.pressure_city_details) + Objects.requireNonNull(cityDetailsData).getPressure();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private String getWindSpeed() {
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
+                .getSerializable("index");
+        try {
+            return getString(R.string.wind_speed_city_details) + Objects.requireNonNull(cityDetailsData).getWindSpeed();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     private String getDayAndNightTemperature() {
         CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
                 .getSerializable("index");
@@ -214,14 +256,16 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         }
     }
 
-    private void getSettingParameters() {
-        setParameterVisibility(getArguments().getBoolean(SettingsActivity.pressureDataKey), pressureTextView);
-        setParameterVisibility(getArguments().getBoolean(SettingsActivity.humidityDataKey), humidityTextView);
-        setParameterVisibility(getArguments().getBoolean(SettingsActivity.windSpeedDataKey), windSpeedTextView);
+    private void getSettingParameters(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            setParameterVisibility(getArguments().getBoolean(SettingsActivity.pressureDataKey), pressureTextView);
+            setParameterVisibility(getArguments().getBoolean(SettingsActivity.humidityDataKey), humidityTextView);
+            setParameterVisibility(getArguments().getBoolean(SettingsActivity.windSpeedDataKey), windSpeedTextView);
+        }
     }
 
     @Override
-    public void onItemClicked(View view, String text, int position) {
+    public void onItemClicked(View view, int position) {
 
     }
 
