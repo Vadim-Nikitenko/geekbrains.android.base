@@ -18,10 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.CitiesDetailsActivity;
-import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.R;
-import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
+import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
+import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
@@ -33,7 +33,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private RecyclerView recyclerCitiesView;
     private RecyclerDataAdapter recyclerDataAdapter;
     private ArrayList<String> cities;
-    private TextView cityItem;
     private String[] citiesList;
     private OpenWeatherMap openWeatherMap;
 
@@ -101,11 +100,14 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     public void showCitiesDetails(String cityName) {
         openWeatherMap = new OpenWeatherMap(cityName);
         if (isCityDetailsExists) {
-            CitiesDetailsFragment fragment = (CitiesDetailsFragment)
-                    requireFragmentManager().findFragmentById(R.id.citiesDetailsContainer);
-            if (fragment == null || fragment.getIndex() != currentPosition) {
+            if (OpenWeatherMap.responseCode != 200) {
+                ErrorFragment errorFragment = new ErrorFragment();
+                FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.citiesDetailsContainer, errorFragment);
+                fragmentTransaction.commit();
+            } else {
+                CitiesDetailsFragment fragment = new CitiesDetailsFragment();
                 fragment = CitiesDetailsFragment.create(openWeatherMap.getCityDetailsData());
-
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
                 fragmentTransaction.addToBackStack("key");
@@ -115,6 +117,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
             Intent intent = new Intent();
             intent.setClass(requireActivity(), CitiesDetailsActivity.class);
             intent.putExtra("index", openWeatherMap.getCityDetailsData());
+            intent.putExtra("ResponseCode", OpenWeatherMap.responseCode);
             intent.putExtra("CitiesList", cities);
             startActivity(intent);
         }

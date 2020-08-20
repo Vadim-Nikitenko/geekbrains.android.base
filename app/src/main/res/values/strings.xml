@@ -26,4 +26,5 @@
     <string name="wind_speed_city_details">Wind speed:</string>
     <string name="pressure_city_details">Pressure:</string>
     <string name="humidity_city_details">Humidity:</string>
+    <string name="error_message">Не удалось найти информацию по городу</string>
 </resources>

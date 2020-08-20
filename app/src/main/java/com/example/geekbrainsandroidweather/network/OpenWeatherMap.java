@@ -27,6 +27,8 @@ public class OpenWeatherMap {
     private final String API_KEY = "5f1d9d03941da3156da553bbcb7740c4";
     private static CityDetailsData cityDetailsData;
     public static ArrayList<String> weatherForTheWeek;
+    public static int responseCode;
+    public static final int FORECAST_DAYS = 5;
 
     public OpenWeatherMap(String cityName) {
         makeRequest(cityName);
@@ -70,6 +72,7 @@ public class OpenWeatherMap {
     @RequiresApi(api = Build.VERSION_CODES.N)
     protected String getInputStreamData(URL uri, HttpsURLConnection urlConnection) throws IOException {
         urlConnection = (HttpsURLConnection) uri.openConnection();
+        responseCode = urlConnection.getResponseCode();
         urlConnection.setRequestMethod("GET"); // установка метода получения данных -GET
         urlConnection.setReadTimeout(10000); // установка таймаута - 10 000 миллисекунд
         BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())); // читаем  данные в поток
@@ -125,7 +128,7 @@ public class OpenWeatherMap {
     public static void getForecastData(ForecastRequest forecastRequest) {
         weatherForTheWeek = new ArrayList<>();
         weatherForTheWeek.clear();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < FORECAST_DAYS; i++) {
             String date = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getDtTxt());
             String dayAndNightTemperature = String.format(Locale.getDefault(),
@@ -133,8 +136,8 @@ public class OpenWeatherMap {
                     forecastRequest.getList().get(i).getMain().getTempMax());
             String state = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getWeather().get(0).getMain());
-
-            weatherForTheWeek.add(removeLastChars(date, 9) + "  " + dayAndNightTemperature + "  " + state);
+            final int CHARS_TO_REMOVE_COUNT = 9;
+            weatherForTheWeek.add(removeLastChars(date, CHARS_TO_REMOVE_COUNT) + "  " + dayAndNightTemperature + "  " + state);
         }
     }
 

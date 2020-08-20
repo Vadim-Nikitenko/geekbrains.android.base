@@ -105,17 +105,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView" />
 
-        <TextView
-            android:id="@+id/settingsTextView"
-            android:layout_width="@dimen/zero_width"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_vertical_margin"
-            android:layout_marginEnd="@dimen/default_horizontal_margin"
-            android:rotation="90"
-            android:text="@string/settings_btn_text"
-            android:textSize="@dimen/default_text_size"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
