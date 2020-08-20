@@ -30,8 +30,7 @@ public class OpenWeatherMap {
     public static int responseCode;
     public static final int FORECAST_DAYS = 5;
 
-    public OpenWeatherMap(String cityName) {
-        makeRequest(cityName);
+    public OpenWeatherMap() {
     }
 
     public void makeRequest(String cityName) {

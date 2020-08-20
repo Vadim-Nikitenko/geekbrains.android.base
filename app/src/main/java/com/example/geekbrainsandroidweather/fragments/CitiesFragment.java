@@ -36,7 +36,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private OpenWeatherMap openWeatherMap;
 
     private boolean isCityDetailsExists;
-    private int currentPosition = 0;
+    private static int currentPosition;
 
     // указываем макет при создании фрагмента
     @Override
@@ -68,10 +68,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
         isCityDetailsExists = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
 
-        if (savedInstanceState != null) {
-            currentPosition = savedInstanceState.getInt("CurrentCity", 0);
-        }
-
         if (isCityDetailsExists) {
             showCitiesDetails(citiesList[currentPosition]);
         }
@@ -97,7 +93,8 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     // если гор. ориентация подсвечиваем выбранный item из ListView
     // создаем фрагмент CitiesDetailsFragment
     public void showCitiesDetails(String cityName) {
-        openWeatherMap = new OpenWeatherMap(cityName);
+        openWeatherMap = new OpenWeatherMap();
+        openWeatherMap.makeRequest(cityName);
         if (isCityDetailsExists) {
             if (OpenWeatherMap.responseCode != 200) {
                 ErrorFragment errorFragment = new ErrorFragment();
@@ -109,6 +106,12 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
                 fragment = CitiesDetailsFragment.create(openWeatherMap.getCityDetailsData());
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("index", openWeatherMap.getCityDetailsData());
+                bundle.putInt("CurrentCity", currentPosition);
+                fragment.setArguments(bundle);
+
                 fragmentTransaction.addToBackStack("key");
                 fragmentTransaction.commit();
             }
@@ -121,6 +124,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
             bundle.putSerializable("index", openWeatherMap.getCityDetailsData());
             bundle.putInt("ResponseCode", OpenWeatherMap.responseCode);
             bundle.putStringArrayList("CitiesList", cities);
+            bundle.putInt("CurrentCity", currentPosition);
 
             fragment.setArguments(bundle);
             fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
