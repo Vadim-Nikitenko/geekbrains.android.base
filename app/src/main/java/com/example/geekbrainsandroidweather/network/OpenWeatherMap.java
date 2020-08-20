@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
+import com.example.geekbrainsandroidweather.BuildConfig;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.model.forecast.ForecastRequest;
 import com.example.geekbrainsandroidweather.model.weather.WeatherRequest;
@@ -24,7 +25,6 @@ import javax.net.ssl.HttpsURLConnection;
 public class OpenWeatherMap {
     private final String TAG = "WEATHER";
     private final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
-    private final String API_KEY = "5f1d9d03941da3156da553bbcb7740c4";
     private static CityDetailsData cityDetailsData;
     public static ArrayList<String> weatherForTheWeek;
     public static int responseCode;
@@ -42,12 +42,12 @@ public class OpenWeatherMap {
                     HttpsURLConnection urlConnection = null;
                     try {
                         Gson gson = new Gson(); // преобразование данных запроса в модель
-                        String weatherResult = getInputStreamData(new URL(getWeatherURL(cityName) + API_KEY), urlConnection);
+                        String weatherResult = getInputStreamData(new URL(getWeatherURL(cityName) + BuildConfig.WEATHER_API_KEY), urlConnection);
                         final WeatherRequest weatherRequest = gson.fromJson(weatherResult, WeatherRequest.class);
                         getWeatherData(weatherRequest);
 
 
-                        String forecastResult = getInputStreamData(new URL(getForecastUrl(cityName) + API_KEY), urlConnection);
+                        String forecastResult = getInputStreamData(new URL(getForecastUrl(cityName) + BuildConfig.WEATHER_API_KEY), urlConnection);
                         final ForecastRequest forecastRequest = gson.fromJson(forecastResult, ForecastRequest.class);
                         getForecastData(forecastRequest);
 
