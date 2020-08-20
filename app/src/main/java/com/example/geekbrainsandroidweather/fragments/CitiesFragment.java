@@ -1,8 +1,8 @@
 package com.example.geekbrainsandroidweather.fragments;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.geekbrainsandroidweather.CitiesDetailsActivity;
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
@@ -32,7 +31,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     private TextView emptyTextView;
     private RecyclerView recyclerCitiesView;
     private RecyclerDataAdapter recyclerDataAdapter;
-    private ArrayList<String> cities;
+    private static ArrayList<String> cities;
     private String[] citiesList;
     private OpenWeatherMap openWeatherMap;
 
@@ -50,26 +49,14 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
-    }
-
-    private void setupRecyclerView() {
-        if (cities == null) {
-            cities = new ArrayList<>(Arrays.asList(getResources()
-                    .getStringArray(R.array.cities)));
+        init(view);
+        if (savedInstanceState != null) {
+            cities = savedInstanceState.getStringArrayList("CitiesList");
         }
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-                LinearLayoutManager.VERTICAL);
-        decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item_1)));
-        recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
-        recyclerCitiesView.setLayoutManager(linearLayoutManager);
-        recyclerCitiesView.addItemDecoration(decorator);
-        recyclerCitiesView.setAdapter(recyclerDataAdapter);
     }
 
     // инициализация views
-    private void initViews(@NonNull View view) {
+    private void init(@NonNull View view) {
         emptyTextView = view.findViewById(R.id.emptyCityTextView);
         recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
         citiesList = getResources().getStringArray(R.array.cities);
@@ -92,7 +79,23 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
         if (isCityDetailsExists) {
             showCitiesDetails(citiesList[currentPosition]);
         }
+
         setupRecyclerView();
+    }
+
+    private void setupRecyclerView() {
+        if (cities == null) {
+            cities = new ArrayList<>(Arrays.asList(getResources()
+                    .getStringArray(R.array.cities)));
+        }
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
+                LinearLayoutManager.VERTICAL);
+        decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item_1)));
+        recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
+        recyclerCitiesView.setLayoutManager(linearLayoutManager);
+        recyclerCitiesView.addItemDecoration(decorator);
+        recyclerCitiesView.setAdapter(recyclerDataAdapter);
     }
 
     // если гор. ориентация подсвечиваем выбранный item из ListView
@@ -114,23 +117,30 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
                 fragmentTransaction.commit();
             }
         } else {
-            Intent intent = new Intent();
-            intent.setClass(requireActivity(), CitiesDetailsActivity.class);
-            intent.putExtra("index", openWeatherMap.getCityDetailsData());
-            intent.putExtra("ResponseCode", OpenWeatherMap.responseCode);
-            intent.putExtra("CitiesList", cities);
-            startActivity(intent);
+            CitiesDetailsFragment fragment;
+            fragment = CitiesDetailsFragment.create(openWeatherMap.getCityDetailsData());
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("index", openWeatherMap.getCityDetailsData());
+            bundle.putInt("ResponseCode", OpenWeatherMap.responseCode);
+            bundle.putStringArrayList("CitiesList", cities);
+
+            fragment.setArguments(bundle);
+            fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
+            fragmentTransaction.addToBackStack("key");
+            fragmentTransaction.commit();
+
         }
     }
 
     // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
         outState.putInt("CurrentCity", currentPosition);
         outState.putStringArrayList("CitiesList", cities);
-        super.onSaveInstanceState(outState);
     }
-
 
     @Override
     public void onItemClicked(View view, int position) {
@@ -161,6 +171,5 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
                     }
                 }).show();
     }
-
 
 }

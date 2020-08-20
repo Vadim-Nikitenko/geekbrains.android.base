@@ -4,26 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DevelopersInfoActivity">
+    tools:context=".fragments.DevelopersInfoFragment">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/developersText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:layout_marginTop="@dimen/default_vertical_margin"
         android:text="@string/developers_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <fragment
-        android:id="@+id/developersInfoFragment"
-        android:name="com.example.geekbrainsandroidweather.fragments.BottomMenuFragment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintHorizontal_weight="0.3"
-        android:layout_width="0dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.example.geekbrainsandroidweather.fragments;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.R;
-import com.example.geekbrainsandroidweather.SettingsActivity;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
@@ -24,8 +22,6 @@ import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
-import static android.app.Activity.RESULT_OK;
 
 public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     private TextView city;
@@ -59,6 +55,13 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         setupRecyclerView();
         getSettingParameters();
         setCityParameters();
+        if (requireArguments().getInt("ResponseCode", 200) != 200) {
+            ErrorFragment errorFragment = new ErrorFragment();
+            getParentFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.citiesDetailsContainer, errorFragment)
+                    .commit();
+        }
     }
 
     @Override
@@ -95,9 +98,9 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     private void getSettingParameters() {
-        setParameterVisibility(SettingsActivity.isPressureChecked, pressureTextView);
-        setParameterVisibility(SettingsActivity.isHumidityChecked, humidityTextView);
-        setParameterVisibility(SettingsActivity.isWindSpeedChecked, windSpeedTextView);
+        setParameterVisibility(SettingsFragment.isPressureChecked, pressureTextView);
+        setParameterVisibility(SettingsFragment.isHumidityChecked, humidityTextView);
+        setParameterVisibility(SettingsFragment.isWindSpeedChecked, windSpeedTextView);
     }
 
     private void setCityParameters() {

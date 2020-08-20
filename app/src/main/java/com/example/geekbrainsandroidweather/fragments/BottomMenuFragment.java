@@ -1,6 +1,5 @@
 package com.example.geekbrainsandroidweather.fragments;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -12,15 +11,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.geekbrainsandroidweather.DevelopersInfoActivity;
-import com.example.geekbrainsandroidweather.MainActivity;
 import com.example.geekbrainsandroidweather.R;
-import com.example.geekbrainsandroidweather.SettingsActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class BottomMenuFragment extends Fragment {
     private BottomNavigationView bottomNavigationView;
-    private final int requestCode = 12345;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,28 +35,22 @@ public class BottomMenuFragment extends Fragment {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.page_3) {
-                    if (!requireActivity().getClass().equals(DevelopersInfoActivity.class)) {
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setClass(requireContext(), DevelopersInfoActivity.class);
-                        startActivity(intent);
-                    }
+                    DevelopersInfoFragment developersInfoFragment = new DevelopersInfoFragment();
+                    FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.citiesDetailsContainer, developersInfoFragment);
+                    fragmentTransaction.commit();
                 }
                 if (item.getItemId() == R.id.page_2) {
-                    if (!requireActivity().getClass().equals(SettingsActivity.class)) {
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setClass(requireContext(), SettingsActivity.class);
-                        startActivityForResult(intent, requestCode);
-                    }
+                    SettingsFragment settingsFragment = new SettingsFragment();
+                    FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.citiesDetailsContainer, settingsFragment);
+                    fragmentTransaction.commit();
                 }
                 if (item.getItemId() == R.id.page_1) {
-                    if (!requireActivity().getClass().equals(MainActivity.class)) {
-                        Intent intent = new Intent();
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        intent.setClass(requireContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
+                    CitiesFragment citiesFragment = new CitiesFragment();
+                    FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
+                    fragmentTransaction.replace(R.id.citiesDetailsContainer, citiesFragment);
+                    fragmentTransaction.commit();
                 }
                 return true;
             }

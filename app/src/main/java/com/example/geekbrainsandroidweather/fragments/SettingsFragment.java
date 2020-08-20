@@ -1,20 +1,27 @@
-package com.example.geekbrainsandroidweather;
+package com.example.geekbrainsandroidweather.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.example.geekbrainsandroidweather.MainActivity;
+import com.example.geekbrainsandroidweather.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
-public class SettingsActivity extends AppCompatActivity {
-    private EditText temperatureEditText;
+public class SettingsFragment extends Fragment {
     private CheckBox pressureCheckbox;
     private CheckBox windSpeedCheckbox;
     private CheckBox humidityCheckbox;
@@ -26,30 +33,29 @@ public class SettingsActivity extends AppCompatActivity {
     public static boolean isDarkTheme;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTheme();
-        setContentView(R.layout.activity_settings);
-        init();
-        showBackBtn();
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_activity_settings, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init(view);
         setCheckBoxesBehaviour();
         setOnDarkThemeSwitchBehaviour();
     }
 
     // инициализация views
-    private void init() {
-        temperatureEditText = findViewById(R.id.temperatureEditText);
-        pressureCheckbox = findViewById(R.id.pressureCheckbox);
-        windSpeedCheckbox = findViewById(R.id.windSpeedCheckbox);
-        humidityCheckbox = findViewById(R.id.humidityCheckbox);
-        darkThemeSwitch = findViewById(R.id.darkThemeSwitch);
+    private void init(@NonNull View view) {
+        pressureCheckbox = view.findViewById(R.id.pressureCheckbox);
+        windSpeedCheckbox = view.findViewById(R.id.windSpeedCheckbox);
+        humidityCheckbox = view.findViewById(R.id.humidityCheckbox);
+        darkThemeSwitch = view.findViewById(R.id.darkThemeSwitch);
         darkThemeSwitch.setChecked(isDarkTheme);
     }
 
     // показ onBackPressed в меню
-    private void showBackBtn() {
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    }
 
     // finish текущей активити по клику на onBackPressed в меню
     @Override
@@ -58,13 +64,11 @@ public class SettingsActivity extends AppCompatActivity {
             isPressureChecked = pressureCheckbox.isChecked();
             isHumidityChecked = humidityCheckbox.isChecked();
             isWindSpeedChecked = windSpeedCheckbox.isChecked();
-            finish();
         }
         return true;
     }
 
     private void setCheckBoxesBehaviour() {
-
         pressureCheckbox.setChecked(isPressureChecked);
         windSpeedCheckbox.setChecked(isWindSpeedChecked);
         humidityCheckbox.setChecked(isHumidityChecked);
@@ -89,23 +93,23 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-
     private void setOnDarkThemeSwitchBehaviour() {
         darkThemeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isDarkTheme = b;
-                recreate();
+                Intent intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.setClass(requireContext(), MainActivity.class);
+                startActivity(intent);
+
+//                requireActivity().recreate();
+//                SettingsFragment settingsFragment = new SettingsFragment();
+//                getParentFragmentManager().beginTransaction()
+//                        .replace(R.id.citiesDetailsContainer, settingsFragment).commit();
             }
         });
     }
 
-    private void setTheme() {
-        if (isDarkTheme) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.AppTheme);
-        }
-    }
 }
 

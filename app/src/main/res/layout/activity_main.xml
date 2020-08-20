@@ -7,17 +7,12 @@
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:id="@+id/frameLayoutMain"
+        android:id="@+id/citiesDetailsContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-        <fragment
-            android:id="@+id/citiesFragment"
-            android:name="com.example.geekbrainsandroidweather.fragments.CitiesFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </FrameLayout>
 
 
