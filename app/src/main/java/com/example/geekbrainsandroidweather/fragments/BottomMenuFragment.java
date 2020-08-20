@@ -37,19 +37,19 @@ public class BottomMenuFragment extends Fragment {
                 if (item.getItemId() == R.id.page_3) {
                     DevelopersInfoFragment developersInfoFragment = new DevelopersInfoFragment();
                     FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.citiesDetailsContainer, developersInfoFragment);
+                    fragmentTransaction.replace(R.id.citiesContainer, developersInfoFragment);
                     fragmentTransaction.commit();
                 }
                 if (item.getItemId() == R.id.page_2) {
                     SettingsFragment settingsFragment = new SettingsFragment();
                     FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.citiesDetailsContainer, settingsFragment);
+                    fragmentTransaction.replace(R.id.citiesContainer, settingsFragment);
                     fragmentTransaction.commit();
                 }
                 if (item.getItemId() == R.id.page_1) {
                     CitiesFragment citiesFragment = new CitiesFragment();
                     FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.citiesDetailsContainer, citiesFragment);
+                    fragmentTransaction.replace(R.id.citiesContainer, citiesFragment);
                     fragmentTransaction.commit();
                 }
                 return true;

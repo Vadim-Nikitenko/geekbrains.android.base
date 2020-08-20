@@ -2,7 +2,6 @@ package com.example.geekbrainsandroidweather.fragments;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +64,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         isCityDetailsExists = getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE;
 
@@ -104,35 +104,34 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
             } else {
                 CitiesDetailsFragment fragment;
                 fragment = CitiesDetailsFragment.create(openWeatherMap.getCityDetailsData());
-                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("index", openWeatherMap.getCityDetailsData());
-                bundle.putInt("CurrentCity", currentPosition);
                 fragment.setArguments(bundle);
 
+                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
                 fragmentTransaction.addToBackStack("key");
                 fragmentTransaction.commit();
             }
         } else {
             CitiesDetailsFragment fragment;
             fragment = CitiesDetailsFragment.create(openWeatherMap.getCityDetailsData());
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("index", openWeatherMap.getCityDetailsData());
             bundle.putInt("ResponseCode", OpenWeatherMap.responseCode);
             bundle.putStringArrayList("CitiesList", cities);
-            bundle.putInt("CurrentCity", currentPosition);
 
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             fragment.setArguments(bundle);
-            fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
+            fragmentTransaction.replace(R.id.citiesContainer, fragment);
             fragmentTransaction.addToBackStack("key");
             fragmentTransaction.commit();
 
         }
     }
+
 
     @Override
     public void onItemClicked(View view, int position) {

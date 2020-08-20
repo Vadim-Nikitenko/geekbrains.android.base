@@ -59,7 +59,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
             ErrorFragment errorFragment = new ErrorFragment();
             getParentFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.citiesDetailsContainer, errorFragment)
+                    .replace(R.id.citiesContainer, errorFragment)
                     .commit();
         }
     }

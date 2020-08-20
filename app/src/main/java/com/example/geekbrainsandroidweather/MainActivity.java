@@ -1,17 +1,12 @@
 package com.example.geekbrainsandroidweather;
 
 import android.os.Bundle;
-import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.geekbrainsandroidweather.fragments.CitiesFragment;
 import com.example.geekbrainsandroidweather.fragments.SettingsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,8 +17,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         CitiesFragment citiesFragment = new CitiesFragment();
+        citiesFragment.setArguments(getIntent().getExtras());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.citiesDetailsContainer, citiesFragment);
+        fragmentTransaction.replace(R.id.citiesContainer, citiesFragment);
         fragmentTransaction.commit();
     }
 
