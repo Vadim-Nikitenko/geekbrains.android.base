@@ -4,6 +4,8 @@ public class Weather {
     private String main;
     private String description;
 
+    private String icon;
+
     public String getDescription() {
         return description;
     }
@@ -18,5 +20,13 @@ public class Weather {
 
     public void setMain(String main) {
         this.main = main;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

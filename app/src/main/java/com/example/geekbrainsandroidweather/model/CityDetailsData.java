@@ -7,6 +7,7 @@ public class CityDetailsData implements Serializable {
     private int position;
     private String temperature;
     private String state;
+    private String icon;
 
     private String pressure;
     private String humidity;
@@ -16,6 +17,11 @@ public class CityDetailsData implements Serializable {
 
     public CityDetailsData withCityName(String cityName) {
         this.cityName = cityName;
+        return this;
+    }
+
+    public CityDetailsData withIcon(String icon) {
+        this.icon = icon;
         return this;
     }
 
@@ -90,6 +96,10 @@ public class CityDetailsData implements Serializable {
         return dayAndNightTemperature;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
     @Override
     public String toString() {
         return "CityDetailsData{" +
@@ -107,4 +117,5 @@ public class CityDetailsData implements Serializable {
     public String getWeatherMainState() {
         return weatherMainState;
     }
+
 }

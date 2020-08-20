@@ -25,6 +25,8 @@ import javax.net.ssl.HttpsURLConnection;
 public class OpenWeatherMap {
     private final String TAG = "WEATHER";
     private final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
+    private final String BASE_IMAGE_URL = "https://openweathermap.org/img/wn/";
+    private static final String IMAGE_FORMAT = "@2x.png";
     private static CityDetailsData cityDetailsData;
     public static ArrayList<String> weatherForTheWeek;
     public static int responseCode;
@@ -113,6 +115,10 @@ public class OpenWeatherMap {
                 weatherRequest.getMain().getTempMax());
         String weatherMainState = String.format(Locale.getDefault(),
                 "%s", weatherRequest.getWeather()[0].getMain());
+        String icon = String.format(Locale.getDefault(),
+                BASE_IMAGE_URL + "%s", weatherRequest.getWeather()[0].getIcon())
+                + IMAGE_FORMAT;
+
         cityDetailsData = new CityDetailsData()
                 .withCityName(weatherRequest.getName())
                 .withTemperature(temperatureValue)
@@ -120,6 +126,7 @@ public class OpenWeatherMap {
                 .withHumidity(humidityStr)
                 .withWindSpeed(windSpeedStr)
                 .withState(state)
+                .withIcon(icon)
                 .withDayAndNightTemperature(dayAndNightTemperature)
                 .withWeatherMainState(weatherMainState);
     }

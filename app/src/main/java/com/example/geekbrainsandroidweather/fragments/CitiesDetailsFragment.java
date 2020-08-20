@@ -1,10 +1,12 @@
 package com.example.geekbrainsandroidweather.fragments;
 
 import android.annotation.SuppressLint;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,7 +21,9 @@ import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
+import com.squareup.picasso.Picasso;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -33,6 +37,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     private TextView dayAndNightTemperatureTextView;
     private TextView weatherMainState;
     private RecyclerView recyclerCitiesView;
+    private ImageView weatherStateImg;
 
     static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
@@ -80,6 +85,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         dayAndNightTemperatureTextView = view.findViewById(R.id.dayNightTemperature);
         weatherMainState = view.findViewById(R.id.weatherMainState);
         recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
+        weatherStateImg = view.findViewById(R.id.weatherStateImg);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -112,6 +118,8 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         pressureTextView.setText(getPressure());
         windSpeedTextView.setText(getWindSpeed());
         weatherMainState.setText(getWeatherMainState());
+        weatherStateImg.setImageURI(Uri.parse(getIcon()));
+        Picasso.get().load(getIcon()).into(weatherStateImg);
     }
 
     // установка видимости TextView с параметрами погоды
@@ -150,6 +158,16 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
                 .getSerializable("index");
         try {
             return Objects.requireNonNull(cityDetailsData).getTemperature();
+        } catch (Exception e) {
+            return "0";
+        }
+    }
+
+    private String getIcon() {
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
+                .getSerializable("index");
+        try {
+            return Objects.requireNonNull(cityDetailsData).getIcon();
         } catch (Exception e) {
             return "0";
         }
