@@ -102,11 +102,6 @@ public class SettingsFragment extends Fragment {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 intent.setClass(requireContext(), MainActivity.class);
                 startActivity(intent);
-
-//                requireActivity().recreate();
-//                SettingsFragment settingsFragment = new SettingsFragment();
-//                getParentFragmentManager().beginTransaction()
-//                        .replace(R.id.citiesDetailsContainer, settingsFragment).commit();
             }
         });
     }

@@ -136,7 +136,7 @@ public class OpenWeatherMap {
                     forecastRequest.getList().get(i).getMain().getTempMax());
             String state = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getWeather().get(0).getMain());
-            final int CHARS_TO_REMOVE_COUNT = 9;
+            final int CHARS_TO_REMOVE_COUNT = 3;
             weatherForTheWeek.add(removeLastChars(date, CHARS_TO_REMOVE_COUNT) + "  " + dayAndNightTemperature + "  " + state);
         }
     }

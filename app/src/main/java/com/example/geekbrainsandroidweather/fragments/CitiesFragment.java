@@ -50,9 +50,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view);
-        if (savedInstanceState != null) {
-            cities = savedInstanceState.getStringArrayList("CitiesList");
-        }
     }
 
     // инициализация views
@@ -73,7 +70,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
 
         if (savedInstanceState != null) {
             currentPosition = savedInstanceState.getInt("CurrentCity", 0);
-            cities = savedInstanceState.getStringArrayList("CitiesList");
         }
 
         if (isCityDetailsExists) {
@@ -109,7 +105,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
                 fragmentTransaction.replace(R.id.citiesDetailsContainer, errorFragment);
                 fragmentTransaction.commit();
             } else {
-                CitiesDetailsFragment fragment = new CitiesDetailsFragment();
+                CitiesDetailsFragment fragment;
                 fragment = CitiesDetailsFragment.create(openWeatherMap.getCityDetailsData());
                 FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                 fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
@@ -132,14 +128,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
             fragmentTransaction.commit();
 
         }
-    }
-
-    // Сохраним текущую позицию (вызывается перед выходом из фрагмента)
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("CurrentCity", currentPosition);
-        outState.putStringArrayList("CitiesList", cities);
     }
 
     @Override
