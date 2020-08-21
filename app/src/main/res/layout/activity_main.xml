@@ -9,15 +9,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
+
     <FrameLayout
         android:id="@+id/citiesContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-    </FrameLayout>
-
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingBottom="@dimen/navigation_bar_height" />
 
     <fragment
         android:id="@+id/developersInfoFragment"
@@ -27,6 +27,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="wrap_content"
         app:layout_constraintHorizontal_weight="0.3"
-        android:layout_width="0dp" />
+        android:layout_width="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
