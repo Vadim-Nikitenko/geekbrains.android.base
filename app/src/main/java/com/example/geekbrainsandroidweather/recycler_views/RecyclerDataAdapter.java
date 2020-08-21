@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.geekbrainsandroidweather.AddCityActivity;
 import com.example.geekbrainsandroidweather.R;
 
 import java.util.ArrayList;

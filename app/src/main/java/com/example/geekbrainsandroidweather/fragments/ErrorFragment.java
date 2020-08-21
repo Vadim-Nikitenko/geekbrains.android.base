@@ -31,4 +31,6 @@ public class ErrorFragment extends Fragment {
     private void initViews(View view) {
         errorMessage = view.findViewById(R.id.errorMessage);
     }
+
+
 }

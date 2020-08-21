@@ -1,11 +1,17 @@
 package com.example.geekbrainsandroidweather.network;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.geekbrainsandroidweather.BuildConfig;
+import com.example.geekbrainsandroidweather.R;
+import com.example.geekbrainsandroidweather.fragments.CitiesDetailsFragment;
+import com.example.geekbrainsandroidweather.fragments.ErrorFragment;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.model.forecast.ForecastRequest;
 import com.example.geekbrainsandroidweather.model.weather.WeatherRequest;
@@ -150,5 +156,7 @@ public class OpenWeatherMap {
     public static String removeLastChars(String str, int chars) {
         return str.substring(0, str.length() - chars);
     }
+
+
 
 }
