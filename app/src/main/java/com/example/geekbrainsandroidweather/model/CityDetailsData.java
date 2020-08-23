@@ -64,15 +64,15 @@ public class CityDetailsData implements Serializable {
     }
 
     public String getPressure() {
-        return pressure;
+        return "Pressure: " + pressure;
     }
 
     public String getHumidity() {
-        return humidity;
+        return "Humidity: " + humidity;
     }
 
     public String getWindSpeed() {
-        return windSpeed;
+        return "Wind speed: " +windSpeed;
     }
 
     public String getCityName() {
