@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class CitiesFragment extends Fragment implements IRVOnItemClick {
+public class CitiesFragment extends Fragment implements IRVOnItemClick, Constants {
     private TextView emptyTextView;
     private RecyclerView recyclerCitiesView;
     private RecyclerDataAdapter recyclerDataAdapter;
@@ -100,37 +100,30 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick {
             if (OpenWeatherMap.responseCode != 200) {
                 ErrorFragment errorFragment = new ErrorFragment();
                 requireFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.citiesDetailsContainer, errorFragment);
-                fragmentTransaction.commit();
+                startFragmentTransaction(R.id.citiesDetailsContainer, errorFragment);
             } else {
-                CitiesDetailsFragment fragment;
-                CityDetailsData cityDetailsData = openWeatherMap.getCityDetailsData();
-                fragment = CitiesDetailsFragment.create(cityDetailsData);
-
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("index", cityDetailsData);
-                fragment.setArguments(bundle);
-
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.citiesDetailsContainer, fragment);
-                fragmentTransaction.commit();
+                replaceFragment(R.id.citiesDetailsContainer);
             }
         } else {
-            CitiesDetailsFragment fragment;
-            CityDetailsData cityDetailsData = openWeatherMap.getCityDetailsData();
-            fragment = CitiesDetailsFragment.create(cityDetailsData);
-
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("index", cityDetailsData);
-            bundle.putInt("ResponseCode", OpenWeatherMap.responseCode);
-            bundle.putStringArrayList("CitiesList", cities);
-
-            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-            fragment.setArguments(bundle);
-            fragmentTransaction.replace(R.id.citiesContainer, fragment);
-            fragmentTransaction.commit();
+            replaceFragment(R.id.citiesContainer);
         }
+    }
+
+    private void replaceFragment(int container) {
+        CityDetailsData cityDetailsData = openWeatherMap.getCityDetailsData();
+        CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(CITIES_DETAILS_INDEX, cityDetailsData);
+        bundle.putInt(RESPONSE_CODE, OpenWeatherMap.responseCode);
+        fragment.setArguments(bundle);
+        startFragmentTransaction(container, fragment);
+    }
+
+    private void startFragmentTransaction(int container, Fragment fragment) {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.replace(container, fragment);
+        fragmentTransaction.commit();
     }
 
     @Override

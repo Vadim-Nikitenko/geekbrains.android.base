@@ -36,25 +36,25 @@ public class BottomMenuFragment extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.page_3) {
                     DevelopersInfoFragment developersInfoFragment = new DevelopersInfoFragment();
-                    FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.citiesContainer, developersInfoFragment);
-                    fragmentTransaction.commit();
+                    replaceFragment(developersInfoFragment, R.id.citiesContainer);
                 }
                 if (item.getItemId() == R.id.page_2) {
                     SettingsFragment settingsFragment = new SettingsFragment();
-                    FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.citiesContainer, settingsFragment);
-                    fragmentTransaction.commit();
+                    replaceFragment(settingsFragment, R.id.citiesContainer);
                 }
                 if (item.getItemId() == R.id.page_1) {
                     CitiesFragment citiesFragment = new CitiesFragment();
-                    FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
-                    fragmentTransaction.replace(R.id.citiesContainer, citiesFragment);
-                    fragmentTransaction.commit();
+                    replaceFragment(citiesFragment, R.id.citiesContainer);
                 }
                 return true;
             }
         });
+    }
+
+    private void replaceFragment(Fragment fragment, int containerId) {
+        FragmentTransaction fragmentTransaction = requireFragmentManager().beginTransaction();
+        fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.commit();
     }
 
 

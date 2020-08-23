@@ -23,11 +23,10 @@ import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
+public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, Constants {
     private TextView city;
     private TextView temperature;
     private TextView pressureTextView;
@@ -42,7 +41,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("index", cityDetails);
+        bundle.putSerializable(CITIES_DETAILS_INDEX, cityDetails);
         citiesDetailsFragment.setArguments(bundle);
         return citiesDetailsFragment;
     }
@@ -60,7 +59,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
         setupRecyclerView();
         getSettingParameters();
         setCityParameters();
-        if (requireArguments().getInt("ResponseCode", 200) != 200) {
+        if (requireArguments().getInt(RESPONSE_CODE, 200) != 200) {
             ErrorFragment errorFragment = new ErrorFragment();
             getParentFragmentManager()
                     .beginTransaction()
@@ -110,16 +109,19 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
     }
 
     private void setCityParameters() {
-        city.setText(getCityName());
-        temperature.setText(getTemperature());
-        stateTextView.setText(getState());
-        dayAndNightTemperatureTextView.setText(getDayAndNightTemperature());
-        humidityTextView.setText(getHumidity());
-        pressureTextView.setText(getPressure());
-        windSpeedTextView.setText(getWindSpeed());
-        weatherMainState.setText(getWeatherMainState());
-        weatherStateImg.setImageURI(Uri.parse(getIcon()));
-        Picasso.get().load(getIcon()).into(weatherStateImg);
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
+                .getSerializable(CITIES_DETAILS_INDEX);
+
+        city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
+        temperature.setText(cityDetailsData.getTemperature());
+        stateTextView.setText(cityDetailsData.getState());
+        dayAndNightTemperatureTextView.setText(cityDetailsData.getDayAndNightTemperature());
+        humidityTextView.setText(cityDetailsData.getHumidity());
+        pressureTextView.setText(cityDetailsData.getPressure());
+        windSpeedTextView.setText(cityDetailsData.getWindSpeed());
+        weatherMainState.setText(cityDetailsData.getWeatherMainState());
+        weatherStateImg.setImageURI(Uri.parse(cityDetailsData.getIcon()));
+        Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
     }
 
     // установка видимости TextView с параметрами погоды
@@ -130,106 +132,6 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick {
             } else {
                 textView.setVisibility(View.VISIBLE);
             }
-        }
-    }
-
-    int getIndex() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return Objects.requireNonNull(cityDetailsData).getPosition();
-        } catch (Exception e) {
-            return 0;
-        }
-    }
-
-    private String getCityName() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return Objects.requireNonNull(cityDetailsData).getCityName();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getTemperature() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return Objects.requireNonNull(cityDetailsData).getTemperature();
-        } catch (Exception e) {
-            return "0";
-        }
-    }
-
-    private String getIcon() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return Objects.requireNonNull(cityDetailsData).getIcon();
-        } catch (Exception e) {
-            return "0";
-        }
-    }
-
-    private String getState() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return Objects.requireNonNull(cityDetailsData).getState();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getWeatherMainState() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return Objects.requireNonNull(cityDetailsData).getWeatherMainState();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getHumidity() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return getString(R.string.humidity_city_details) + Objects.requireNonNull(cityDetailsData).getHumidity();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getPressure() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return getString(R.string.pressure_city_details) + Objects.requireNonNull(cityDetailsData).getPressure();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getWindSpeed() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return getString(R.string.wind_speed_city_details) + Objects.requireNonNull(cityDetailsData).getWindSpeed();
-        } catch (Exception e) {
-            return "";
-        }
-    }
-
-    private String getDayAndNightTemperature() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable("index");
-        try {
-            return Objects.requireNonNull(cityDetailsData).getDayAndNightTemperature();
-        } catch (Exception e) {
-            return "";
         }
     }
 

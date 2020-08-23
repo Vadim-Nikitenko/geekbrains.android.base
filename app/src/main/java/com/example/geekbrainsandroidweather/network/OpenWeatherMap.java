@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.RequiresApi;
 
 import com.example.geekbrainsandroidweather.BuildConfig;
+import com.example.geekbrainsandroidweather.fragments.Constants;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.model.forecast.ForecastRequest;
 import com.example.geekbrainsandroidweather.model.weather.WeatherRequest;
@@ -22,11 +23,7 @@ import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class OpenWeatherMap {
-    private final String TAG = "WEATHER";
-    private final String BASE_URL = "https://api.openweathermap.org/data/2.5/";
-    private final String BASE_IMAGE_URL = "https://openweathermap.org/img/wn/";
-    private static final String IMAGE_FORMAT = "@2x.png";
+public class OpenWeatherMap implements Constants {
     private static CityDetailsData cityDetailsData;
     public static ArrayList<String> weatherForTheWeek;
     public static int responseCode;
@@ -40,25 +37,22 @@ public class OpenWeatherMap {
             Thread t1 = new Thread(new Runnable() {
                 @RequiresApi(api = Build.VERSION_CODES.N)
                 public void run() {
-                    HttpsURLConnection urlConnection = null;
                     try {
                         Gson gson = new Gson(); // преобразование данных запроса в модель
-                        String weatherResult = getInputStreamData(new URL(getWeatherURL(cityName) + BuildConfig.WEATHER_API_KEY), urlConnection);
+                        String weatherResult = getInputStreamData(new URL(
+                                getWeatherURL(cityName) + BuildConfig.WEATHER_API_KEY), null);
                         final WeatherRequest weatherRequest = gson.fromJson(weatherResult, WeatherRequest.class);
                         getWeatherData(weatherRequest);
 
 
-                        String forecastResult = getInputStreamData(new URL(getForecastUrl(cityName) + BuildConfig.WEATHER_API_KEY), urlConnection);
+                        String forecastResult = getInputStreamData(new URL(
+                                getForecastUrl(cityName) + BuildConfig.WEATHER_API_KEY), null);
                         final ForecastRequest forecastRequest = gson.fromJson(forecastResult, ForecastRequest.class);
                         getForecastData(forecastRequest);
 
                     } catch (Exception e) {
                         Log.e(TAG, "Fail connection", e);
                         e.printStackTrace();
-                    } finally {
-                        if (null != urlConnection) {
-                            urlConnection.disconnect();
-                        }
                     }
                 }
             });
@@ -148,7 +142,8 @@ public class OpenWeatherMap {
     }
 
     public static String removeLastChars(String str, int chars) {
-        return str.substring(0, str.length() - chars);
+        final int BEGIN_INDEX = 0;
+        return str.substring(BEGIN_INDEX, str.length() - chars);
     }
 
 
