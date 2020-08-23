@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:id="@+id/listItemLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_marginTop="@dimen/half_default_vertical_margin"
+    android:layout_marginBottom="@dimen/half_default_vertical_margin"
+    android:layout_marginStart="@dimen/default_horizontal_margin"
+    android:layout_marginEnd="@dimen/half_default_vertical_margin">
+
+    <TextView
+        android:id="@+id/hourlyTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/rvStyles"
+        android:ellipsize="end"
+        android:layout_marginBottom="@dimen/half_default_vertical_margin"/>
+
+    <ImageView
+        android:id="@+id/hourlyStateImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/half_default_vertical_margin"/>
+
+    <TextView
+        android:id="@+id/hourlyTemperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/rvStyles"
+        android:ellipsize="end" />
+
+</LinearLayout>

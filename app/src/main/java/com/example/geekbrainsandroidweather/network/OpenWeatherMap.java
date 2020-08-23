@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import com.example.geekbrainsandroidweather.BuildConfig;
 import com.example.geekbrainsandroidweather.fragments.Constants;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
+import com.example.geekbrainsandroidweather.model.HourlyForecastData;
 import com.example.geekbrainsandroidweather.model.forecast.ForecastRequest;
 import com.example.geekbrainsandroidweather.model.weather.WeatherRequest;
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class OpenWeatherMap implements Constants {
     private static CityDetailsData cityDetailsData;
     public static ArrayList<String> weatherForTheWeek;
+    public static ArrayList<HourlyForecastData> hourlyForecastList;
     public static int responseCode;
     public static final int FORECAST_DAYS = 5;
 
@@ -49,6 +51,7 @@ public class OpenWeatherMap implements Constants {
                                 getForecastUrl(cityName) + BuildConfig.WEATHER_API_KEY), null);
                         final ForecastRequest forecastRequest = gson.fromJson(forecastResult, ForecastRequest.class);
                         getForecastData(forecastRequest);
+                        getHourlyData(forecastRequest);
 
                     } catch (Exception e) {
                         Log.e(TAG, "Fail connection", e);
@@ -91,6 +94,23 @@ public class OpenWeatherMap implements Constants {
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getLines(BufferedReader in) {
         return in.lines().collect(Collectors.joining("\n"));
+    }
+
+    private void getHourlyData(ForecastRequest forecastRequest) {
+        hourlyForecastList = new ArrayList<>();
+        for (int i = 0; i < 8; i++) {
+            String temperature = Math.round(Float.parseFloat(String.format(Locale.getDefault(),
+                    "%.2f", forecastRequest.getList().get(i).getMain().getTemp()))) + "°";
+            String icon = String.format(Locale.getDefault(),
+                    BASE_IMAGE_URL + "%s", forecastRequest.getList().get(i).getWeather().get(0).getIcon())
+                    + IMAGE_FORMAT;
+            String time = String.format(Locale.getDefault(),
+                    "%s", forecastRequest.getList().get(i).getDtTxt()).substring(11, 16);
+
+            HourlyForecastData hourlyForecastData = new HourlyForecastData(time, icon, temperature);
+            hourlyForecastList.add(hourlyForecastData);
+        }
+
     }
 
     private void getWeatherData(WeatherRequest weatherRequest) {

@@ -1,13 +1,13 @@
 package com.example.geekbrainsandroidweather.fragments;
 
 import android.annotation.SuppressLint;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,9 +21,12 @@ import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
+import com.example.geekbrainsandroidweather.recycler_views.RecyclerHourlyDataAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Objects;
 
 public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, Constants {
@@ -36,7 +39,9 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
     private TextView dayAndNightTemperatureTextView;
     private TextView weatherMainState;
     private RecyclerView recyclerCitiesView;
+    private RecyclerView recyclerHourlyView;
     private ImageView weatherStateImg;
+    private TextView lastUpdateTextView;
 
     static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
@@ -55,8 +60,9 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
+        init(view);
         setupRecyclerView();
+        setupHourlyRecyclerView();
         getSettingParameters();
         setCityParameters();
         if (requireArguments().getInt(RESPONSE_CODE, 200) != 200) {
@@ -68,13 +74,14 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         }
     }
 
+
     @Override
     public void onResume() {
         super.onResume();
         getSettingParameters();
     }
 
-    private void initViews(@NonNull View view) {
+    private void init(@NonNull View view) {
         city = view.findViewById(R.id.city);
         temperature = view.findViewById(R.id.temperature);
         pressureTextView = view.findViewById(R.id.pressureTextView);
@@ -85,6 +92,8 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         weatherMainState = view.findViewById(R.id.weatherMainState);
         recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
         weatherStateImg = view.findViewById(R.id.weatherStateImg);
+        recyclerHourlyView = view.findViewById(R.id.recyclerHourlyView);
+        lastUpdateTextView = view.findViewById(R.id.lastUpdateTextView);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -100,6 +109,14 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
             recyclerCitiesView.addItemDecoration(decorator);
             recyclerCitiesView.setAdapter(recyclerDataAdapter);
         }
+    }
+
+    private void setupHourlyRecyclerView() {
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        RecyclerHourlyDataAdapter recyclerHourlyDataAdapter = new RecyclerHourlyDataAdapter(OpenWeatherMap.hourlyForecastList);
+        recyclerHourlyView.setLayoutManager(linearLayoutManager);
+        recyclerHourlyView.setAdapter(recyclerHourlyDataAdapter);
     }
 
     private void getSettingParameters() {
@@ -120,9 +137,15 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         pressureTextView.setText(cityDetailsData.getPressure());
         windSpeedTextView.setText(cityDetailsData.getWindSpeed());
         weatherMainState.setText(cityDetailsData.getWeatherMainState());
-        weatherStateImg.setImageURI(Uri.parse(cityDetailsData.getIcon()));
         Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
+
+
+        Calendar currentTime = Calendar.getInstance();
+        String lastUpdate = getString(R.string.udpated_at_text) + currentTime.get(Calendar.HOUR)
+                + ":" + currentTime.get(Calendar.MINUTE);
+        lastUpdateTextView.setText(lastUpdate);
     }
+
 
     // установка видимости TextView с параметрами погоды
     private void setParameterVisibility(boolean isVisible, TextView textView) {

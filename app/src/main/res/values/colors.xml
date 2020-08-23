@@ -4,4 +4,5 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorHint">#cccccc</color>
     <color name="colorGrey">#3b3b3b</color>
+    <color name="lightGrey">#D3D3D3</color>
 </resources>

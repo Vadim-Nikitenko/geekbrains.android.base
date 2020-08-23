@@ -74,6 +74,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/weatherMainState" />
 
+        <TextView
+            android:id="@+id/lastUpdateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorGrey"
+            android:textSize="12sp"
+            android:layout_marginTop="@dimen/default_vertical_margin"
+            android:layout_marginEnd="@dimen/default_horizontal_margin"
+            tools:text="Updated: "
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weatherState" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerHourlyView"
+            android:layout_width="0dp"
+            android:background="@drawable/decorator_item_2"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lastUpdateTextView" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerCitiesView"
@@ -83,7 +103,7 @@
             android:layout_marginBottom="@dimen/default_vertical_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherState" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerHourlyView" />
 
         <TextView
             android:id="@+id/humidityTextView"
