@@ -26,9 +26,9 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="darkThemeStyles">
-        <item name="android:textColor">@color/colorDefault</item>
-    </style>
+<!--    <style name="darkThemeStyles">-->
+<!--        <item name="android:textColor">@color/colorDefault</item>-->
+<!--    </style>-->
 
     <style name="DarkTheme" parent="Theme.MaterialComponents">
         <item name="android:textColor">@color/colorWhite</item>

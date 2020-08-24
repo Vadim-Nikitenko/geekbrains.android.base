@@ -52,7 +52,6 @@ public class AddCityActivity extends AppCompatActivity implements IRVOnItemClick
                     } else {
                         Snackbar.make(view, R.string.snackbar_sity_already_added, Snackbar.LENGTH_LONG).show();
                     }
-                } else {
                 }
             }
         });

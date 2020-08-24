@@ -44,12 +44,11 @@ public class OpenWeatherMap implements Constants {
                         String weatherResult = getInputStreamData(new URL(
                                 getWeatherURL(cityName) + BuildConfig.WEATHER_API_KEY), null);
                         final WeatherRequest weatherRequest = gson.fromJson(weatherResult, WeatherRequest.class);
-                        getWeatherData(weatherRequest);
-
-
                         String forecastResult = getInputStreamData(new URL(
                                 getForecastUrl(cityName) + BuildConfig.WEATHER_API_KEY), null);
                         final ForecastRequest forecastRequest = gson.fromJson(forecastResult, ForecastRequest.class);
+
+                        getWeatherData(weatherRequest, forecastRequest);
                         getForecastData(forecastRequest);
                         getHourlyData(forecastRequest);
 
@@ -74,8 +73,7 @@ public class OpenWeatherMap implements Constants {
         urlConnection.setRequestMethod("GET"); // установка метода получения данных -GET
         urlConnection.setReadTimeout(10000); // установка таймаута - 10 000 миллисекунд
         BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream())); // читаем  данные в поток
-        String result = getLines(in);
-        return result;
+        return getLines(in);
     }
 
     private URL getWeatherURL(String cityName) throws MalformedURLException {
@@ -113,7 +111,7 @@ public class OpenWeatherMap implements Constants {
 
     }
 
-    private void getWeatherData(WeatherRequest weatherRequest) {
+    private void getWeatherData(WeatherRequest weatherRequest, ForecastRequest forecastRequest) {
         String temperatureValue = Math.round(Float.parseFloat(String.format(Locale.getDefault(),
                 "%.2f", weatherRequest.getMain().getTemp()))) + "°";
         String pressureText = String.format(Locale.getDefault(),
@@ -124,9 +122,19 @@ public class OpenWeatherMap implements Constants {
                 "%f", weatherRequest.getWind().getSpeed()))) + " m.s.";
         String state = String.format(Locale.getDefault(),
                 "%s", weatherRequest.getWeather()[0].getDescription());
+
+        float dayTemp = forecastRequest.getList().get(0).getMain().getTempMax();;
+        float nightTemp = forecastRequest.getList().get(0).getMain().getTempMin();
+        for (int i = 1; i < 8; i++) {
+            if (forecastRequest.getList().get(i).getMain().getTempMax() > dayTemp) {
+                dayTemp = forecastRequest.getList().get(i).getMain().getTempMax();
+            }
+            if (forecastRequest.getList().get(i).getMain().getTempMax() < nightTemp) {
+                nightTemp = forecastRequest.getList().get(i).getMain().getTempMin();
+            }
+        }
         String dayAndNightTemperature = String.format(Locale.getDefault(),
-                "%.0f° / %.0f°", weatherRequest.getMain().getTempMin(),
-                weatherRequest.getMain().getTempMax());
+                "%.0f° / %.0f°", dayTemp, nightTemp);
         String weatherMainState = String.format(Locale.getDefault(),
                 "%s", weatherRequest.getWeather()[0].getMain());
         String icon = String.format(Locale.getDefault(),
@@ -147,16 +155,14 @@ public class OpenWeatherMap implements Constants {
 
     public static void getForecastData(ForecastRequest forecastRequest) {
         weatherForTheWeek = new ArrayList<>();
-        weatherForTheWeek.clear();
-        for (int i = 0; i < FORECAST_DAYS; i++) {
+        for (int i = 0; i < forecastRequest.getList().size(); i+=8) {
             String date = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getDtTxt());
             String dayAndNightTemperature = String.format(Locale.getDefault(),
-                    "%.0f° / %.0f°", forecastRequest.getList().get(i).getMain().getTempMin(),
-                    forecastRequest.getList().get(i).getMain().getTempMax());
+                    "%.0f°", forecastRequest.getList().get(i).getMain().getTemp());
             String state = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getWeather().get(0).getMain());
-            final int CHARS_TO_REMOVE_COUNT = 3;
+            final int CHARS_TO_REMOVE_COUNT = 9;
             weatherForTheWeek.add(removeLastChars(date, CHARS_TO_REMOVE_COUNT) + "  " + dayAndNightTemperature + "  " + state);
         }
     }

@@ -132,11 +132,11 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
         temperature.setText(cityDetailsData.getTemperature());
         stateTextView.setText(cityDetailsData.getState());
-        dayAndNightTemperatureTextView.setText(cityDetailsData.getDayAndNightTemperature());
         humidityTextView.setText(cityDetailsData.getHumidity());
         pressureTextView.setText(cityDetailsData.getPressure());
         windSpeedTextView.setText(cityDetailsData.getWindSpeed());
         weatherMainState.setText(cityDetailsData.getWeatherMainState());
+        dayAndNightTemperatureTextView.setText(cityDetailsData.getDayAndNightTemperature());
         Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
 
 
