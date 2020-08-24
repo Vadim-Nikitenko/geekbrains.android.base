@@ -114,8 +114,8 @@ public class OpenWeatherMap implements Constants {
     private void getHourlyData(ForecastRequest forecastRequest) {
         hourlyForecastList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
-            String temperature = Math.round(Float.parseFloat(String.format(Locale.getDefault(),
-                    "%.2f", forecastRequest.getList().get(i).getMain().getTemp()))) + "°";
+            String temperature = String.format(Locale.getDefault(),
+                    "%.0f", forecastRequest.getList().get(i).getMain().getTemp()) + "°";
             String icon = String.format(Locale.getDefault(),
                     BASE_IMAGE_URL + "%s", forecastRequest.getList().get(i).getWeather().get(0).getIcon())
                     + IMAGE_FORMAT;
