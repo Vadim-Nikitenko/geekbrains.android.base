@@ -35,16 +35,13 @@ public class BottomMenuFragment extends Fragment {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.page_3) {
-                    DevelopersInfoFragment developersInfoFragment = new DevelopersInfoFragment();
-                    replaceFragment(developersInfoFragment, R.id.citiesContainer);
+                    replaceFragment(new DevelopersInfoFragment(), R.id.citiesContainer);
                 }
                 if (item.getItemId() == R.id.page_2) {
-                    SettingsFragment settingsFragment = new SettingsFragment();
-                    replaceFragment(settingsFragment, R.id.citiesContainer);
+                    replaceFragment(new SettingsFragment(), R.id.citiesContainer);
                 }
                 if (item.getItemId() == R.id.page_1) {
-                    CitiesFragment citiesFragment = new CitiesFragment();
-                    replaceFragment(citiesFragment, R.id.citiesContainer);
+                    replaceFragment(new CitiesFragment(), R.id.citiesContainer);
                 }
                 return true;
             }
@@ -52,7 +49,7 @@ public class BottomMenuFragment extends Fragment {
     }
 
     private void replaceFragment(Fragment fragment, int containerId) {
-        FragmentTransaction fragmentTransaction = getChildFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
         fragmentTransaction.replace(containerId, fragment);
         fragmentTransaction.commit();
     }
