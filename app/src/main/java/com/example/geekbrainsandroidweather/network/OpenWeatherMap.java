@@ -1,6 +1,5 @@
 package com.example.geekbrainsandroidweather.network;
 
-import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
@@ -21,7 +20,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -114,8 +112,8 @@ public class OpenWeatherMap implements Constants {
     private void getHourlyData(ForecastRequest forecastRequest) {
         hourlyForecastList = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
-            String temperature = Math.round(Float.parseFloat(String.format(Locale.getDefault(),
-                    "%.2f", forecastRequest.getList().get(i).getMain().getTemp()))) + "°";
+            String temperature = String.format(Locale.getDefault(),
+                    "%.0f", forecastRequest.getList().get(i).getMain().getTemp()) + "°";
             String icon = String.format(Locale.getDefault(),
                     BASE_IMAGE_URL + "%s", forecastRequest.getList().get(i).getWeather().get(0).getIcon())
                     + IMAGE_FORMAT;
@@ -140,7 +138,8 @@ public class OpenWeatherMap implements Constants {
         String state = String.format(Locale.getDefault(),
                 "%s", weatherRequest.getWeather()[0].getDescription());
 
-        float dayTemp = forecastRequest.getList().get(0).getMain().getTempMax();;
+        float dayTemp = forecastRequest.getList().get(0).getMain().getTempMax();
+        ;
         float nightTemp = forecastRequest.getList().get(0).getMain().getTempMin();
         for (int i = 1; i < 8; i++) {
             if (forecastRequest.getList().get(i).getMain().getTempMax() > dayTemp) {
@@ -172,7 +171,7 @@ public class OpenWeatherMap implements Constants {
 
     public static void getForecastData(ForecastRequest forecastRequest) {
         weatherForTheWeek = new ArrayList<>();
-        for (int i = 0; i < forecastRequest.getList().size(); i+=8) {
+        for (int i = 0; i < forecastRequest.getList().size(); i += 8) {
             String date = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getDtTxt());
             String dayAndNightTemperature = String.format(Locale.getDefault(),
