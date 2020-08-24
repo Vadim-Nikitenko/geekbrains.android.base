@@ -89,9 +89,25 @@ public class OpenWeatherMap implements Constants {
         return cityDetailsData;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private String getLines(BufferedReader in) {
-        return in.lines().collect(Collectors.joining("\n"));
+    private String getLines(BufferedReader reader) {
+        StringBuilder rawData = new StringBuilder(1024);
+        String tempVariable;
+
+        while (true) {
+            try {
+                tempVariable = reader.readLine();
+                if (tempVariable == null) break;
+                rawData.append(tempVariable).append("\n");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return rawData.toString();
     }
 
     private void getHourlyData(ForecastRequest forecastRequest) {
