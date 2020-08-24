@@ -51,13 +51,6 @@
                 android:text="@string/pressureCheckbox"
                 android:checked="true" />
 
-            <Switch
-                android:id="@+id/darkThemeSwitch"
-                style="@style/textViewWeatherParams"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dark_theme"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
         </LinearLayout>
     </ScrollView>
 

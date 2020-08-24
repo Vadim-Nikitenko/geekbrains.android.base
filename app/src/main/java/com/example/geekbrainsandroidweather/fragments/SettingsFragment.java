@@ -26,7 +26,6 @@ public class SettingsFragment extends Fragment {
     private CheckBox windSpeedCheckbox;
     private CheckBox humidityCheckbox;
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private Switch darkThemeSwitch;
     public static boolean isPressureChecked = true;
     public static boolean isHumidityChecked = true;
     public static boolean isWindSpeedChecked = true;
@@ -43,7 +42,6 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init(view);
         setCheckBoxesBehaviour();
-        setOnDarkThemeSwitchBehaviour();
     }
 
     // инициализация views
@@ -51,8 +49,6 @@ public class SettingsFragment extends Fragment {
         pressureCheckbox = view.findViewById(R.id.pressureCheckbox);
         windSpeedCheckbox = view.findViewById(R.id.windSpeedCheckbox);
         humidityCheckbox = view.findViewById(R.id.humidityCheckbox);
-        darkThemeSwitch = view.findViewById(R.id.darkThemeSwitch);
-        darkThemeSwitch.setChecked(isDarkTheme);
     }
 
     // показ onBackPressed в меню
@@ -93,18 +89,6 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    private void setOnDarkThemeSwitchBehaviour() {
-        darkThemeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isDarkTheme = b;
-                Intent intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.setClass(requireContext(), MainActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
 
 }
 

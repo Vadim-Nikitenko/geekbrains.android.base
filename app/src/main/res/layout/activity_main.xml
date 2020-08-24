@@ -6,7 +6,9 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
+    android:paddingTop="@dimen/navigation_bar_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bcg_weather"
     tools:context=".MainActivity">
 
 
@@ -26,6 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_height="wrap_content"
+        tools:layout="@layout/fragment_bottom_menu"
         app:layout_constraintHorizontal_weight="0.3"
         android:layout_width="0dp"/>
 

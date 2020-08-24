@@ -5,6 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorDefault</item>
         <item name="android:textColor">@color/colorDefault</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="rvStyles">

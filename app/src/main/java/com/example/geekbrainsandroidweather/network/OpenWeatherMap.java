@@ -18,7 +18,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -29,6 +35,7 @@ public class OpenWeatherMap implements Constants {
     public static ArrayList<HourlyForecastData> hourlyForecastList;
     public static int responseCode;
     public static final int FORECAST_DAYS = 5;
+    private ArrayList<String> daysOfWeek = new ArrayList<>(Arrays.asList("Sun.", "Mon.", "Tue.", "Wen.", "Sur.", "Fri.", "Sat."));
 
     public OpenWeatherMap() {
     }
@@ -169,23 +176,32 @@ public class OpenWeatherMap implements Constants {
                 .withWeatherMainState(weatherMainState);
     }
 
-    public static void getForecastData(ForecastRequest forecastRequest) {
+    public void getForecastData(ForecastRequest forecastRequest) {
         weatherForTheWeek = new ArrayList<>();
-        for (int i = 0; i < forecastRequest.getList().size(); i += 8) {
+        final int CHARS_TO_REMOVE_COUNT = 9;
+        for (int i = 8; i < forecastRequest.getList().size(); i += 8) {
             String date = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getDtTxt());
+            Calendar cal = GregorianCalendar.getInstance();
+            try {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                Date date1 = format.parse(date);
+                cal.setTime(date1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK) - 1;
+            date = daysOfWeek.get(dayOfWeek) + " " + removeLastChars(5, date, CHARS_TO_REMOVE_COUNT);
             String dayAndNightTemperature = String.format(Locale.getDefault(),
                     "%.0f°", forecastRequest.getList().get(i).getMain().getTemp());
             String state = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getWeather().get(0).getMain());
-            final int CHARS_TO_REMOVE_COUNT = 9;
-            weatherForTheWeek.add(removeLastChars(date, CHARS_TO_REMOVE_COUNT) + "  " + dayAndNightTemperature + "  " + state);
+            weatherForTheWeek.add(date + "  " + dayAndNightTemperature + "  " + state);
         }
     }
 
-    public static String removeLastChars(String str, int chars) {
-        final int BEGIN_INDEX = 0;
-        return str.substring(BEGIN_INDEX, str.length() - chars);
+    public static String removeLastChars(int beginIndex, String str, int charsToRemove) {
+        return str.substring(beginIndex, str.length() - charsToRemove);
     }
 
 

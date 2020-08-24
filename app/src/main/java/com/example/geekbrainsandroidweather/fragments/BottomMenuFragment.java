@@ -1,5 +1,6 @@
 package com.example.geekbrainsandroidweather.fragments;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -57,6 +58,7 @@ public class BottomMenuFragment extends Fragment {
 
     private void initViews(@NonNull View view) {
         bottomNavigationView = view.findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setBackground(null);
     }
 
 }

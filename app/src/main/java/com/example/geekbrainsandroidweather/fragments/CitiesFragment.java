@@ -85,12 +85,8 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick, Constant
             cities = new ArrayList<>(Arrays.asList("Moscow", "Miami", "Test")); //debug
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-                LinearLayoutManager.VERTICAL);
-        decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item_1)));
         recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
         recyclerCitiesView.setLayoutManager(linearLayoutManager);
-        recyclerCitiesView.addItemDecoration(decorator);
         recyclerCitiesView.setAdapter(recyclerDataAdapter);
     }
 
