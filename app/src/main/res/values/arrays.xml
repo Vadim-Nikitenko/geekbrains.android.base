@@ -1,26 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="cities">
-        <item>Москва</item>
-        <item>Санкт-Петербург</item>
-        <item>Екатеринбург</item>
-        <item>Новосибирск</item>
-        <item>Самара</item>
-    </string-array>
-    <string-array name="states">
-        <item>Немного облачно</item>
-        <item>Облачно</item>
-        <item>Ясно</item>
-        <item>Дождь</item>
-        <item>Ясно</item>
-    </string-array>
-    <string-array name="weatherForTheWeek">
-        <item>Завтра: 18°/10°. Ясно</item>
-        <item>15.08: 20°/13°. Дождь</item>
-        <item>16.08: 21°/14°. Пасмурно</item>
-        <item>17.08: 22°/15°. Облачно</item>
-        <item>18.08: 20°/12°. Дождь</item>
-        <item>19.08: 19°/14°. Ясно</item>
-        <item>20.08: 18°/12°. Пасмурно</item>
+        <item>Moscow</item>
+        <item>Kazan</item>
+        <item>Voronezh</item>
+        <item>Novosibirsk</item>
+        <item>Samara</item>
+        <item>Barcelona</item>
+        <item>Sidney</item>
+        <item>TestCity</item>
     </string-array>
 </resources>

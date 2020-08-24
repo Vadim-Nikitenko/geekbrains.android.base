@@ -1,4 +1,4 @@
-package com.example.geekbrainsandroidweather;
+package com.example.geekbrainsandroidweather.recycler_views;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,13 +8,17 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.geekbrainsandroidweather.R;
+
+import java.util.ArrayList;
+
 public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapter.ViewHolder> {
-    private String[] data;
+    private ArrayList<String> data;
     private final IRVOnItemClick onItemClickCallback;
     private final IRVOnItemClick changeItem;
 
     // конструктор. Адаптер используется в активити или фрагменте
-    public RecyclerDataAdapter(String[] data, IRVOnItemClick onItemClickCallback, IRVOnItemClick changeItem) {
+    public RecyclerDataAdapter(ArrayList<String> data, IRVOnItemClick onItemClickCallback, IRVOnItemClick changeItem) {
         this.data = data;
         this.onItemClickCallback = onItemClickCallback;
         this.changeItem = changeItem;
@@ -33,7 +37,7 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
     // Отображение даннных в view ViewHolder-а
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String text = data[position];
+        String text = data.get(position);
         holder.setTextToTextView(text);
         holder.setOnClickForItem(text, position);
         holder.changeView();
@@ -42,7 +46,7 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
     // возвращает количество элементов в массиве
     @Override
     public int getItemCount() {
-        return data == null ? 0 : data.length;
+        return data == null ? 0 : data.size();
     }
 
     // класс для работы с одной view
@@ -62,15 +66,37 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
             textView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(onItemClickCallback != null) {
-                        onItemClickCallback.onItemClicked(text, position);
+                    if (onItemClickCallback != null) {
+                        onItemClickCallback.onItemClicked(view, position);
                     }
+                }
+            });
+            textView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (onItemClickCallback != null) {
+                        onItemClickCallback.onItemLongPressed(view);
+                    }
+                    return false;
                 }
             });
         }
 
         void changeView() {
             changeItem.changeItem(textView);
+        }
+    }
+
+    public void remove(final String text) {
+        if (data.size() > 0) {
+            int m = 0;
+            for (int i = 1; i < data.size(); i++) {
+                if (data.get(i).equals(text)) {
+                    m = i;
+                }
+            }
+            data.remove(m);
+            notifyItemRemoved(m);
         }
     }
 }
