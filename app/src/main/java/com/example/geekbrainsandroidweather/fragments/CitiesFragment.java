@@ -140,8 +140,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick, Constant
 
     @Override
     public void onItemLongPressed(View view) {
-        TextView textView = (TextView) view;
-        deleteItem(textView);
     }
 
     @Override
@@ -150,16 +148,5 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick, Constant
                 getResources().getDimensionPixelSize(R.dimen.default_text_size));
     }
 
-    public void deleteItem(final TextView view) {
-        Snackbar.make(view, R.string.snackbar_delete_city, Snackbar.LENGTH_LONG)
-                .setAction(R.string.apply_delete, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String cityName = view.getText().toString();
-                        recyclerDataAdapter.remove(cityName);
-                        cities.remove(cityName);
-                    }
-                }).show();
-    }
 
 }

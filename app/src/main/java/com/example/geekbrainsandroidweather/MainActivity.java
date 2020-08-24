@@ -8,17 +8,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.geekbrainsandroidweather.fragments.AddCityFragment;
 import com.example.geekbrainsandroidweather.fragments.CitiesFragment;
-import com.example.geekbrainsandroidweather.fragments.SettingsFragment;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
@@ -44,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.addCity) {
-            Intent intent = new Intent();
-            intent.setClass(getApplicationContext(), AddCityActivity.class);
-            startActivity(intent);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.citiesContainer, new AddCityFragment());
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
         }
         return super.onOptionsItemSelected(item);
     }
