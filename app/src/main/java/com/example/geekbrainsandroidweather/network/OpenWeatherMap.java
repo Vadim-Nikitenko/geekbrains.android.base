@@ -1,5 +1,6 @@
 package com.example.geekbrainsandroidweather.network;
 
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
@@ -128,14 +129,14 @@ public class OpenWeatherMap implements Constants {
     }
 
     private void getWeatherData(WeatherRequest weatherRequest, ForecastRequest forecastRequest) {
-        String temperatureValue = Math.round(Float.parseFloat(String.format(Locale.getDefault(),
-                "%.2f", weatherRequest.getMain().getTemp()))) + "°";
+        String temperatureValue = String.format(Locale.getDefault(),
+                "%.0f", weatherRequest.getMain().getTemp()) + "°";
         String pressureText = String.format(Locale.getDefault(),
                 " %d", weatherRequest.getMain().getPressure());
         String humidityStr = String.format(Locale.getDefault(),
                 " %d", weatherRequest.getMain().getHumidity());
-        String windSpeedStr = " " + Math.round(Float.parseFloat(String.format(Locale.getDefault(),
-                "%f", weatherRequest.getWind().getSpeed()))) + " m.s.";
+        String windSpeedStr = " " + String.format(Locale.getDefault(),
+                "%.0f", weatherRequest.getWind().getSpeed()) + " m.s.";
         String state = String.format(Locale.getDefault(),
                 "%s", weatherRequest.getWeather()[0].getDescription());
 
