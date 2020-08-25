@@ -1,11 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorDefault</item>
+        <item name="colorPrimary">@color/colorGrey</item>
         <item name="android:textColor">@color/colorDefault</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="rvStyles">
@@ -28,12 +29,12 @@
         <item name="android:textColor">@color/colorDefault</item>
     </style>
 
-<!--    <style name="darkThemeStyles">-->
-<!--        <item name="android:textColor">@color/colorDefault</item>-->
-<!--    </style>-->
-
-    <style name="DarkTheme" parent="Theme.MaterialComponents">
-        <item name="android:textColor">@color/colorWhite</item>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
-
 </resources>

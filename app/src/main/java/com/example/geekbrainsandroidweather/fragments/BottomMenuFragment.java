@@ -52,6 +52,7 @@ public class BottomMenuFragment extends Fragment {
     private void replaceFragment(Fragment fragment, int containerId) {
         FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
         fragmentTransaction.replace(containerId, fragment);
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
