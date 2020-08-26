@@ -1,12 +1,14 @@
 package com.example.geekbrainsandroidweather;
 
-import android.annotation.SuppressLint;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,10 +18,6 @@ import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import com.example.geekbrainsandroidweather.fragments.AddCityFragment;
 import com.example.geekbrainsandroidweather.fragments.CitiesFragment;
@@ -35,35 +33,78 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
-    private AppBarConfiguration mAppBarConfiguration;
+    private VideoView videoViewBg;
+    private MediaPlayer mediaPlayer;
+    int currentVideoPosition;
 
-    @SuppressLint("RestrictedApi")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();
-        appBarLayout.setOutlineProvider(null);
-        setSupportActionBar(toolbar);
+        setupActionBar();
         setCityFragment();
-        ViewCompat.setElevation(toolbar, 0);
         setOnClickForSideMenuItems();
+//        setVideoBackground();
+    }
+
+    private void setupActionBar() {
+        setSupportActionBar(toolbar);
+        appBarLayout.setOutlineProvider(null);
+        ViewCompat.setElevation(toolbar, 0);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         Window w = getWindow();
         w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
     }
+
+//    private void setVideoBackground() {
+//        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.clear_sky22);
+//        videoViewBg.setVideoURI(uri);
+//        videoViewBg.start();
+//        videoViewBg.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+//            @Override
+//            public void onPrepared(MediaPlayer mediaPlayer) {
+//                mediaPlayer.setLooping(true);
+//                MainActivity.this.mediaPlayer = mediaPlayer;
+//                if(currentVideoPosition != 0) {
+//                    mediaPlayer.seekTo(currentVideoPosition);
+//                    mediaPlayer.start();
+//                }
+//            }
+//        });
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        currentVideoPosition = mediaPlayer.getCurrentPosition();
+//        videoViewBg.pause();
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        videoViewBg.start();
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        mediaPlayer.release();
+//        mediaPlayer = null;
+//    }
 
     private void initViews() {
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
+        videoViewBg = findViewById(R.id.videoView);
     }
 
     private void setOnClickForSideMenuItems() {
@@ -121,10 +162,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            navigationView.setCheckedItem(R.id.page_1);
+        if (drawer.isOpen()) {
+            drawer.close();
+        } else {
+            if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+                navigationView.setCheckedItem(R.id.page_1);
+                finish();
+            } else {
+                super.onBackPressed();
+            }
         }
-        super.onBackPressed();
     }
 
 }

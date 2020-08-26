@@ -12,6 +12,8 @@
     tools:context=".MainActivity">
 
 
+
+
     <FrameLayout
         android:id="@+id/citiesContainer"
         android:layout_width="match_parent"
@@ -20,7 +22,8 @@
         android:paddingTop="@dimen/navigation_bar_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent">
+    </FrameLayout>
 
     <fragment
         android:id="@+id/developersInfoFragment"

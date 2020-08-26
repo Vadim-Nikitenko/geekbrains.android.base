@@ -1,35 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@drawable/bcg_weather"
-    android:paddingTop="@dimen/navigation_bar_height"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:context=".MainActivity">
+    tools:openDrawer="start">
 
+<!--    <include-->
+<!--        layout="@layout/video"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
 
-    <FrameLayout
-        android:id="@+id/citiesContainer"
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_marginTop="@dimen/navigation_status_bar_height"
+        android:layout_marginBottom="@dimen/navigation_bar_height"
         android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/navigation_bar_height"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
 
-    <fragment
-        android:id="@+id/developersInfoFragment"
-        android:name="com.example.geekbrainsandroidweather.fragments.BottomMenuFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_weight="0.3"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout="@layout/fragment_bottom_menu" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.drawerlayout.widget.DrawerLayout>
