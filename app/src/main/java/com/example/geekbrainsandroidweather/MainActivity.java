@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
-        videoViewBg = findViewById(R.id.videoView);
+//        videoViewBg = findViewById(R.id.videoView);
     }
 
     private void setOnClickForSideMenuItems() {
