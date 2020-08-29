@@ -3,6 +3,7 @@ package com.example.geekbrainsandroidweather.recycler_views;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,6 +42,7 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
         holder.setTextToTextView(text);
         holder.setOnClickForItem(text, position);
         holder.changeView();
+        holder.setOnImageButtonClickBehaviour(text);
     }
 
     // возвращает количество элементов в массиве
@@ -52,14 +54,25 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
     // класс для работы с одной view
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView textView;
+        private ImageButton removeCityBtn;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.itemTextView);
+            removeCityBtn = itemView.findViewById(R.id.removeCityBtn);
         }
 
         void setTextToTextView(String text) {
             textView.setText(text);
+        }
+
+        void setOnImageButtonClickBehaviour(String text) {
+            removeCityBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    remove(text);
+                }
+            });
         }
 
         void setOnClickForItem(final String text, final int position) {
@@ -99,4 +112,5 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
             notifyItemRemoved(m);
         }
     }
+
 }

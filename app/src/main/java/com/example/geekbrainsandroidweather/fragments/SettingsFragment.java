@@ -1,6 +1,5 @@
 package com.example.geekbrainsandroidweather.fragments;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -19,11 +18,9 @@ public class SettingsFragment extends Fragment {
     private CheckBox pressureCheckbox;
     private CheckBox windSpeedCheckbox;
     private CheckBox humidityCheckbox;
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
     public static boolean isPressureChecked = true;
     public static boolean isHumidityChecked = true;
     public static boolean isWindSpeedChecked = true;
-    public static boolean isDarkTheme;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,6 +33,7 @@ public class SettingsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         init(view);
         setCheckBoxesBehaviour();
+        requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
     }
 
     // инициализация views
@@ -45,9 +43,6 @@ public class SettingsFragment extends Fragment {
         humidityCheckbox = view.findViewById(R.id.humidityCheckbox);
     }
 
-    // показ onBackPressed в меню
-
-    // finish текущей активити по клику на onBackPressed в меню
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -82,7 +77,5 @@ public class SettingsFragment extends Fragment {
             }
         });
     }
-
-
 }
 

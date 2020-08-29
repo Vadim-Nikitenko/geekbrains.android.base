@@ -1,6 +1,8 @@
 package com.example.geekbrainsandroidweather.model;
 
-public class HourlyForecastData {
+import java.io.Serializable;
+
+public class HourlyForecastData implements Serializable {
     private String time;
     private String stateImage;
     private String temperature;

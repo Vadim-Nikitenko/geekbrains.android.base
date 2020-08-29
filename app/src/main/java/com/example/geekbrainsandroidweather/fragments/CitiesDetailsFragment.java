@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,15 +17,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
+import com.example.geekbrainsandroidweather.model.ForecastDayData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
+import com.example.geekbrainsandroidweather.recycler_views.RecyclerForecastAdapter;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerHourlyDataAdapter;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, Constants {
@@ -38,12 +38,12 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
     private TextView stateTextView;
     private TextView dayAndNightTemperatureTextView;
     private TextView weatherMainState;
-    private RecyclerView recyclerCitiesView;
+    private RecyclerView recyclerForecastView;
     private RecyclerView recyclerHourlyView;
     private ImageView weatherStateImg;
     private TextView lastUpdateTextView;
 
-    static CitiesDetailsFragment create(CityDetailsData cityDetails) {
+    public static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(CITIES_DETAILS_INDEX, cityDetails);
@@ -65,20 +65,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         setupHourlyRecyclerView();
         getSettingParameters();
         setCityParameters();
-        if (requireArguments().getInt(RESPONSE_CODE, 200) != 200) {
-            ErrorFragment errorFragment = new ErrorFragment();
-            getParentFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.citiesContainer, errorFragment)
-                    .commit();
-        }
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getSettingParameters();
+        requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
     }
 
     private void init(@NonNull View view) {
@@ -90,7 +77,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         stateTextView = view.findViewById(R.id.weatherState);
         dayAndNightTemperatureTextView = view.findViewById(R.id.dayNightTemperature);
         weatherMainState = view.findViewById(R.id.weatherMainState);
-        recyclerCitiesView = view.findViewById(R.id.recyclerCitiesView);
+        recyclerForecastView = view.findViewById(R.id.recyclerForecastView);
         weatherStateImg = view.findViewById(R.id.weatherStateImg);
         recyclerHourlyView = view.findViewById(R.id.recyclerHourlyView);
         lastUpdateTextView = view.findViewById(R.id.lastUpdateTextView);
@@ -99,15 +86,15 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
     @SuppressLint("UseCompatLoadingForDrawables")
     private void setupRecyclerView() {
         if (OpenWeatherMap.responseCode == 200) {
-            ArrayList<String> weatherForTheWeek = OpenWeatherMap.weatherForTheWeek;
+            ArrayList<ForecastDayData> forecastDayData = OpenWeatherMap.weatherForTheWeek;
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
             DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
                     LinearLayoutManager.VERTICAL);
             decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item)));
-            RecyclerDataAdapter recyclerDataAdapter = new RecyclerDataAdapter(weatherForTheWeek, this, this);
-            recyclerCitiesView.setLayoutManager(linearLayoutManager);
-            recyclerCitiesView.addItemDecoration(decorator);
-            recyclerCitiesView.setAdapter(recyclerDataAdapter);
+            RecyclerForecastAdapter recyclerForecastAdapter = new RecyclerForecastAdapter(forecastDayData);
+            recyclerForecastView.setLayoutManager(linearLayoutManager);
+            recyclerForecastView.addItemDecoration(decorator);
+            recyclerForecastView.setAdapter(recyclerForecastAdapter);
         }
     }
 
@@ -125,9 +112,14 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         setParameterVisibility(SettingsFragment.isWindSpeedChecked, windSpeedTextView);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getSettingParameters();
+    }
+
     private void setCityParameters() {
-        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments()
-                .getSerializable(CITIES_DETAILS_INDEX);
+        CityDetailsData cityDetailsData = OpenWeatherMap.getCityDetailsData();
 
         city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
         temperature.setText(cityDetailsData.getTemperature());

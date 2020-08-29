@@ -8,7 +8,7 @@ public class CityDetailsData implements Serializable {
     private String temperature;
     private String state;
     private String icon;
-
+    private String feelsLikeTemperature;
     private String pressure;
     private String humidity;
     private String windSpeed;
@@ -63,6 +63,11 @@ public class CityDetailsData implements Serializable {
         return this;
     }
 
+    public CityDetailsData withFeelsLikeTemperature(String feelsLike) {
+        this.feelsLikeTemperature = feelsLike;
+        return this;
+    }
+
     public String getPressure() {
         return "Pressure: " + pressure;
     }
@@ -98,6 +103,10 @@ public class CityDetailsData implements Serializable {
 
     public String getIcon() {
         return icon;
+    }
+
+    public String getFeelsLikeTemperature() {
+        return feelsLikeTemperature;
     }
 
     @Override

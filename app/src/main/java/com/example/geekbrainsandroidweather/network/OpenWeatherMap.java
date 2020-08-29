@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi;
 import com.example.geekbrainsandroidweather.BuildConfig;
 import com.example.geekbrainsandroidweather.fragments.Constants;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
+import com.example.geekbrainsandroidweather.model.ForecastDayData;
 import com.example.geekbrainsandroidweather.model.HourlyForecastData;
 import com.example.geekbrainsandroidweather.model.forecast.ForecastRequest;
 import com.example.geekbrainsandroidweather.model.weather.WeatherRequest;
@@ -19,25 +20,22 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.net.ssl.HttpsURLConnection;
 
 public class OpenWeatherMap implements Constants {
     private static CityDetailsData cityDetailsData;
-    public static ArrayList<String> weatherForTheWeek;
+    public static ArrayList<ForecastDayData> weatherForTheWeek;
     public static ArrayList<HourlyForecastData> hourlyForecastList;
     public static int responseCode;
     private ArrayList<String> daysOfWeek = new ArrayList<>(Arrays.asList("Sun.", "Mon.", "Tue.", "Wen.", "Sur.", "Fri.", "Sat."));
-
-    public OpenWeatherMap() {
-    }
 
     public void makeRequest(String cityName) {
         try {
@@ -92,7 +90,7 @@ public class OpenWeatherMap implements Constants {
     }
 
 
-    public CityDetailsData getCityDetailsData() {
+    public static CityDetailsData getCityDetailsData() {
         return cityDetailsData;
     }
 
@@ -135,32 +133,14 @@ public class OpenWeatherMap implements Constants {
     }
 
     private void getWeatherData(WeatherRequest weatherRequest, ForecastRequest forecastRequest) {
-        String temperatureValue = String.format(Locale.getDefault(),
-                "%.0f", weatherRequest.getMain().getTemp()) + "°";
-        String pressureText = String.format(Locale.getDefault(),
-                " %d", weatherRequest.getMain().getPressure());
-        String humidityStr = String.format(Locale.getDefault(),
-                " %d", weatherRequest.getMain().getHumidity());
-        String windSpeedStr = " " + String.format(Locale.getDefault(),
-                "%.0f", weatherRequest.getWind().getSpeed()) + " m.s.";
-        String state = String.format(Locale.getDefault(),
-                "%s", weatherRequest.getWeather()[0].getDescription());
-
-        float dayTemp = forecastRequest.getList().get(0).getMain().getTempMax();
-        ;
-        float nightTemp = forecastRequest.getList().get(0).getMain().getTempMin();
-        for (int i = 1; i < 8; i++) {
-            if (forecastRequest.getList().get(i).getMain().getTempMax() > dayTemp) {
-                dayTemp = forecastRequest.getList().get(i).getMain().getTempMax();
-            }
-            if (forecastRequest.getList().get(i).getMain().getTempMax() < nightTemp) {
-                nightTemp = forecastRequest.getList().get(i).getMain().getTempMin();
-            }
-        }
-        String dayAndNightTemperature = String.format(Locale.getDefault(),
-                "%.0f° / %.0f°", dayTemp, nightTemp);
-        String weatherMainState = String.format(Locale.getDefault(),
-                "%s", weatherRequest.getWeather()[0].getMain());
+        String temperatureValue = String.format(Locale.getDefault(),"%.0f", weatherRequest.getMain().getTemp()) + "°";
+        String pressureText = String.format(Locale.getDefault()," %d", weatherRequest.getMain().getPressure()) + "";
+        String humidityStr = String.format(Locale.getDefault()," %d", weatherRequest.getMain().getHumidity()) + "";
+        String windSpeedStr = String.format(Locale.getDefault(),"%.0f", weatherRequest.getWind().getSpeed()) + " m.s.";
+        String state = String.format(Locale.getDefault(),"%s", weatherRequest.getWeather()[0].getDescription());
+        String dayAndNightTemperature = getDayAndNightTemperature(forecastRequest);
+        String weatherMainState = String.format(Locale.getDefault(),"%s",
+                weatherRequest.getWeather()[0].getMain());
         String icon = String.format(Locale.getDefault(),
                 BASE_IMAGE_URL + "%s", weatherRequest.getWeather()[0].getIcon())
                 + IMAGE_FORMAT;
@@ -179,30 +159,63 @@ public class OpenWeatherMap implements Constants {
 
     public void getForecastData(ForecastRequest forecastRequest) {
         weatherForTheWeek = new ArrayList<>();
-        final int CHARS_TO_REMOVE_COUNT = 9;
+
         for (int i = 8; i < forecastRequest.getList().size(); i += 8) {
             String date = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getDtTxt());
-            Calendar cal = GregorianCalendar.getInstance();
-            try {
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                Date date1 = format.parse(date);
-                cal.setTime(date1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK) - 1;
-            date = daysOfWeek.get(dayOfWeek) + " " + removeLastChars(5, date, CHARS_TO_REMOVE_COUNT);
+
             String dayAndNightTemperature = String.format(Locale.getDefault(),
                     "%.0f°", forecastRequest.getList().get(i).getMain().getTemp());
+
             String state = String.format(Locale.getDefault(),
                     "%s", forecastRequest.getList().get(i).getWeather().get(0).getMain());
-            weatherForTheWeek.add(date + "  " + dayAndNightTemperature + "  " + state);
+
+            String image = String.format(Locale.getDefault(), BASE_IMAGE_URL +
+                    "%s", forecastRequest.getList().get(i)
+                    .getWeather().get(0).getIcon() + IMAGE_FORMAT);
+
+            weatherForTheWeek.add(new ForecastDayData()
+                    .withDay(parseDate(date))
+                    .withTemperature(dayAndNightTemperature)
+                    .withImage(image)
+                    .withState(state));
         }
     }
 
-    public static String removeLastChars(int beginIndex, String str, int charsToRemove) {
+    private String parseDate(String date) {
+        final int CHARS_TO_REMOVE_COUNT = 9;
+        Calendar cal = GregorianCalendar.getInstance();
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date date1 = format.parse(date);
+            cal.setTime(Objects.requireNonNull(date1));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        date = daysOfWeek.get(dayOfWeek) + " " +
+                removeLastChars(5, date, CHARS_TO_REMOVE_COUNT);
+        return date;
+    }
+
+    private static String removeLastChars(int beginIndex, String str, int charsToRemove) {
         return str.substring(beginIndex, str.length() - charsToRemove);
+    }
+
+    private String getDayAndNightTemperature(ForecastRequest forecastRequest) {
+        float dayTemp = forecastRequest.getList().get(0).getMain().getTempMax();
+        float nightTemp = forecastRequest.getList().get(0).getMain().getTempMin();
+        final int HOURS_INTERVALS_IN_ONE_DAY = 8;
+        for (int i = 1; i < HOURS_INTERVALS_IN_ONE_DAY; i++) {
+            if (forecastRequest.getList().get(i).getMain().getTempMax() > dayTemp) {
+                dayTemp = forecastRequest.getList().get(i).getMain().getTempMax();
+            }
+            if (forecastRequest.getList().get(i).getMain().getTempMax() < nightTemp) {
+                nightTemp = forecastRequest.getList().get(i).getMain().getTempMin();
+            }
+        }
+        return String.format(Locale.getDefault(),
+                "%.0f° / %.0f°", dayTemp, nightTemp);
     }
 
 

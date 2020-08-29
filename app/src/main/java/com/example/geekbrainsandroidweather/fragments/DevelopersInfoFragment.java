@@ -25,6 +25,7 @@ public class DevelopersInfoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews(view);
+        requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
     }
 
     private void initViews(View view) {
