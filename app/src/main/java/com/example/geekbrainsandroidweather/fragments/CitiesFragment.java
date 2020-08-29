@@ -6,7 +6,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,22 +13,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
-import com.example.geekbrainsandroidweather.model.HourlyForecastData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
-import com.example.geekbrainsandroidweather.recycler_views.RecyclerHourlyDataAdapter;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
 
 public class CitiesFragment extends Fragment implements IRVOnItemClick, Constants {
     private TextView emptyTextView;
@@ -99,7 +93,7 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick, Constant
         if (isCityDetailsExists) {
             if (OpenWeatherMap.responseCode != 200) {
                 ErrorFragment errorFragment = new ErrorFragment();
-                requireFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 startFragmentTransaction(R.id.citiesDetailsContainer, errorFragment);
             } else {
                 replaceFragment(R.id.citiesDetailsContainer);
@@ -140,8 +134,6 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick, Constant
 
     @Override
     public void onItemLongPressed(View view) {
-        TextView textView = (TextView) view;
-        deleteItem(textView);
     }
 
     @Override
@@ -150,16 +142,5 @@ public class CitiesFragment extends Fragment implements IRVOnItemClick, Constant
                 getResources().getDimensionPixelSize(R.dimen.default_text_size));
     }
 
-    public void deleteItem(final TextView view) {
-        Snackbar.make(view, R.string.snackbar_delete_city, Snackbar.LENGTH_LONG)
-                .setAction(R.string.apply_delete, new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String cityName = view.getText().toString();
-                        recyclerDataAdapter.remove(cityName);
-                        cities.remove(cityName);
-                    }
-                }).show();
-    }
 
 }

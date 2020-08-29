@@ -34,7 +34,6 @@ public class OpenWeatherMap implements Constants {
     public static ArrayList<String> weatherForTheWeek;
     public static ArrayList<HourlyForecastData> hourlyForecastList;
     public static int responseCode;
-    public static final int FORECAST_DAYS = 5;
     private ArrayList<String> daysOfWeek = new ArrayList<>(Arrays.asList("Sun.", "Mon.", "Tue.", "Wen.", "Sur.", "Fri.", "Sat."));
 
     public OpenWeatherMap() {
@@ -61,6 +60,7 @@ public class OpenWeatherMap implements Constants {
                     } catch (Exception e) {
                         Log.e(TAG, "Fail connection", e);
                         e.printStackTrace();
+                        responseCode = 500;
                     }
                 }
             });
@@ -69,6 +69,7 @@ public class OpenWeatherMap implements Constants {
         } catch (InterruptedException e) {
             Log.e(TAG, "Fail URI", e);
             e.printStackTrace();
+            responseCode = 501;
         }
     }
 
