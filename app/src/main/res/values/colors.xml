@@ -9,4 +9,5 @@
     <color name="colorBlack">#000000</color>
     <color name="colorBlue">#00aafd</color>
     <color name="colorYellow">#fdbb3e</color>
+    <color name="colorToolbarTop">#10394d</color>
 </resources>
