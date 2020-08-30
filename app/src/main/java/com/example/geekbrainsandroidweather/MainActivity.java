@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         setupActionBar();
         setCityFragment();
         setOnClickForSideMenuItems();
-        setVideoBackground();
+//        setVideoBackground();
     }
 
     private void initViews() {
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
-        videoViewBg = findViewById(R.id.videoView);
+//        videoViewBg = findViewById(R.id.videoView);
     }
 
     private void setupActionBar() {
@@ -79,11 +79,11 @@ public class MainActivity extends AppCompatActivity implements Constants {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if (item.getItemId() == R.id.page_3) {
-                    replaceFragment(new DevelopersInfoFragment(), R.id.fragmentContainer, false);
+                    replaceFragment(new DevelopersInfoFragment(), R.id.fragmentContainer, true);
                     drawer.close();
                 }
                 if (item.getItemId() == R.id.page_2) {
-                    replaceFragment(new SettingsFragment(), R.id.fragmentContainer, false);
+                    replaceFragment(new SettingsFragment(), R.id.fragmentContainer, true);
                     drawer.close();
                 }
                 if (item.getItemId() == R.id.page_1) {
@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private void replaceFragment(Fragment fragment, int containerId, boolean isAddedToBackStack) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(containerId, fragment);
+        getSupportFragmentManager().popBackStack();
         if (isAddedToBackStack) {
             fragmentTransaction.addToBackStack(null);
         }
@@ -154,8 +155,9 @@ public class MainActivity extends AppCompatActivity implements Constants {
     public void onBackPressed() {
         if (drawer.isOpen()) {
             drawer.close();
-        } else if (getSupportFragmentManager().getBackStackEntryCount() == 1) {
+        } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
+            navigationView.setCheckedItem(R.id.page_1);
         } else {
             finish();
         }
@@ -171,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     @Override
     protected void onResume() {
         super.onResume();
-        videoViewBg.start();
+//        videoViewBg.start();
     }
 
     @Override

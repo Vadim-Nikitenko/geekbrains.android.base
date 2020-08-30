@@ -3,6 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/citiesDetailsScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -20,6 +21,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Москва" />
+
+        <com.example.geekbrainsandroidweather.custom_views.ThermometerView
+            android:id="@+id/thermometerView"
+            android:layout_width="20dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/default_vertical_margin"
+            app:layout_constraintStart_toEndOf="@id/temperature"
+            app:layout_constraintTop_toBottomOf="@+id/city"
+            app:layout_constraintBottom_toTopOf="@+id/dayNightTemperature"
+            android:layout_centerHorizontal="true"
+            app:radius="7dp"/>
 
         <TextView
             android:id="@+id/temperature"
@@ -79,7 +91,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_horizontal_margin"
             android:layout_marginTop="@dimen/default_vertical_margin"
-            android:text="feels like 17"
             android:textColor="@color/colorGrey"
             android:textSize="@dimen/font_size_btn"
             app:layout_constraintStart_toStartOf="parent"
@@ -126,6 +137,14 @@
             app:layout_constraintTop_toBottomOf="@+id/recyclerForecastView"
             tools:text="Влажность" />
 
+        <ImageView
+            android:id="@+id/humidityImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_water"
+            app:layout_constraintStart_toEndOf="@+id/humidityTextView"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerForecastView" />
+
         <TextView
             android:id="@+id/windSpeedTextView"
             style="@style/textViewWeatherParams"
@@ -136,6 +155,14 @@
             app:layout_constraintTop_toBottomOf="@+id/humidityTextView"
             tools:text="Ветер" />
 
+        <ImageView
+            android:id="@+id/windImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_wind_turbine"
+            app:layout_constraintStart_toEndOf="@+id/windSpeedTextView"
+            app:layout_constraintTop_toBottomOf="@+id/humidityTextView" />
+
         <TextView
             android:id="@+id/pressureTextView"
             style="@style/textViewWeatherParams"
@@ -145,6 +172,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView"
             tools:text="Давление" />
+
+        <ImageView
+            android:id="@+id/pressureImageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_air"
+            app:layout_constraintStart_toEndOf="@+id/pressureTextView"
+            app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,26 +1,34 @@
 package com.example.geekbrainsandroidweather.fragments;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.R;
+import com.example.geekbrainsandroidweather.custom_views.ThermometerView;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.model.ForecastDayData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
-import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerForecastAdapter;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerHourlyDataAdapter;
 import com.squareup.picasso.Picasso;
@@ -42,6 +50,11 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
     private RecyclerView recyclerHourlyView;
     private ImageView weatherStateImg;
     private TextView lastUpdateTextView;
+    private ImageView windImageView;
+    private ImageView humidityImageView;
+    private ImageView pressureImageView;
+    private TextView feelsLikeTextView;
+    private ThermometerView thermometerView;
 
     public static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
@@ -57,6 +70,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         return inflater.inflate(R.layout.fragment_cities_details, container, false);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -66,6 +80,9 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         getSettingParameters();
         setCityParameters();
         requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
+        setupAnimations();
+
+
     }
 
     private void init(@NonNull View view) {
@@ -81,6 +98,11 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         weatherStateImg = view.findViewById(R.id.weatherStateImg);
         recyclerHourlyView = view.findViewById(R.id.recyclerHourlyView);
         lastUpdateTextView = view.findViewById(R.id.lastUpdateTextView);
+        windImageView = view.findViewById(R.id.windImageView);
+        humidityImageView = view.findViewById(R.id.humidityImageView);
+        pressureImageView = view.findViewById(R.id.pressureImageView);
+        feelsLikeTextView = view.findViewById(R.id.feelsLikeTextView);
+        thermometerView = view.findViewById(R.id.thermometerView);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -125,10 +147,13 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         temperature.setText(cityDetailsData.getTemperature());
         stateTextView.setText(cityDetailsData.getState());
         humidityTextView.setText(cityDetailsData.getHumidity());
+        humidityTextView.animate();
         pressureTextView.setText(cityDetailsData.getPressure());
         windSpeedTextView.setText(cityDetailsData.getWindSpeed());
         weatherMainState.setText(cityDetailsData.getWeatherMainState());
         dayAndNightTemperatureTextView.setText(cityDetailsData.getDayAndNightTemperature());
+        feelsLikeTextView.setText(cityDetailsData.getFeelsLikeTemperature());
+        thermometerView.setCurrentTemp(Integer.parseInt(cityDetailsData.getTemperature().replace("°", "")));
         Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
 
 
@@ -145,6 +170,7 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
             if (!isVisible) {
                 textView.setVisibility(View.INVISIBLE);
             } else {
+                textView.setEnabled(true);
                 textView.setVisibility(View.VISIBLE);
             }
         }
@@ -165,4 +191,22 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
 
     }
 
+    private void setupAnimations() {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(humidityImageView, View.ALPHA, 0, 1).setDuration(4000);
+        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        objectAnimator.start();
+
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(humidityImageView, View.TRANSLATION_Y, 40).setDuration(4000);
+        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
+        objectAnimator1.start();
+
+        pressureImageView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pulse));
+
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,
+                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(5000);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        windImageView.startAnimation(rotateAnimation);
+    }
 }

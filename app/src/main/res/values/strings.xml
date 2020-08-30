@@ -29,7 +29,7 @@
     <string name="apply_delete">Delete</string>
     <string name="snackbar_enter_city_name">Enter city name</string>
     <string name="snackbar_sity_already_added">City already added</string>
-    <string name="udpated_at_text">Updated at: </string>
+    <string name="udpated_at_text">Updated at </string>
 
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

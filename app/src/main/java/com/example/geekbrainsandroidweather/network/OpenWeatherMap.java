@@ -138,6 +138,7 @@ public class OpenWeatherMap implements Constants {
         String humidityStr = String.format(Locale.getDefault()," %d", weatherRequest.getMain().getHumidity()) + "";
         String windSpeedStr = String.format(Locale.getDefault(),"%.0f", weatherRequest.getWind().getSpeed()) + " m.s.";
         String state = String.format(Locale.getDefault(),"%s", weatherRequest.getWeather()[0].getDescription());
+        String feelsLikeTemperature = "Feels like " + String.format(Locale.getDefault(),"%.0f", weatherRequest.getMain().getFeelsLike()) + "°";
         String dayAndNightTemperature = getDayAndNightTemperature(forecastRequest);
         String weatherMainState = String.format(Locale.getDefault(),"%s",
                 weatherRequest.getWeather()[0].getMain());
@@ -153,6 +154,7 @@ public class OpenWeatherMap implements Constants {
                 .withWindSpeed(windSpeedStr)
                 .withState(state)
                 .withIcon(icon)
+                .withFeelsLikeTemperature(feelsLikeTemperature)
                 .withDayAndNightTemperature(dayAndNightTemperature)
                 .withWeatherMainState(weatherMainState);
     }

@@ -25,6 +25,7 @@ import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -139,6 +140,8 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
             alert.show();
         } else {
             replaceFragment(R.id.fragmentContainer);
+            NavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
+            navigationView.setCheckedItem(R.id.page_1);
         }
     }
 
