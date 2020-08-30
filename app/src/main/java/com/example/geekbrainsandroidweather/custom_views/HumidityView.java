@@ -63,11 +63,11 @@ public class HumidityView extends ConstraintLayout {
     }
 
     private void setupImageViewAnimation() {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(humidityImageView, View.ALPHA, 0, 1).setDuration(4000);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(humidityImageView, View.ALPHA, 0, 1).setDuration(3000);
         objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
         objectAnimator.start();
 
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(humidityImageView, View.TRANSLATION_Y, 20).setDuration(4000);
+        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(humidityImageView, View.TRANSLATION_Y, 40).setDuration(3000);
         objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
         objectAnimator1.start();
     }

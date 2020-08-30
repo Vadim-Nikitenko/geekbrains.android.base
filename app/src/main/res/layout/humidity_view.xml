@@ -18,11 +18,24 @@
         tools:text="Комфорт" />
 
     <ImageView
+        android:id="@+id/cloudImageView"
+        android:layout_width="@dimen/default_image_view_width"
+        android:layout_height="@dimen/default_image_view_height"
+        android:layout_marginTop="@dimen/half_default_vertical_margin"
+        android:paddingBottom="@dimen/default_vertical_margin"
+        android:contentDescription="@string/water_image"
+        android:src="@drawable/ic_baseline_cloud_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/humidityHeaderTextView" />
+
+    <ImageView
         android:id="@+id/humidityImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/default_image_view_width"
+        android:layout_height="@dimen/default_image_view_height"
         android:layout_marginTop="@dimen/default_vertical_margin"
         android:paddingBottom="@dimen/default_vertical_margin"
+        android:paddingStart="@dimen/default_image_view_padding_start"
+        android:paddingEnd="@dimen/default_image_view_padding_end"
         android:contentDescription="@string/water_image"
         android:src="@drawable/ic_water"
         app:layout_constraintStart_toStartOf="parent"

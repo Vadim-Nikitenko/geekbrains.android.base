@@ -19,8 +19,8 @@
 
     <ImageView
         android:id="@+id/pressureImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/default_image_view_width"
+        android:layout_height="@dimen/default_image_view_height"
         android:layout_marginTop="@dimen/default_vertical_margin"
         android:paddingBottom="@dimen/default_vertical_margin"
         android:contentDescription="@string/water_image"
