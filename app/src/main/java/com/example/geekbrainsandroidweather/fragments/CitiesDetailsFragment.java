@@ -1,17 +1,11 @@
 package com.example.geekbrainsandroidweather.fragments;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,11 +18,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.R;
+import com.example.geekbrainsandroidweather.custom_views.HumidityView;
+import com.example.geekbrainsandroidweather.custom_views.PressureView;
 import com.example.geekbrainsandroidweather.custom_views.ThermometerView;
+import com.example.geekbrainsandroidweather.custom_views.WindView;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.model.ForecastDayData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
-import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerForecastAdapter;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerHourlyDataAdapter;
 import com.squareup.picasso.Picasso;
@@ -37,12 +33,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, Constants {
+public class CitiesDetailsFragment extends Fragment implements Constants {
     private TextView city;
     private TextView temperature;
     private TextView pressureTextView;
     private TextView humidityTextView;
-    private TextView windSpeedTextView;
     private TextView stateTextView;
     private TextView dayAndNightTemperatureTextView;
     private TextView weatherMainState;
@@ -50,10 +45,10 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
     private RecyclerView recyclerHourlyView;
     private ImageView weatherStateImg;
     private TextView lastUpdateTextView;
-    private ImageView windImageView;
-    private ImageView humidityImageView;
-    private ImageView pressureImageView;
     private TextView feelsLikeTextView;
+    private HumidityView humidityCustomView;
+    private WindView windCustomView;
+    private PressureView pressureCustomView;
     private ThermometerView thermometerView;
 
     public static CitiesDetailsFragment create(CityDetailsData cityDetails) {
@@ -80,9 +75,6 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         getSettingParameters();
         setCityParameters();
         requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
-        setupAnimations();
-
-
     }
 
     private void init(@NonNull View view) {
@@ -90,7 +82,6 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         temperature = view.findViewById(R.id.temperature);
         pressureTextView = view.findViewById(R.id.pressureTextView);
         humidityTextView = view.findViewById(R.id.humidityTextView);
-        windSpeedTextView = view.findViewById(R.id.windSpeedTextView);
         stateTextView = view.findViewById(R.id.weatherState);
         dayAndNightTemperatureTextView = view.findViewById(R.id.dayNightTemperature);
         weatherMainState = view.findViewById(R.id.weatherMainState);
@@ -98,11 +89,11 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         weatherStateImg = view.findViewById(R.id.weatherStateImg);
         recyclerHourlyView = view.findViewById(R.id.recyclerHourlyView);
         lastUpdateTextView = view.findViewById(R.id.lastUpdateTextView);
-        windImageView = view.findViewById(R.id.windImageView);
-        humidityImageView = view.findViewById(R.id.humidityImageView);
-        pressureImageView = view.findViewById(R.id.pressureImageView);
         feelsLikeTextView = view.findViewById(R.id.feelsLikeTextView);
         thermometerView = view.findViewById(R.id.thermometerView);
+        humidityCustomView = view.findViewById(R.id.humidityCustomView);
+        windCustomView = view.findViewById(R.id.windCustomView);
+        pressureCustomView = view.findViewById(R.id.pressureCustomView);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -129,9 +120,9 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
     }
 
     private void getSettingParameters() {
-        setParameterVisibility(SettingsFragment.isPressureChecked, pressureTextView);
-        setParameterVisibility(SettingsFragment.isHumidityChecked, humidityTextView);
-        setParameterVisibility(SettingsFragment.isWindSpeedChecked, windSpeedTextView);
+        setParameterVisibility(SettingsFragment.isPressureChecked, pressureCustomView);
+        setParameterVisibility(SettingsFragment.isHumidityChecked, humidityCustomView);
+        setParameterVisibility(SettingsFragment.isWindSpeedChecked, windCustomView);
     }
 
     @Override
@@ -149,14 +140,14 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
         humidityTextView.setText(cityDetailsData.getHumidity());
         humidityTextView.animate();
         pressureTextView.setText(cityDetailsData.getPressure());
-        windSpeedTextView.setText(cityDetailsData.getWindSpeed());
         weatherMainState.setText(cityDetailsData.getWeatherMainState());
         dayAndNightTemperatureTextView.setText(cityDetailsData.getDayAndNightTemperature());
         feelsLikeTextView.setText(cityDetailsData.getFeelsLikeTemperature());
         thermometerView.setCurrentTemp(Integer.parseInt(cityDetailsData.getTemperature().replace("°", "")));
         Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
-
-
+        humidityCustomView.setupTexts(cityDetailsData.getHumidity(), cityDetailsData.getSunriseAndSunset());
+        windCustomView.setupTexts(cityDetailsData.getWindSpeed(), cityDetailsData.getWindDegrees());
+        pressureCustomView.setupTexts(cityDetailsData.getPressure(), cityDetailsData.getCloudy());
         Calendar currentTime = Calendar.getInstance();
         String lastUpdate = getString(R.string.udpated_at_text) + currentTime.get(Calendar.HOUR)
                 + ":" + currentTime.get(Calendar.MINUTE);
@@ -165,48 +156,15 @@ public class CitiesDetailsFragment extends Fragment implements IRVOnItemClick, C
 
 
     // установка видимости TextView с параметрами погоды
-    private void setParameterVisibility(boolean isVisible, TextView textView) {
-        if (textView != null) {
+    private void setParameterVisibility(boolean isVisible, View view) {
+        if (view != null) {
             if (!isVisible) {
-                textView.setVisibility(View.INVISIBLE);
+                view.setVisibility(View.GONE);
             } else {
-                textView.setEnabled(true);
-                textView.setVisibility(View.VISIBLE);
+                view.setEnabled(true);
+                view.setVisibility(View.VISIBLE);
             }
         }
     }
 
-    @Override
-    public void onItemClicked(View view, int position) {
-
-    }
-
-    @Override
-    public void onItemLongPressed(View view) {
-
-    }
-
-    @Override
-    public void changeItem(TextView view) {
-
-    }
-
-    private void setupAnimations() {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(humidityImageView, View.ALPHA, 0, 1).setDuration(4000);
-        objectAnimator.setRepeatCount(ValueAnimator.INFINITE);
-        objectAnimator.start();
-
-        ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(humidityImageView, View.TRANSLATION_Y, 40).setDuration(4000);
-        objectAnimator1.setRepeatCount(ValueAnimator.INFINITE);
-        objectAnimator1.start();
-
-        pressureImageView.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.pulse));
-
-        RotateAnimation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF,
-                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setDuration(5000);
-        rotateAnimation.setInterpolator(new LinearInterpolator());
-        rotateAnimation.setRepeatCount(Animation.INFINITE);
-        windImageView.startAnimation(rotateAnimation);
-    }
 }

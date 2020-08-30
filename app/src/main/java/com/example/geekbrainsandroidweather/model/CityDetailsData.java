@@ -14,6 +14,10 @@ public class CityDetailsData implements Serializable {
     private String windSpeed;
     private String dayAndNightTemperature;
     private String weatherMainState;
+    private String cloudy;
+
+    private String sunriseAndSunset;
+    private String windDegrees;
 
     public CityDetailsData withCityName(String cityName) {
         this.cityName = cityName;
@@ -29,10 +33,12 @@ public class CityDetailsData implements Serializable {
         this.pressure = pressure;
         return this;
     }
+
     public CityDetailsData withHumidity(String humidity) {
         this.humidity = humidity;
         return this;
     }
+
     public CityDetailsData withWindSpeed(String windSpeed) {
         this.windSpeed = windSpeed;
         return this;
@@ -68,6 +74,33 @@ public class CityDetailsData implements Serializable {
         return this;
     }
 
+    public CityDetailsData withCloudy(String cloudy) {
+        this.cloudy = cloudy;
+        return this;
+    }
+
+    public CityDetailsData withSunriseAndSunset(String sunriseAndSunset) {
+        this.sunriseAndSunset = sunriseAndSunset;
+        return this;
+    }
+
+    public CityDetailsData withWindDegrees(String windDegrees) {
+        this.windDegrees = windDegrees;
+        return this;
+    }
+
+    public String getCloudy() {
+        return cloudy;
+    }
+
+    public String getWindDegrees() {
+        return windDegrees;
+    }
+
+    public String getSunriseAndSunset() {
+        return sunriseAndSunset;
+    }
+
     public String getPressure() {
         return "Pressure: " + pressure;
     }
@@ -83,7 +116,6 @@ public class CityDetailsData implements Serializable {
     public String getCityName() {
         return cityName;
     }
-
 
     public int getPosition() {
         return position;

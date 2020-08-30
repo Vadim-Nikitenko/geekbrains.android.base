@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -27,6 +29,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -133,18 +136,29 @@ public class OpenWeatherMap implements Constants {
     }
 
     private void getWeatherData(WeatherRequest weatherRequest, ForecastRequest forecastRequest) {
-        String temperatureValue = String.format(Locale.getDefault(),"%.0f", weatherRequest.getMain().getTemp()) + "°";
-        String pressureText = String.format(Locale.getDefault()," %d", weatherRequest.getMain().getPressure()) + "";
-        String humidityStr = String.format(Locale.getDefault()," %d", weatherRequest.getMain().getHumidity()) + "";
-        String windSpeedStr = String.format(Locale.getDefault(),"%.0f", weatherRequest.getWind().getSpeed()) + " m.s.";
-        String state = String.format(Locale.getDefault(),"%s", weatherRequest.getWeather()[0].getDescription());
-        String feelsLikeTemperature = "Feels like " + String.format(Locale.getDefault(),"%.0f", weatherRequest.getMain().getFeelsLike()) + "°";
+        String temperatureValue = String.format(Locale.getDefault(), "%.0f", weatherRequest.getMain().getTemp()) + "°";
+        String pressureText = String.format(Locale.getDefault(), " %d", weatherRequest.getMain().getPressure()) + " hPa";
+        String humidityStr = String.format(Locale.getDefault(), " %d", weatherRequest.getMain().getHumidity()) + "%";
+        String windSpeedStr = String.format(Locale.getDefault(), "%.0f", weatherRequest.getWind().getSpeed()) + " m.s.";
+        String state = String.format(Locale.getDefault(), "%s", weatherRequest.getWeather()[0].getDescription());
+        String feelsLikeTemperature = "Feels like " + String.format(Locale.getDefault(), "%.0f", weatherRequest.getMain().getFeelsLike()) + "°";
         String dayAndNightTemperature = getDayAndNightTemperature(forecastRequest);
-        String weatherMainState = String.format(Locale.getDefault(),"%s",
+        String weatherMainState = String.format(Locale.getDefault(), "%s",
                 weatherRequest.getWeather()[0].getMain());
         String icon = String.format(Locale.getDefault(),
                 BASE_IMAGE_URL + "%s", weatherRequest.getWeather()[0].getIcon())
                 + IMAGE_FORMAT;
+        String cloudy = "Cloudy: " + String.format(Locale.getDefault(), "%s", weatherRequest.getClouds().getAll()) + "%";
+        String windDegrees = "Direction " + String.format(Locale.getDefault(), "%s", weatherRequest.getWind().getDeg()) + "°";
+
+        Date dateSunrise = new Date(weatherRequest.getSys().getSunrise()*1000L);
+        Date dateSunset = new Date(weatherRequest.getSys().getSunset()*1000L);
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC+3"));
+        String sunrise = sdf.format(dateSunrise);
+        String sunset = sdf.format(dateSunset);
+
+        String sunriseAndSunset = "Sunrise: " + sunrise + " / " + "Sunset: " + sunset;
 
         cityDetailsData = new CityDetailsData()
                 .withCityName(weatherRequest.getName())
@@ -156,6 +170,9 @@ public class OpenWeatherMap implements Constants {
                 .withIcon(icon)
                 .withFeelsLikeTemperature(feelsLikeTemperature)
                 .withDayAndNightTemperature(dayAndNightTemperature)
+                .withCloudy(cloudy)
+                .withWindDegrees(windDegrees)
+                .withSunriseAndSunset(sunriseAndSunset)
                 .withWeatherMainState(weatherMainState);
     }
 

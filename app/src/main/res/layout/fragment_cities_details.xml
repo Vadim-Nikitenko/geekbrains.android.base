@@ -127,59 +127,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerHourlyView" />
 
-        <TextView
-            android:id="@+id/humidityTextView"
-            style="@style/textViewWeatherParams"
-            android:layout_width="wrap_content"
+        <com.example.geekbrainsandroidweather.custom_views.HumidityView
+            android:id="@+id/humidityCustomView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerForecastView"
-            tools:text="Влажность" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerForecastView"/>
 
-        <ImageView
-            android:id="@+id/humidityImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_water"
-            app:layout_constraintStart_toEndOf="@+id/humidityTextView"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerForecastView" />
-
-        <TextView
-            android:id="@+id/windSpeedTextView"
-            style="@style/textViewWeatherParams"
-            android:layout_width="wrap_content"
+        <com.example.geekbrainsandroidweather.custom_views.WindView
+            android:id="@+id/windCustomView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/humidityTextView"
-            tools:text="Ветер" />
+            app:layout_constraintTop_toBottomOf="@+id/humidityCustomView" />
 
-        <ImageView
-            android:id="@+id/windImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_wind_turbine"
-            app:layout_constraintStart_toEndOf="@+id/windSpeedTextView"
-            app:layout_constraintTop_toBottomOf="@+id/humidityTextView" />
-
-        <TextView
-            android:id="@+id/pressureTextView"
-            style="@style/textViewWeatherParams"
-            android:layout_width="wrap_content"
+        <com.example.geekbrainsandroidweather.custom_views.PressureView
+            android:id="@+id/pressureCustomView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView"
-            tools:text="Давление" />
-
-        <ImageView
-            android:id="@+id/pressureImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_air"
-            app:layout_constraintStart_toEndOf="@+id/pressureTextView"
-            app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView" />
+            app:layout_constraintTop_toBottomOf="@+id/windCustomView"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

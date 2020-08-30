@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     protected void onPause() {
         super.onPause();
         currentVideoPosition = mediaPlayer.getCurrentPosition();
-        videoViewBg.pause();
+//        videoViewBg.pause();
     }
 
     @Override
