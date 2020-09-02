@@ -132,8 +132,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     }
 
     private void setCityParameters() {
-        CityDetailsData cityDetailsData = OpenWeatherMap.getCityDetailsData();
-
+        CityDetailsData cityDetailsData = OpenWeatherMap.cityDetailsData;
         city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
         temperature.setText(cityDetailsData.getTemperature());
         stateTextView.setText(cityDetailsData.getState());
@@ -154,7 +153,6 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         lastUpdateTextView.setText(lastUpdate);
     }
 
-
     // установка видимости TextView с параметрами погоды
     private void setParameterVisibility(boolean isVisible, View view) {
         if (view != null) {
@@ -166,5 +164,4 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
             }
         }
     }
-
 }

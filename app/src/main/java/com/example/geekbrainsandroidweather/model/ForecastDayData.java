@@ -1,6 +1,10 @@
 package com.example.geekbrainsandroidweather.model;
 
-public class ForecastDayData {
+import com.example.geekbrainsandroidweather.fragments.Constants;
+
+import java.util.Locale;
+
+public class ForecastDayData implements Constants {
     private String day;
     private String image;
     private String state;
@@ -11,7 +15,7 @@ public class ForecastDayData {
     }
 
     public ForecastDayData withDay(String day) {
-        this.day = day;
+        this.day = String.format(Locale.getDefault(), "%s", day);
         return this;
     }
 
@@ -20,7 +24,7 @@ public class ForecastDayData {
     }
 
     public ForecastDayData withImage(String image) {
-        this.image = image;
+        this.image = String.format(Locale.getDefault(), BASE_IMAGE_URL + "%s", image + IMAGE_FORMAT);
         return this;
     }
 
@@ -28,8 +32,8 @@ public class ForecastDayData {
         return temperature;
     }
 
-    public ForecastDayData withTemperature(String temperature) {
-        this.temperature = temperature;
+    public ForecastDayData withTemperature(float temperature) {
+        this.temperature = String.format(Locale.getDefault(), "%.0f°", temperature);
         return this;
     }
 
@@ -38,7 +42,7 @@ public class ForecastDayData {
     }
 
     public ForecastDayData withState(String state) {
-        this.state = state;
+        this.state = String.format(Locale.getDefault(), "%s", state);
         return this;
     }
 }

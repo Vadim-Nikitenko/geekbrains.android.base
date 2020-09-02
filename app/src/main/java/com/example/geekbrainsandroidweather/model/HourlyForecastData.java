@@ -1,39 +1,41 @@
 package com.example.geekbrainsandroidweather.model;
 
-import java.io.Serializable;
+import com.example.geekbrainsandroidweather.fragments.Constants;
 
-public class HourlyForecastData implements Serializable {
+import java.io.Serializable;
+import java.util.Locale;
+
+public class HourlyForecastData implements Serializable, Constants {
     private String time;
     private String stateImage;
     private String temperature;
 
-    public HourlyForecastData(String time, String stateImage, String temperature) {
-        this.time = time;
-        this.stateImage = stateImage;
-        this.temperature = temperature;
-    }
 
     public String getTime() {
         return time;
     }
 
-    public void setTime(String time) {
-        this.time = time;
+    public HourlyForecastData withTime(String time) {
+        this.time = String.format(Locale.getDefault(), "%s", time).substring(11, 16);
+        return this;
     }
 
     public String getStateImage() {
         return stateImage;
     }
 
-    public void setStateImage(String stateImage) {
-        this.stateImage = stateImage;
+    public HourlyForecastData withStateImage(String stateImage) {
+        this.stateImage = String.format(Locale.getDefault(), BASE_IMAGE_URL + "%s", stateImage)
+                + IMAGE_FORMAT;;
+        return this;
     }
 
     public String getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(String temperature) {
-        this.temperature = temperature;
+    public HourlyForecastData withTemperature(float temperature) {
+        this.temperature = String.format(Locale.getDefault(), "%.0f", temperature) + "°";
+        return this;
     }
 }

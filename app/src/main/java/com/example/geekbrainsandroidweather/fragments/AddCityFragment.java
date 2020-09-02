@@ -146,7 +146,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
     }
 
     private void replaceFragment(int container) {
-        CityDetailsData cityDetailsData = openWeatherMap.getCityDetailsData();
+        CityDetailsData cityDetailsData = OpenWeatherMap.cityDetailsData;
         CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
 
         Bundle bundle = new Bundle();

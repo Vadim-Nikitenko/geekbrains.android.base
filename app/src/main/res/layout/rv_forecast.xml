@@ -3,8 +3,8 @@
     android:id="@+id/listItemLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/half_default_vertical_margin"
-    android:layout_marginBottom="@dimen/half_default_vertical_margin"
+    android:layout_marginTop="@dimen/quarter_default_vertical_margin"
+    android:layout_marginBottom="@dimen/quarter_default_vertical_margin"
     android:gravity="center"
     android:orientation="horizontal">
 

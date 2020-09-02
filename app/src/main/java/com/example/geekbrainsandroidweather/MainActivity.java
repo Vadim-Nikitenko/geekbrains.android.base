@@ -26,6 +26,9 @@ import com.example.geekbrainsandroidweather.fragments.DevelopersInfoFragment;
 import com.example.geekbrainsandroidweather.fragments.SettingsFragment;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
@@ -37,20 +40,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private Toolbar toolbar;
     private AppBarLayout appBarLayout;
 
-
-    private VideoView videoViewBg;
-    private MediaPlayer mediaPlayer;
-    int currentVideoPosition = 0;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         initViews();
         setupActionBar();
         setCityFragment();
         setOnClickForSideMenuItems();
-//        setVideoBackground();
+
     }
 
     private void initViews() {
@@ -58,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
-//        videoViewBg = findViewById(R.id.videoView);
     }
 
     private void setupActionBar() {
@@ -114,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         String defaultCity = "Moscow";
         OpenWeatherMap openWeatherMap = new OpenWeatherMap();
         openWeatherMap.makeRequest(defaultCity);
-        CityDetailsData cityDetailsData = openWeatherMap.getCityDetailsData();
+        CityDetailsData cityDetailsData = OpenWeatherMap.cityDetailsData;
         CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
         Bundle bundle = new Bundle();
         bundle.putSerializable(CITIES_DETAILS_INDEX, cityDetailsData);
@@ -133,23 +131,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         fragmentTransaction.commit();
     }
 
-    //Video background
-    private void setVideoBackground() {
-        Uri uri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.clear_sky22);
-        videoViewBg.setVideoURI(uri);
-        videoViewBg.start();
-        videoViewBg.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mediaPlayer) {
-                mediaPlayer.setLooping(true);
-                MainActivity.this.mediaPlayer = mediaPlayer;
-                if (currentVideoPosition != 0) {
-                    mediaPlayer.seekTo(currentVideoPosition);
-                    mediaPlayer.start();
-                }
-            }
-        });
-    }
 
     @Override
     public void onBackPressed() {
@@ -163,24 +144,5 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        currentVideoPosition = mediaPlayer.getCurrentPosition();
-//        videoViewBg.pause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        videoViewBg.start();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mediaPlayer.release();
-        mediaPlayer = null;
-    }
 
 }
