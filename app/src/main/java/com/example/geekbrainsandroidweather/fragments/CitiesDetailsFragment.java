@@ -133,24 +133,25 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
 
     private void setCityParameters() {
         CityDetailsData cityDetailsData = OpenWeatherMap.cityDetailsData;
+
         city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
         temperature.setText(cityDetailsData.getTemperature());
         stateTextView.setText(cityDetailsData.getState());
         humidityTextView.setText(cityDetailsData.getHumidity());
-        humidityTextView.animate();
         pressureTextView.setText(cityDetailsData.getPressure());
         weatherMainState.setText(cityDetailsData.getWeatherMainState());
         dayAndNightTemperatureTextView.setText(cityDetailsData.getDayAndNightTemperature());
         feelsLikeTextView.setText(cityDetailsData.getFeelsLikeTemperature());
-        thermometerView.setCurrentTemp(Integer.parseInt(cityDetailsData.getTemperature().replace("°", "")));
-        Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
         humidityCustomView.setupTexts(cityDetailsData.getHumidity(), cityDetailsData.getSunriseAndSunset());
         windCustomView.setupTexts(cityDetailsData.getWindSpeed(), cityDetailsData.getWindDegrees());
         pressureCustomView.setupTexts(cityDetailsData.getPressure(), cityDetailsData.getCloudy());
+
+        Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
         Calendar currentTime = Calendar.getInstance();
         String lastUpdate = getString(R.string.udpated_at_text) + currentTime.get(Calendar.HOUR)
                 + ":" + currentTime.get(Calendar.MINUTE);
         lastUpdateTextView.setText(lastUpdate);
+        thermometerView.setCurrentTemp(Integer.parseInt(cityDetailsData.getTemperature().replace("°", "")));
     }
 
     // установка видимости TextView с параметрами погоды
