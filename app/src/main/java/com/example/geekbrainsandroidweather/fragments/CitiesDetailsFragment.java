@@ -134,7 +134,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private void setCityParameters() {
         CityDetailsData cityDetailsData = OpenWeatherMap.cityDetailsData;
 
-        city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
+        city.setText(cityDetailsData.getCityName());
         temperature.setText(cityDetailsData.getTemperature());
         stateTextView.setText(cityDetailsData.getState());
         humidityTextView.setText(cityDetailsData.getHumidity());
