@@ -3,6 +3,7 @@ package com.example.geekbrainsandroidweather.fragments;
 import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.geekbrainsandroidweather.BuildConfig;
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.custom_views.HumidityView;
 import com.example.geekbrainsandroidweather.custom_views.PressureView;
@@ -24,14 +27,21 @@ import com.example.geekbrainsandroidweather.custom_views.ThermometerView;
 import com.example.geekbrainsandroidweather.custom_views.WindView;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.model.ForecastDayData;
-import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
+import com.example.geekbrainsandroidweather.model.HourlyForecastData;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerForecastAdapter;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerHourlyDataAdapter;
+import com.example.geekbrainsandroidweather.rest.OpenWeatherHelper;
+import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
+import com.example.geekbrainsandroidweather.rest.entities.forecast.ForecastRequest;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CitiesDetailsFragment extends Fragment implements Constants {
     private TextView city;
@@ -50,6 +60,8 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private WindView windCustomView;
     private PressureView pressureCustomView;
     private ThermometerView thermometerView;
+    private CityDetailsData cityDetailsData;
+    private DrawerLayout drawer;
 
     public static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
@@ -70,11 +82,12 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view);
+        setCityParameters();
         setupRecyclerView();
         setupHourlyRecyclerView();
         getSettingParameters();
-        setCityParameters();
         requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
+        setBackground();
     }
 
     private void init(@NonNull View view) {
@@ -94,29 +107,69 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         humidityCustomView = view.findViewById(R.id.humidityCustomView);
         windCustomView = view.findViewById(R.id.windCustomView);
         pressureCustomView = view.findViewById(R.id.pressureCustomView);
+        drawer = requireActivity().findViewById(R.id.drawer_layout);
+        cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
     }
+
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void setupRecyclerView() {
-        if (OpenWeatherMap.responseCode == 200) {
-            ArrayList<ForecastDayData> forecastDayData = OpenWeatherMap.weatherForTheWeek;
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-            DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-                    LinearLayoutManager.VERTICAL);
-            decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item)));
-            RecyclerForecastAdapter recyclerForecastAdapter = new RecyclerForecastAdapter(forecastDayData);
-            recyclerForecastView.setLayoutManager(linearLayoutManager);
-            recyclerForecastView.addItemDecoration(decorator);
-            recyclerForecastView.setAdapter(recyclerForecastAdapter);
-        }
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
+        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
+                LinearLayoutManager.VERTICAL);
+        decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item)));
+
+        OpenWeatherRepo.getInstance().getAPI().loadForecast(cityDetailsData.getCityName(),
+                BuildConfig.WEATHER_API_KEY, "metric")
+                .enqueue(new Callback<ForecastRequest>() {
+                    @SuppressLint("UseCompatLoadingForDrawables")
+                    @Override
+                    public void onResponse(@NonNull Call<ForecastRequest> call,
+                                           @NonNull Response<ForecastRequest> response) {
+                        if (response.body() != null && response.isSuccessful()) {
+                            OpenWeatherHelper openWeatherHelper = new OpenWeatherHelper();
+                            ArrayList<ForecastDayData> forecastDayData = openWeatherHelper.setForecastData(response.body());
+                            dayAndNightTemperatureTextView.setText(openWeatherHelper.getDayAndNightTemperature(response.body()));
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                            RecyclerForecastAdapter recyclerForecastAdapter = new RecyclerForecastAdapter(forecastDayData);
+                            recyclerForecastView.setLayoutManager(linearLayoutManager);
+                            recyclerForecastView.addItemDecoration(decorator);
+                            recyclerForecastView.setAdapter(recyclerForecastAdapter);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<ForecastRequest> call, @NonNull Throwable t) {
+                        Log.i("RV", "Ошибка");
+                    }
+                });
     }
 
     private void setupHourlyRecyclerView() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
-        linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        RecyclerHourlyDataAdapter recyclerHourlyDataAdapter = new RecyclerHourlyDataAdapter(OpenWeatherMap.hourlyForecastList);
-        recyclerHourlyView.setLayoutManager(linearLayoutManager);
-        recyclerHourlyView.setAdapter(recyclerHourlyDataAdapter);
+        CityDetailsData cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
+        OpenWeatherRepo.getInstance().getAPI().loadForecast(cityDetailsData.getCityName(),
+                BuildConfig.WEATHER_API_KEY, "metric")
+                .enqueue(new Callback<ForecastRequest>() {
+                    @SuppressLint("UseCompatLoadingForDrawables")
+                    @Override
+                    public void onResponse(@NonNull Call<ForecastRequest> call,
+                                           @NonNull Response<ForecastRequest> response) {
+                        if (response.body() != null && response.isSuccessful()) {
+                            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+                            linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
+                            OpenWeatherHelper openWeatherHelper = new OpenWeatherHelper();
+                            ArrayList<HourlyForecastData> hourlyForecastList = openWeatherHelper.setHourlyData(response.body());
+                            RecyclerHourlyDataAdapter recyclerHourlyDataAdapter = new RecyclerHourlyDataAdapter(hourlyForecastList);
+                            recyclerHourlyView.setLayoutManager(linearLayoutManager);
+                            recyclerHourlyView.setAdapter(recyclerHourlyDataAdapter);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ForecastRequest> call, Throwable t) {
+                        Log.i("RV", "Ошибка");
+                    }
+                });
     }
 
     private void getSettingParameters() {
@@ -132,9 +185,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     }
 
     private void setCityParameters() {
-        CityDetailsData cityDetailsData = OpenWeatherMap.cityDetailsData;
-
-        city.setText(cityDetailsData.getCityName());
+        city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
         temperature.setText(cityDetailsData.getTemperature());
         stateTextView.setText(cityDetailsData.getState());
         humidityTextView.setText(cityDetailsData.getHumidity());
@@ -162,6 +213,62 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
             } else {
                 view.setEnabled(true);
                 view.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    @SuppressLint("UseCompatLoadingForDrawables")
+    private void setBackground() {
+        switch (cityDetailsData.getDefaultIcon()) {
+            case "01n": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.n01));
+                break;
+            }
+            case "01d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d01));
+                break;
+            }
+            case "02n": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.n02));
+                break;
+            }
+            case "02d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d02));
+                break;
+            }
+            case "03n": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.n03));
+                break;
+            }
+            case "03d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d03));
+                break;
+            }
+            case "04d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d04));
+                break;
+            }
+            case "04n": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.n04));
+                break;
+            }
+            case "09d":
+            case "10d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d09));
+                break;
+            }
+            case "09n":
+            case "10n": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.n09));
+                break;
+            }
+            case "11d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d11));
+                break;
+            }
+            case "11n": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.n11));
+                break;
             }
         }
     }

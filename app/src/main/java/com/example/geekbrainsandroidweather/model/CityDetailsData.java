@@ -1,6 +1,7 @@
 package com.example.geekbrainsandroidweather.model;
 
 import com.example.geekbrainsandroidweather.fragments.Constants;
+import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -21,9 +22,34 @@ public class CityDetailsData implements Serializable, Constants {
     private String dayAndNightTemperature;
     private String weatherMainState;
     private String cloudy;
-
     private String sunriseAndSunset;
     private String windDegrees;
+    private String defaultIcon;
+
+    public CityDetailsData(WeatherRequest weatherRequest) {
+                this
+                .withCityName(weatherRequest.getName())
+                .withTemperature(weatherRequest.getMain().getTemp())
+                .withPressure(weatherRequest.getMain().getPressure())
+                .withHumidity(weatherRequest.getMain().getHumidity())
+                .withWindSpeed(weatherRequest.getWind().getSpeed())
+                .withState(weatherRequest.getWeather().get(0).getDescription())
+                .withIcon(weatherRequest.getWeather().get(0).getIcon())
+                .withFeelsLikeTemperature(weatherRequest.getMain().getFeelsLike())
+                .withCloudy(weatherRequest.getClouds().getAll())
+                .withWindDegrees(weatherRequest.getWind().getDeg())
+                .withSunriseAndSunset(weatherRequest.getSys().getSunrise(), weatherRequest.getSys().getSunset())
+                .withWeatherMainState(weatherRequest.getWeather().get(0).getMain());
+                setDefaultIcon(weatherRequest.getWeather().get(0).getIcon());
+    }
+
+    public String getDefaultIcon() {
+        return defaultIcon;
+    }
+
+    public void setDefaultIcon(String defaultIcon) {
+        this.defaultIcon = defaultIcon;
+    }
 
     public CityDetailsData withCityName(String cityName) {
         this.cityName = cityName;

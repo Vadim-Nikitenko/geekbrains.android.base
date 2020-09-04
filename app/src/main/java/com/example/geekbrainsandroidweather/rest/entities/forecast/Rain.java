@@ -1,5 +1,5 @@
 
-package com.example.geekbrainsandroidweather.model.forecast;
+package com.example.geekbrainsandroidweather.rest.entities.forecast;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

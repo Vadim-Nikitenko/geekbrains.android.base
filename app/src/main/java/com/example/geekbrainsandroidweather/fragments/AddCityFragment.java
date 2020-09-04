@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,11 +21,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.geekbrainsandroidweather.BuildConfig;
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
-import com.example.geekbrainsandroidweather.network.OpenWeatherMap;
 import com.example.geekbrainsandroidweather.recycler_views.IRVOnItemClick;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerDataAdapter;
+import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
+import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -33,12 +36,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class AddCityFragment extends Fragment implements IRVOnItemClick, Constants {
+
     private TextInputEditText addCityInput;
     private RecyclerView recyclerCities;
     private RecyclerDataAdapter recyclerDataAdapter;
-    public static ArrayList<String> cities;
-    private OpenWeatherMap openWeatherMap;
+    public ArrayList<String> cities;
+    private ProgressBar progressBar;
     private TextView emptyTextView;
 
     @Override
@@ -77,19 +85,13 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
         });
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        setupRecyclerView();
-
-    }
 
     private void initViews(View view) {
         addCityInput = view.findViewById(R.id.addCityInput);
         recyclerCities = view.findViewById(R.id.recyclerCities);
         emptyTextView = view.findViewById(R.id.emptyCityTextView);
+        progressBar = view.findViewById(R.id.progressBar);
     }
-
 
     private void setupRecyclerView() {
         if (cities == null) {
@@ -97,7 +99,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager
                 (getContext());
-        DividerItemDecoration decorator = new DividerItemDecoration(getContext(),
+        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
                 LinearLayoutManager.VERTICAL);
         recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
         recyclerCities.setLayoutManager(linearLayoutManager);
@@ -107,7 +109,41 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
 
     @Override
     public void onItemClicked(View view, int position) {
-        showCitiesDetails(cities.get(position));
+        progressBar.setVisibility(View.VISIBLE);
+        OpenWeatherRepo.getInstance().getAPI().loadWeather(cities.get(position),
+                BuildConfig.WEATHER_API_KEY, "metric")
+                .enqueue(new Callback<WeatherRequest>() {
+                    @Override
+                    public void onResponse(@NonNull Call<WeatherRequest> call,
+                                           @NonNull Response<WeatherRequest> response) {
+                        if (response.body() != null && response.isSuccessful()) {
+                            CityDetailsData cityDetailsData = new CityDetailsData(response.body());
+                            replaceFragment(cityDetailsData);
+                            NavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
+                            navigationView.setCheckedItem(R.id.page_1);
+                        } else {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.AlertDialogCustom);
+                            builder.setTitle(R.string.error_message)
+                                    .setMessage(R.string.try_later)
+                                    .setIcon(R.drawable.ic_baseline_info_24)
+                                    .setPositiveButton(R.string.ok,
+                                            new DialogInterface.OnClickListener() {
+                                                public void onClick(DialogInterface dialog, int id) {
+                                                    dialog.cancel();
+                                                }
+                                            });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<WeatherRequest> call, @NonNull Throwable t) {
+                        t.printStackTrace();
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
     }
 
     @Override
@@ -120,46 +156,12 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
 
     }
 
-    // если гор. ориентация подсвечиваем выбранный item из ListView
-    // создаем фрагмент CitiesDetailsFragment
-    private void showCitiesDetails(String cityName) {
-        openWeatherMap = new OpenWeatherMap();
-        openWeatherMap.makeRequest(cityName);
-        if (OpenWeatherMap.responseCode != 200) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.AlertDialogCustom);
-            builder.setTitle(R.string.error_message)
-                    .setMessage(R.string.try_later)
-                    .setIcon(R.drawable.ic_baseline_info_24)
-                    .setPositiveButton(R.string.ok,
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-            AlertDialog alert = builder.create();
-            alert.show();
-        } else {
-            replaceFragment(R.id.fragmentContainer);
-            NavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
-            navigationView.setCheckedItem(R.id.page_1);
-        }
-    }
-
-    private void replaceFragment(int container) {
-        CityDetailsData cityDetailsData = OpenWeatherMap.cityDetailsData;
+    private void replaceFragment(CityDetailsData cityDetailsData) {
         CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(CITIES_DETAILS_INDEX, cityDetailsData);
-        bundle.putInt(RESPONSE_CODE, OpenWeatherMap.responseCode);
-        fragment.setArguments(bundle);
-        startFragmentTransaction(container, fragment);
-    }
-
-    private void startFragmentTransaction(int container, Fragment fragment) {
         FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragmentContainer, fragment);
         getParentFragmentManager().popBackStack();
-        fragmentTransaction.replace(container, fragment);
         fragmentTransaction.commit();
     }
+
 }

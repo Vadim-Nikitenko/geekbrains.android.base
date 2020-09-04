@@ -1,5 +1,5 @@
 
-package com.example.geekbrainsandroidweather.model.forecast;
+package com.example.geekbrainsandroidweather.rest.entities.forecast;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -11,10 +11,10 @@ public class Main {
     private Float temp;
     @SerializedName("feels_like")
     @Expose
-    private Float feelsLike;
+    private float feelsLike;
     @SerializedName("temp_min")
     @Expose
-    private Float tempMin;
+    private float tempMin;
     @SerializedName("temp_max")
     @Expose
     private Float tempMax;
