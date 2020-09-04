@@ -7,6 +7,7 @@ public class WeatherRequest {
     private Wind wind;
     private Clouds clouds;
     private String name;
+    private Sys sys;
 
     public Coord getCoord() {
         return coord;
@@ -54,5 +55,13 @@ public class WeatherRequest {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Sys getSys() {
+        return sys;
+    }
+
+    public void setSys(Sys sys) {
+        this.sys = sys;
     }
 }

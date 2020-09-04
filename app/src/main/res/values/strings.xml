@@ -38,4 +38,10 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="try_later">Try later or make another request</string>
+    <string name="ok">Ok</string>
+    <string name="humidity_view_header">Сomfort</string>
+    <string name="water_image">Water image</string>
+    <string name="wind_view_header">Wind</string>
+    <string name="pressure_and_cloudy">Pressure and cloudy</string>
 </resources>

@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.R;
-import com.example.geekbrainsandroidweather.fragments.CitiesFragment;
 import com.example.geekbrainsandroidweather.model.HourlyForecastData;
 import com.squareup.picasso.Picasso;
 

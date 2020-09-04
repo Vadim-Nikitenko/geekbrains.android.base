@@ -9,31 +9,18 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     android:fitsSystemWindows="true"
+    android:layout_marginBottom="@dimen/navigation_bar_height"
     tools:context=".MainActivity">
 
-
-
-
     <FrameLayout
-        android:id="@+id/citiesContainer"
+        android:id="@+id/fragmentContainer"
+        android:paddingTop="@dimen/navigation_bar_height"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/navigation_bar_height"
-        android:paddingTop="@dimen/navigation_bar_height"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
     </FrameLayout>
 
-    <fragment
-        android:id="@+id/developersInfoFragment"
-        android:name="com.example.geekbrainsandroidweather.fragments.BottomMenuFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHorizontal_weight="0.3"
-        tools:layout="@layout/fragment_bottom_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

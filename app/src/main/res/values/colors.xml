@@ -6,4 +6,8 @@
     <color name="colorGrey">#CDCDCD</color>
     <color name="lightGrey">#D3D3D3</color>
     <color name="colorShapeWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorBlue">#00aafd</color>
+    <color name="colorYellow">#fdbb3e</color>
+    <color name="colorToolbarTop">#10394d</color>
 </resources>

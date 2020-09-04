@@ -3,6 +3,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/citiesDetailsScrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,6 +22,17 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Москва" />
 
+        <com.example.geekbrainsandroidweather.custom_views.ThermometerView
+            android:id="@+id/thermometerView"
+            android:layout_width="20dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="@dimen/default_vertical_margin"
+            app:layout_constraintStart_toEndOf="@id/temperature"
+            app:layout_constraintTop_toBottomOf="@+id/city"
+            app:layout_constraintBottom_toTopOf="@+id/dayNightTemperature"
+            android:layout_centerHorizontal="true"
+            app:radius="7dp"/>
+
         <TextView
             android:id="@+id/temperature"
             style="@style/textView"
@@ -33,12 +45,11 @@
             app:layout_constraintTop_toBottomOf="@+id/city"
             tools:text="18" />
 
-
         <TextView
             android:id="@+id/dayNightTemperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_vertical_margin"
+            android:textColor="@color/colorGrey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/temperature"
@@ -68,11 +79,23 @@
             android:id="@+id/weatherState"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_vertical_margin"
+            android:layout_marginTop="@dimen/half_default_vertical_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/weatherMainState"
             tools:text="Немного облачно" />
+
+        <TextView
+            android:id="@+id/feelsLikeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_horizontal_margin"
+            android:layout_marginTop="@dimen/default_vertical_margin"
+            android:textColor="@color/colorGrey"
+            android:textSize="@dimen/font_size_btn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weatherState"
+            tools:text="17" />
 
         <TextView
             android:id="@+id/lastUpdateTextView"
@@ -95,7 +118,7 @@
             app:layout_constraintTop_toBottomOf="@+id/lastUpdateTextView" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerCitiesView"
+            android:id="@+id/recyclerForecastView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_vertical_margin"
@@ -103,36 +126,27 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerHourlyView" />
-
-        <TextView
-            android:id="@+id/humidityTextView"
-            style="@style/textViewWeatherParams"
-            android:layout_width="wrap_content"
+            
+        <com.example.geekbrainsandroidweather.custom_views.HumidityView
+            android:id="@+id/humidityCustomView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerCitiesView"
-            tools:text="Влажность" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerForecastView"/>
 
-        <TextView
-            android:id="@+id/windSpeedTextView"
-            style="@style/textViewWeatherParams"
-            android:layout_width="wrap_content"
+        <com.example.geekbrainsandroidweather.custom_views.WindView
+            android:id="@+id/windCustomView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/humidityTextView"
-            tools:text="Ветер" />
+            app:layout_constraintTop_toBottomOf="@+id/humidityCustomView" />
 
-        <TextView
-            android:id="@+id/pressureTextView"
-            style="@style/textViewWeatherParams"
-            android:layout_width="wrap_content"
+        <com.example.geekbrainsandroidweather.custom_views.PressureView
+            android:id="@+id/pressureCustomView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/windSpeedTextView"
-            tools:text="Давление" />
+            app:layout_constraintTop_toBottomOf="@+id/windCustomView"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

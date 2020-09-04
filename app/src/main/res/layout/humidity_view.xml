@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="@dimen/default_horizontal_margin"
+    android:background="@drawable/border_bottom"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/humidityHeaderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/humidity_view_header"
+        android:textSize="@dimen/default_text_size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Комфорт" />
+
+    <ImageView
+        android:id="@+id/cloudImageView"
+        android:layout_width="@dimen/default_image_view_width"
+        android:layout_height="@dimen/default_image_view_height"
+        android:layout_marginTop="@dimen/half_default_vertical_margin"
+        android:paddingBottom="@dimen/default_vertical_margin"
+        android:contentDescription="@string/water_image"
+        android:src="@drawable/ic_baseline_cloud_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/humidityHeaderTextView" />
+
+    <ImageView
+        android:id="@+id/humidityImageView"
+        android:layout_width="@dimen/default_image_view_width"
+        android:layout_height="@dimen/default_image_view_height"
+        android:layout_marginTop="@dimen/default_vertical_margin"
+        android:paddingBottom="@dimen/default_vertical_margin"
+        android:paddingStart="@dimen/default_image_view_padding_start"
+        android:paddingEnd="@dimen/default_image_view_padding_end"
+        android:contentDescription="@string/water_image"
+        android:src="@drawable/ic_water"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/humidityHeaderTextView" />
+
+    <TextView
+        android:id="@+id/humidityTextView"
+        style="@style/textViewWeatherParams"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_vertical_margin"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/humidityHeaderTextView"
+        tools:text="Влажность" />
+
+    <TextView
+        android:id="@+id/sunriseAndSunsetTextView"
+        style="@style/textViewWeatherParams"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_vertical_margin"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/humidityTextView"
+        tools:text="Облачность" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

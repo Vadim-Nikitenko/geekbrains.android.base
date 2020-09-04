@@ -16,6 +16,10 @@ public class Main {
     @Expose
     private float tempMax;
 
+    @SerializedName("feels_like")
+    @Expose
+    private float feelsLike;
+
     public float getTemp() {
         return temp;
     }
@@ -56,4 +60,12 @@ public class Main {
         this.tempMax = tempMax;
     }
 
+
+    public float getFeelsLike() {
+        return feelsLike;
+    }
+
+    public void setFeelsLike(float feelsLike) {
+        this.feelsLike = feelsLike;
+    }
 }
