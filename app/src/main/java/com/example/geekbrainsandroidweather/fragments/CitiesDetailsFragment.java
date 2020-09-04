@@ -236,7 +236,8 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
                 drawer.setBackground(getResources().getDrawable(R.drawable.d02));
                 break;
             }
-            case "03n": {
+            case "03n":
+            case "50n": {
                 drawer.setBackground(getResources().getDrawable(R.drawable.n03));
                 break;
             }
@@ -268,6 +269,18 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
             }
             case "11n": {
                 drawer.setBackground(getResources().getDrawable(R.drawable.n11));
+                break;
+            }
+            case "50d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d50));
+                break;
+            }
+            case "13d": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.d13));
+                break;
+            }
+            case "13n": {
+                drawer.setBackground(getResources().getDrawable(R.drawable.n13));
                 break;
             }
         }
