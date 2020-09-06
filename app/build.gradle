@@ -23,8 +23,14 @@ android {
         properties.load(project.rootProject.file("connection.properties").newDataInputStream())
         def weatherApiKey  = properties.getProperty("WEATHER_API_KEY", "")
         def baseUrl  = properties.getProperty("BASE_URL", "")
+        def baseDadataUrl  = properties.getProperty("BASE_URL_DADATA", "")
+        def dadataApiKey  = properties.getProperty("DADATA_API_KEY", "")
+        def dadataSecret  = properties.getProperty("DADATA_SECRET", "")
         it.buildConfigField "String", "WEATHER_API_KEY", weatherApiKey
         it.buildConfigField "String", "BASE_URL", baseUrl
+        it.buildConfigField "String", "BASE_URL_DADATA", baseDadataUrl
+        it.buildConfigField "String", "DADATA_API_KEY", dadataApiKey
+        it.buildConfigField "String", "DADATA_SECRET", dadataSecret
     }
 }
 

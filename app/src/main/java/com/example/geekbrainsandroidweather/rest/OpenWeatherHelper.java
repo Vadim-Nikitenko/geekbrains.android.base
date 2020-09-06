@@ -15,7 +15,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class OpenWeatherHelper implements Constants {
-    private ArrayList<String> daysOfWeek = new ArrayList<>(Arrays.asList("Sun.", "Mon.", "Tue.", "Wen.", "Sur.", "Fri.", "Sat."));
+    private ArrayList<String> daysOfWeek = new ArrayList<>(Arrays.asList("Вс.", "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб."));
 
     public ArrayList<HourlyForecastData> setHourlyData(ForecastRequest forecastRequest) {
         ArrayList<HourlyForecastData> hourlyForecastDataList = new ArrayList<>();

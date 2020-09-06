@@ -102,12 +102,12 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public CityDetailsData withFeelsLikeTemperature(float feelsLike) {
-        this.feelsLikeTemperature = "Feels like " + String.format(Locale.getDefault(), "%.0f", feelsLike) + "°";
+        this.feelsLikeTemperature = "Ощущается как " + String.format(Locale.getDefault(), "%.0f", feelsLike) + "°";
         return this;
     }
 
     public CityDetailsData withCloudy(int cloudy) {
-        this.cloudy = "Cloudy: " + String.format(Locale.getDefault(), "%s", cloudy) + "%";
+        this.cloudy = "Облачность: " + String.format(Locale.getDefault(), "%s", cloudy) + "%";
         return this;
     }
 
@@ -118,13 +118,13 @@ public class CityDetailsData implements Serializable, Constants {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC+3"));
         String rise = sdf.format(dateSunrise);
         String set = sdf.format(dateSunset);
-        String sunriseAndSunset = "Sunrise: " + rise + " / " + "Sunset: " + set;
+        String sunriseAndSunset = "Восход: " + rise + " / " + "Закат: " + set;
         this.sunriseAndSunset = sunriseAndSunset;
         return this;
     }
 
     public CityDetailsData withWindDegrees(int windDegrees) {
-        this.windDegrees = "Direction " + String.format(Locale.getDefault(), "%s", windDegrees) + "°";
+        this.windDegrees = "Направление " + String.format(Locale.getDefault(), "%s", windDegrees) + "°";
         return this;
     }
 
@@ -141,15 +141,15 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public String getPressure() {
-        return "Pressure: " + pressure;
+        return "Давление: " + pressure;
     }
 
     public String getHumidity() {
-        return "Humidity: " + humidity;
+        return "Влажность: " + humidity;
     }
 
     public String getWindSpeed() {
-        return "Wind speed: " +windSpeed;
+        return "Скорость ветра: " +windSpeed;
     }
 
     public String getCityName() {

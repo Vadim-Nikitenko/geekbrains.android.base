@@ -120,7 +120,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item)));
 
         OpenWeatherRepo.getInstance().getAPI().loadForecast(cityDetailsData.getCityName(),
-                BuildConfig.WEATHER_API_KEY, "metric")
+                BuildConfig.WEATHER_API_KEY, UNITS)
                 .enqueue(new Callback<ForecastRequest>() {
                     @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
@@ -148,7 +148,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private void setupHourlyRecyclerView() {
         CityDetailsData cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
         OpenWeatherRepo.getInstance().getAPI().loadForecast(cityDetailsData.getCityName(),
-                BuildConfig.WEATHER_API_KEY, "metric")
+                BuildConfig.WEATHER_API_KEY, UNITS)
                 .enqueue(new Callback<ForecastRequest>() {
                     @SuppressLint("UseCompatLoadingForDrawables")
                     @Override

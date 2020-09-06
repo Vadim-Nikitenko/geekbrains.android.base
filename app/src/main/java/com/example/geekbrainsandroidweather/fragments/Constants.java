@@ -8,4 +8,6 @@ public interface Constants {
     String BASE_URL = "https://api.openweathermap.org/data/2.5/";
     String BASE_IMAGE_URL = "https://openweathermap.org/img/wn/";
     String IMAGE_FORMAT = "@2x.png";
+    String LANG = "RU";
+    String UNITS = "metric";
 }
