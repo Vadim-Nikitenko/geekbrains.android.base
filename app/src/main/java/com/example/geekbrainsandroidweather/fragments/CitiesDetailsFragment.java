@@ -48,7 +48,6 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private TextView temperature;
     private TextView pressureTextView;
     private TextView humidityTextView;
-    private TextView stateTextView;
     private TextView dayAndNightTemperatureTextView;
     private TextView weatherMainState;
     private RecyclerView recyclerForecastView;
@@ -95,7 +94,6 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         temperature = view.findViewById(R.id.temperature);
         pressureTextView = view.findViewById(R.id.pressureTextView);
         humidityTextView = view.findViewById(R.id.humidityTextView);
-        stateTextView = view.findViewById(R.id.weatherState);
         dayAndNightTemperatureTextView = view.findViewById(R.id.dayNightTemperature);
         weatherMainState = view.findViewById(R.id.weatherMainState);
         recyclerForecastView = view.findViewById(R.id.recyclerForecastView);
@@ -187,10 +185,9 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private void setCityParameters() {
         city.setText(Objects.requireNonNull(cityDetailsData).getCityName());
         temperature.setText(cityDetailsData.getTemperature());
-        stateTextView.setText(cityDetailsData.getState());
         humidityTextView.setText(cityDetailsData.getHumidity());
         pressureTextView.setText(cityDetailsData.getPressure());
-        weatherMainState.setText(cityDetailsData.getWeatherMainState());
+        weatherMainState.setText(cityDetailsData.getState());
         dayAndNightTemperatureTextView.setText(cityDetailsData.getDayAndNightTemperature());
         feelsLikeTextView.setText(cityDetailsData.getFeelsLikeTemperature());
         humidityCustomView.setupTexts(cityDetailsData.getHumidity(), cityDetailsData.getSunriseAndSunset());

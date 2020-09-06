@@ -21,7 +21,7 @@
     <string name="wind_speed_city_details">Скорость ветра:</string>
     <string name="pressure_city_details">Давление:</string>
     <string name="humidity_city_details">Влажность:</string>
-    <string name="error_message">Нам не удалось найти информацию по данному городу</string>
+    <string name="error_message">Нам не удалось найти информацию</string>
     <string name="add_city">Добавить город</string>
     <string name="city_input_hint">Введите название города</string>
     <string name="add_city_title">Город</string>
