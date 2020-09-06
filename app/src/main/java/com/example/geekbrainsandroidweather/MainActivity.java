@@ -1,7 +1,12 @@
 package com.example.geekbrainsandroidweather;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +20,8 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -28,7 +35,6 @@ import com.example.geekbrainsandroidweather.fragments.SettingsFragment;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
 import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
@@ -45,17 +51,17 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private AppBarLayout appBarLayout;
     private ProgressBar progressBar;
     private CityDetailsData cityDetailsData;
+    private String lat;
+    private String lon;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fresco.initialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         initViews();
+        requestLocationPermission();
         setupActionBar();
-        setCityFragment();
         setOnClickForSideMenuItems();
-
     }
 
     private void initViews() {
@@ -100,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         });
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.top_navigation_bar, menu);
@@ -117,8 +122,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
     private void setCityFragment() {
         String defaultCity = "Moscow";
-        OpenWeatherRepo.getInstance().getAPI().loadWeather(defaultCity,
-                BuildConfig.WEATHER_API_KEY, "metric")
+        OpenWeatherRepo.getInstance().getAPI().loadWeather(lat, lon,
+                BuildConfig.WEATHER_API_KEY, LANG, UNITS)
                 .enqueue(new Callback<WeatherRequest>() {
                     @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
@@ -151,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         fragmentTransaction.commit();
     }
 
-
     @Override
     public void onBackPressed() {
         if (drawer.isOpen()) {
@@ -179,4 +183,63 @@ public class MainActivity extends AppCompatActivity implements Constants {
         alert.show();
     }
 
+    private void requestLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.geo_msg)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.continue_action, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    99);
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            setCurrentCoordinates();
+            setCityFragment();
+        }
+    }
+
+    private void setCurrentCoordinates() {
+        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {
+            lon = String.valueOf(Objects.requireNonNull(location).getLongitude());
+            lat = String.valueOf(location.getLatitude());
+        } else {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        }
+    }
+
+    private LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(@NonNull Location location) {
+            lon = String.valueOf(location.getLongitude());
+            lat = String.valueOf(location.getLatitude());
+        }
+    };
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                setCurrentCoordinates();
+                setCityFragment();
+            }
+        } else {
+            finish();
+        }
+    }
 }
