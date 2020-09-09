@@ -89,8 +89,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     View view = requireActivity().getCurrentFocus();
                     if (view != null) {
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        hideKeyboard(view);
                     }
                 }
                 return true;
@@ -205,6 +204,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
                             NavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
                             navigationView.setCheckedItem(R.id.page_1);
                             historyHelper.insertTemperature(cityDetailsData);
+                            hideKeyboard(view);
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.AlertDialogCustom);
                             builder.setTitle(R.string.error_message)
@@ -228,6 +228,11 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    private void hideKeyboard(@NonNull View view) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }
