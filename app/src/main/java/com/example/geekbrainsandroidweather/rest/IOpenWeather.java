@@ -26,6 +26,7 @@ public interface IOpenWeather {
     @GET("data/2.5/forecast")
     Call<ForecastRequest> loadForecast(@Query("q") String city,
                                        @Query("appid") String keyApi,
+                                       @Query("lang") String lang,
                                        @Query("units") String units);
 
 }

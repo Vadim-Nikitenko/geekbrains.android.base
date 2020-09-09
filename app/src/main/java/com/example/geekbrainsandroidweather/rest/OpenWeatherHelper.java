@@ -1,5 +1,7 @@
 package com.example.geekbrainsandroidweather.rest;
 
+import android.annotation.SuppressLint;
+
 import com.example.geekbrainsandroidweather.fragments.Constants;
 import com.example.geekbrainsandroidweather.model.ForecastDayData;
 import com.example.geekbrainsandroidweather.model.HourlyForecastData;
@@ -15,7 +17,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class OpenWeatherHelper implements Constants {
-    private ArrayList<String> daysOfWeek = new ArrayList<>(Arrays.asList("Вс.", "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб."));
+    public static ArrayList<String> daysOfWeek = new ArrayList<>(Arrays.asList("Вс.", "Пн.", "Вт.", "Ср.", "Чт.", "Пт.", "Сб."));
 
     public ArrayList<HourlyForecastData> setHourlyData(ForecastRequest forecastRequest) {
         ArrayList<HourlyForecastData> hourlyForecastDataList = new ArrayList<>();
@@ -43,11 +45,11 @@ public class OpenWeatherHelper implements Constants {
         return weatherForTheWeek;
     }
 
-    private String parseDate(String date) {
+    public static String parseDate(String date) {
         final int CHARS_TO_REMOVE_COUNT = 10;
         Calendar cal = GregorianCalendar.getInstance();
         try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            SimpleDateFormat format = new SimpleDateFormat("dd-MM", Locale.getDefault());
             Date date1 = format.parse(date);
             cal.setTime(Objects.requireNonNull(date1));
         } catch (Exception e) {
@@ -56,6 +58,13 @@ public class OpenWeatherHelper implements Constants {
         int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK) - 1;
         date = daysOfWeek.get(dayOfWeek) + " " + date.substring(5, CHARS_TO_REMOVE_COUNT);
         return date;
+    }
+
+    public static String parseDate(long date) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        return simpleDateFormat.format(calendar.getTime());
     }
 
     public String getDayAndNightTemperature(ForecastRequest forecastRequest) {

@@ -27,4 +27,5 @@
     <dimen name="double_vertical_margin">32dp</dimen>
     <dimen name="thermometer_width">20dp</dimen>
     <dimen name="thermometer_height">35dp</dimen>
+    <dimen name="spinner_padding">10dp</dimen>
 </resources>
