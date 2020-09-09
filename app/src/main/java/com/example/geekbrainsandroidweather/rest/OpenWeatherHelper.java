@@ -40,7 +40,7 @@ public class OpenWeatherHelper implements Constants {
                     .withDay(parseDate(forecastRequest.getList().get(i).getDtTxt()))
                     .withTemperature(forecastRequest.getList().get(i).getMain().getTemp())
                     .withImage(forecastRequest.getList().get(i).getWeather().get(0).getIcon())
-                    .withState(forecastRequest.getList().get(i).getWeather().get(0).getMain()));
+                    .withState(forecastRequest.getList().get(i).getWeather().get(0).getDescription()));
         }
         return weatherForTheWeek;
     }
