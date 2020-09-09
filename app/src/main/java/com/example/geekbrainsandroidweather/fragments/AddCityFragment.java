@@ -105,11 +105,13 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager
                 (getContext());
-        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-                LinearLayoutManager.VERTICAL);
         recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
         recyclerCities.setLayoutManager(linearLayoutManager);
-        recyclerCities.addItemDecoration(decorator);
+        if (recyclerCities.getItemDecorationCount() <= 0) {
+            DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
+                    LinearLayoutManager.VERTICAL);
+            recyclerCities.addItemDecoration(decorator);
+        }
         recyclerCities.setAdapter(recyclerDataAdapter);
     }
 

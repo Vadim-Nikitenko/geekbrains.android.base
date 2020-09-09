@@ -90,11 +90,13 @@ public class HistoryFragment extends Fragment {
     private void setupRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager
                 (getContext());
-        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-                LinearLayoutManager.VERTICAL);
         recyclerHistoryAdapter = new RecyclerHistoryAdapter(cities);
         historyList.setLayoutManager(linearLayoutManager);
-        historyList.addItemDecoration(decorator);
+        if (historyList.getItemDecorationCount() <= 0) {
+            DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
+                    LinearLayoutManager.VERTICAL);
+            historyList.addItemDecoration(decorator);
+        }
         historyList.setAdapter(recyclerHistoryAdapter);
     }
 
