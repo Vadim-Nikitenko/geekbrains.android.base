@@ -24,8 +24,8 @@
 
         <com.example.geekbrainsandroidweather.custom_views.ThermometerView
             android:id="@+id/thermometerView"
-            android:layout_width="20dp"
-            android:layout_height="35dp"
+            android:layout_width="@dimen/thermometer_width"
+            android:layout_height="@dimen/thermometer_height"
             android:layout_marginTop="@dimen/default_vertical_margin"
             app:layout_constraintStart_toEndOf="@id/temperature"
             app:layout_constraintTop_toBottomOf="@+id/city"
@@ -70,48 +70,38 @@
             android:id="@+id/weatherStateImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/weatherState"
+            app:layout_constraintBottom_toBottomOf="@+id/weatherMainState"
             app:layout_constraintStart_toEndOf="@+id/weatherMainState"
-            app:layout_constraintTop_toBottomOf="@+id/dayNightTemperature" />
+            app:layout_constraintTop_toTopOf="@+id/weatherMainState"/>
 
-
-        <TextView
-            android:id="@+id/weatherState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/half_default_vertical_margin"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherMainState"
-            tools:text="Немного облачно" />
 
         <TextView
             android:id="@+id/feelsLikeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/default_horizontal_margin"
-            android:layout_marginTop="@dimen/default_vertical_margin"
+            android:layout_marginTop="@dimen/double_vertical_margin"
             android:textColor="@color/colorGrey"
             android:textSize="@dimen/font_size_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherState"
+            app:layout_constraintTop_toBottomOf="@+id/weatherMainState"
             tools:text="17" />
 
         <TextView
             android:id="@+id/lastUpdateTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/default_vertical_margin"
+            android:layout_marginTop="@dimen/double_vertical_margin"
             android:layout_marginEnd="@dimen/default_horizontal_margin"
             android:textColor="@color/colorGrey"
-            android:textSize="12sp"
+            android:textSize="@dimen/font_size_btn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherState"
+            app:layout_constraintTop_toBottomOf="@+id/weatherMainState"
             tools:text="Updated: " />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerHourlyView"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/zero_width"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -119,7 +109,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerForecastView"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/zero_width"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/default_vertical_margin"
             android:layout_marginBottom="@dimen/default_vertical_margin"

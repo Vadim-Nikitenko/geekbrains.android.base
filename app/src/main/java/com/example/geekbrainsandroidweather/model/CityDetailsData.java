@@ -1,6 +1,7 @@
 package com.example.geekbrainsandroidweather.model;
 
 import com.example.geekbrainsandroidweather.fragments.Constants;
+import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -21,9 +22,34 @@ public class CityDetailsData implements Serializable, Constants {
     private String dayAndNightTemperature;
     private String weatherMainState;
     private String cloudy;
-
     private String sunriseAndSunset;
     private String windDegrees;
+    private String defaultIcon;
+
+    public CityDetailsData(WeatherRequest weatherRequest) {
+                this
+                .withCityName(weatherRequest.getName())
+                .withTemperature(weatherRequest.getMain().getTemp())
+                .withPressure(weatherRequest.getMain().getPressure())
+                .withHumidity(weatherRequest.getMain().getHumidity())
+                .withWindSpeed(weatherRequest.getWind().getSpeed())
+                .withState(weatherRequest.getWeather().get(0).getDescription())
+                .withIcon(weatherRequest.getWeather().get(0).getIcon())
+                .withFeelsLikeTemperature(weatherRequest.getMain().getFeelsLike())
+                .withCloudy(weatherRequest.getClouds().getAll())
+                .withWindDegrees(weatherRequest.getWind().getDeg())
+                .withSunriseAndSunset(weatherRequest.getSys().getSunrise(), weatherRequest.getSys().getSunset())
+                .withWeatherMainState(weatherRequest.getWeather().get(0).getMain());
+                setDefaultIcon(weatherRequest.getWeather().get(0).getIcon());
+    }
+
+    public String getDefaultIcon() {
+        return defaultIcon;
+    }
+
+    public void setDefaultIcon(String defaultIcon) {
+        this.defaultIcon = defaultIcon;
+    }
 
     public CityDetailsData withCityName(String cityName) {
         this.cityName = cityName;
@@ -76,12 +102,12 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public CityDetailsData withFeelsLikeTemperature(float feelsLike) {
-        this.feelsLikeTemperature = "Feels like " + String.format(Locale.getDefault(), "%.0f", feelsLike) + "°";
+        this.feelsLikeTemperature = "Ощущается как " + String.format(Locale.getDefault(), "%.0f", feelsLike) + "°";
         return this;
     }
 
     public CityDetailsData withCloudy(int cloudy) {
-        this.cloudy = "Cloudy: " + String.format(Locale.getDefault(), "%s", cloudy) + "%";
+        this.cloudy = "Облачность: " + String.format(Locale.getDefault(), "%s", cloudy) + "%";
         return this;
     }
 
@@ -92,13 +118,13 @@ public class CityDetailsData implements Serializable, Constants {
         sdf.setTimeZone(TimeZone.getTimeZone("UTC+3"));
         String rise = sdf.format(dateSunrise);
         String set = sdf.format(dateSunset);
-        String sunriseAndSunset = "Sunrise: " + rise + " / " + "Sunset: " + set;
+        String sunriseAndSunset = "Восход: " + rise + " / " + "Закат: " + set;
         this.sunriseAndSunset = sunriseAndSunset;
         return this;
     }
 
     public CityDetailsData withWindDegrees(int windDegrees) {
-        this.windDegrees = "Direction " + String.format(Locale.getDefault(), "%s", windDegrees) + "°";
+        this.windDegrees = "Направление " + String.format(Locale.getDefault(), "%s", windDegrees) + "°";
         return this;
     }
 
@@ -115,15 +141,15 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public String getPressure() {
-        return "Pressure: " + pressure;
+        return "Давление: " + pressure;
     }
 
     public String getHumidity() {
-        return "Humidity: " + humidity;
+        return "Влажность: " + humidity;
     }
 
     public String getWindSpeed() {
-        return "Wind speed: " +windSpeed;
+        return "Скорость ветра: " +windSpeed;
     }
 
     public String getCityName() {

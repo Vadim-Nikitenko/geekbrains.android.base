@@ -20,9 +20,17 @@ android {
     }
     buildTypes.each {
         Properties properties = new Properties()
-        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        properties.load(project.rootProject.file("connection.properties").newDataInputStream())
         def weatherApiKey  = properties.getProperty("WEATHER_API_KEY", "")
+        def baseUrl  = properties.getProperty("BASE_URL", "")
+        def baseDadataUrl  = properties.getProperty("BASE_URL_DADATA", "")
+        def dadataApiKey  = properties.getProperty("DADATA_API_KEY", "")
+        def dadataSecret  = properties.getProperty("DADATA_SECRET", "")
         it.buildConfigField "String", "WEATHER_API_KEY", weatherApiKey
+        it.buildConfigField "String", "BASE_URL", baseUrl
+        it.buildConfigField "String", "BASE_URL_DADATA", baseDadataUrl
+        it.buildConfigField "String", "DADATA_API_KEY", dadataApiKey
+        it.buildConfigField "String", "DADATA_SECRET", dadataSecret
     }
 }
 
@@ -45,6 +53,8 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.facebook.fresco:animated-gif:2.3.0'
     implementation 'com.facebook.fresco:fresco:2.3.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.8.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.8.2'
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

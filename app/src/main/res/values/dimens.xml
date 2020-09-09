@@ -24,4 +24,7 @@
     <dimen name="default_image_view_height">50dp</dimen>
     <dimen name="default_image_view_padding_start">10dp</dimen>
     <dimen name="default_image_view_padding_end">10dp</dimen>
+    <dimen name="double_vertical_margin">32dp</dimen>
+    <dimen name="thermometer_width">20dp</dimen>
+    <dimen name="thermometer_height">35dp</dimen>
 </resources>

@@ -10,16 +10,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.geekbrainsandroidweather.R;
+import com.example.geekbrainsandroidweather.rest.entities.city.CityGeoData;
 
 import java.util.ArrayList;
 
 public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapter.ViewHolder> {
-    private ArrayList<String> data;
+    private ArrayList<CityGeoData> data;
     private final IRVOnItemClick onItemClickCallback;
     private final IRVOnItemClick changeItem;
 
     // конструктор. Адаптер используется в активити или фрагменте
-    public RecyclerDataAdapter(ArrayList<String> data, IRVOnItemClick onItemClickCallback, IRVOnItemClick changeItem) {
+    public RecyclerDataAdapter(ArrayList<CityGeoData> data, IRVOnItemClick onItemClickCallback, IRVOnItemClick changeItem) {
         this.data = data;
         this.onItemClickCallback = onItemClickCallback;
         this.changeItem = changeItem;
@@ -38,7 +39,7 @@ public class RecyclerDataAdapter extends RecyclerView.Adapter<RecyclerDataAdapte
     // Отображение даннных в view ViewHolder-а
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        String text = data.get(position);
+        String text = data.get(position).getCity();
         holder.setTextToTextView(text);
         holder.setOnClickForItem(text, position);
         holder.changeView();
