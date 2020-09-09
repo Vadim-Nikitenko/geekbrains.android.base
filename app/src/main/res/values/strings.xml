@@ -29,7 +29,7 @@
     <string name="apply_delete">Удалить</string>
     <string name="snackbar_enter_city_name">Введите название города</string>
     <string name="snackbar_sity_already_added">Город уже добавлен</string>
-    <string name="udpated_at_text">Обновлено: </string>
+    <string name="udpated_at_text">Обновлено в&#160;</string>
 
 
     <string name="nav_header_title">Android Studio</string>

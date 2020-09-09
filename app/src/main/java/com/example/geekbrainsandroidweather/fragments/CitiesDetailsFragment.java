@@ -37,6 +37,7 @@ import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
 import com.example.geekbrainsandroidweather.rest.entities.forecast.ForecastRequest;
 import com.squareup.picasso.Picasso;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
@@ -199,12 +200,8 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         humidityCustomView.setupTexts(cityDetailsData.getHumidity(), cityDetailsData.getSunriseAndSunset());
         windCustomView.setupTexts(cityDetailsData.getWindSpeed(), cityDetailsData.getWindDegrees());
         pressureCustomView.setupTexts(cityDetailsData.getPressure(), cityDetailsData.getCloudy());
-
         Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
-        Calendar currentTime = Calendar.getInstance();
-        String lastUpdate = getString(R.string.udpated_at_text) + currentTime.get(Calendar.HOUR)
-                + ":" + currentTime.get(Calendar.MINUTE);
-        lastUpdateTextView.setText(lastUpdate);
+        lastUpdateTextView.setText(getCurrentTime());
         thermometerView.setCurrentTemp(Integer.parseInt(cityDetailsData.getTemperature().replace("°", "")));
     }
 
@@ -218,6 +215,11 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
                 view.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private String getCurrentTime() {
+        Calendar now = Calendar.getInstance();
+        return getString(R.string.udpated_at_text) + now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
