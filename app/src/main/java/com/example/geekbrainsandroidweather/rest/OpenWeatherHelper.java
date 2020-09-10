@@ -49,7 +49,7 @@ public class OpenWeatherHelper implements Constants {
         final int CHARS_TO_REMOVE_COUNT = 10;
         Calendar cal = GregorianCalendar.getInstance();
         try {
-            SimpleDateFormat format = new SimpleDateFormat("dd-MM", Locale.getDefault());
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             Date date1 = format.parse(date);
             cal.setTime(Objects.requireNonNull(date1));
         } catch (Exception e) {
