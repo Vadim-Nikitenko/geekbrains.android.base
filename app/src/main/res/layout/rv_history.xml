@@ -10,31 +10,25 @@
     android:orientation="horizontal">
 
     <TextView
-        android:id="@+id/dayTextView"
+        android:id="@+id/historyDay"
         style="@style/rvStyles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <ImageView
-        android:id="@+id/stateImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/dayTextView" />
-
     <TextView
-        android:id="@+id/stateTextView"
+        android:id="@+id/historyCity"
         style="@style/rvStyles"
+        android:textAlignment="textEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/stateImageView"
-        app:layout_constraintEnd_toStartOf="@+id/temperatureImageView"/>
+        app:layout_constraintStart_toEndOf="@id/historyDay"
+        app:layout_constraintEnd_toStartOf="@+id/historyTemp"/>
 
     <TextView
-        android:id="@+id/temperatureImageView"
+        android:id="@+id/historyTemp"
         style="@style/rvStyles"
         android:gravity="end"
         android:layout_width="wrap_content"

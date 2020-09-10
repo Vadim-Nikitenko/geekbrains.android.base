@@ -22,6 +22,10 @@
         <item name="android:layout_marginTop">@dimen/default_vertical_margin</item>
     </style>
 
+    <style name="spinnerDropDownItemStyle">
+        <item name="android:textColor">@color/colorBlack</item>
+    </style>
+
     <style name="textViewWeatherParams">
         <item name="android:layout_marginTop">@dimen/default_vertical_margin</item>
         <item name="android:layout_marginStart">@dimen/default_horizontal_margin</item>

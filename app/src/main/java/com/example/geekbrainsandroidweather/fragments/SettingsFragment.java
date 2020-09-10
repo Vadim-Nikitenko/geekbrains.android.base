@@ -1,8 +1,9 @@
 package com.example.geekbrainsandroidweather.fragments;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -14,13 +15,14 @@ import androidx.fragment.app.Fragment;
 
 import com.example.geekbrainsandroidweather.R;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends Fragment implements Constants {
     private CheckBox pressureCheckbox;
     private CheckBox windSpeedCheckbox;
     private CheckBox humidityCheckbox;
-    public static boolean isPressureChecked = true;
-    public static boolean isHumidityChecked = true;
-    public static boolean isWindSpeedChecked = true;
+    public static boolean isPressureChecked;
+    public static boolean isHumidityChecked;
+    public static boolean isWindSpeedChecked;
+    private SharedPreferences sharedPref;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,21 +38,14 @@ public class SettingsFragment extends Fragment {
         requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
     }
 
-    // инициализация views
     private void init(@NonNull View view) {
         pressureCheckbox = view.findViewById(R.id.pressureCheckbox);
         windSpeedCheckbox = view.findViewById(R.id.windSpeedCheckbox);
         humidityCheckbox = view.findViewById(R.id.humidityCheckbox);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            isPressureChecked = pressureCheckbox.isChecked();
-            isHumidityChecked = humidityCheckbox.isChecked();
-            isWindSpeedChecked = windSpeedCheckbox.isChecked();
-        }
-        return true;
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        isPressureChecked = sharedPref.getBoolean(keyPressure, true);
+        isHumidityChecked = sharedPref.getBoolean(keyHumidity, true);
+        isWindSpeedChecked = sharedPref.getBoolean(keyWindSpeed, true);
     }
 
     private void setCheckBoxesBehaviour() {
@@ -62,20 +57,28 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isPressureChecked = b;
+                saveToPreferences(keyPressure, isPressureChecked);
             }
         });
         windSpeedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isWindSpeedChecked = b;
+                saveToPreferences(keyWindSpeed, isWindSpeedChecked);
             }
         });
         humidityCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isHumidityChecked = b;
+                saveToPreferences(keyHumidity, isHumidityChecked);
             }
         });
     }
-}
 
+    private void saveToPreferences(String key, boolean bool) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(key, bool);
+        editor.apply();
+    }
+}

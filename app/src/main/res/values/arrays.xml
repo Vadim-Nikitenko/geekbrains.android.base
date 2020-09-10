@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="cities">
-        <item>Moscow</item>
-        <item>Kazan</item>
-        <item>Voronezh</item>
-        <item>Novosibirsk</item>
-        <item>Samara</item>
-        <item>Barcelona</item>
-        <item>Sidney</item>
-        <item>TestCity</item>
+    <string-array name="sort_types">
+        <item>По дате</item>
+        <item>По температуре</item>
+        <item>По городу</item>
     </string-array>
 </resources>

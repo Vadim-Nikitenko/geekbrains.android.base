@@ -1,8 +1,10 @@
 package com.example.geekbrainsandroidweather.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +37,7 @@ import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
 import com.example.geekbrainsandroidweather.rest.entities.forecast.ForecastRequest;
 import com.squareup.picasso.Picasso;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
@@ -61,6 +64,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private ThermometerView thermometerView;
     private CityDetailsData cityDetailsData;
     private DrawerLayout drawer;
+    private SharedPreferences sharedPref;
 
     public static CitiesDetailsFragment create(CityDetailsData cityDetails) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
@@ -107,6 +111,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         pressureCustomView = view.findViewById(R.id.pressureCustomView);
         drawer = requireActivity().findViewById(R.id.drawer_layout);
         cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
     }
 
 
@@ -118,7 +123,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         decorator.setDrawable(Objects.requireNonNull(requireContext().getDrawable(R.drawable.decorator_item)));
 
         OpenWeatherRepo.getInstance().getAPI().loadForecast(cityDetailsData.getCityName(),
-                BuildConfig.WEATHER_API_KEY, UNITS)
+                BuildConfig.WEATHER_API_KEY, LANG, UNITS)
                 .enqueue(new Callback<ForecastRequest>() {
                     @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
@@ -138,6 +143,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
 
                     @Override
                     public void onFailure(@NonNull Call<ForecastRequest> call, @NonNull Throwable t) {
+                        //TODO
                         Log.i("RV", "Ошибка");
                     }
                 });
@@ -146,7 +152,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private void setupHourlyRecyclerView() {
         CityDetailsData cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
         OpenWeatherRepo.getInstance().getAPI().loadForecast(cityDetailsData.getCityName(),
-                BuildConfig.WEATHER_API_KEY, UNITS)
+                BuildConfig.WEATHER_API_KEY, LANG, UNITS)
                 .enqueue(new Callback<ForecastRequest>() {
                     @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
@@ -165,15 +171,16 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
 
                     @Override
                     public void onFailure(Call<ForecastRequest> call, Throwable t) {
+                        //TODO
                         Log.i("RV", "Ошибка");
                     }
                 });
     }
 
     private void getSettingParameters() {
-        setParameterVisibility(SettingsFragment.isPressureChecked, pressureCustomView);
-        setParameterVisibility(SettingsFragment.isHumidityChecked, humidityCustomView);
-        setParameterVisibility(SettingsFragment.isWindSpeedChecked, windCustomView);
+        setParameterVisibility(sharedPref.getBoolean(keyPressure, true), pressureCustomView);
+        setParameterVisibility(sharedPref.getBoolean(keyHumidity, true), humidityCustomView);
+        setParameterVisibility(sharedPref.getBoolean(keyWindSpeed, true), windCustomView);
     }
 
     @Override
@@ -193,12 +200,8 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         humidityCustomView.setupTexts(cityDetailsData.getHumidity(), cityDetailsData.getSunriseAndSunset());
         windCustomView.setupTexts(cityDetailsData.getWindSpeed(), cityDetailsData.getWindDegrees());
         pressureCustomView.setupTexts(cityDetailsData.getPressure(), cityDetailsData.getCloudy());
-
         Picasso.get().load(cityDetailsData.getIcon()).into(weatherStateImg);
-        Calendar currentTime = Calendar.getInstance();
-        String lastUpdate = getString(R.string.udpated_at_text) + currentTime.get(Calendar.HOUR)
-                + ":" + currentTime.get(Calendar.MINUTE);
-        lastUpdateTextView.setText(lastUpdate);
+        lastUpdateTextView.setText(getCurrentTime());
         thermometerView.setCurrentTemp(Integer.parseInt(cityDetailsData.getTemperature().replace("°", "")));
     }
 
@@ -212,6 +215,11 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
                 view.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private String getCurrentTime() {
+        Calendar now = Calendar.getInstance();
+        return getString(R.string.udpated_at_text) + now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

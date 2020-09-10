@@ -14,7 +14,7 @@
     <string name="settings_icon">⋮</string>
     <string name="temperature_settings_input">Температура</string>
     <string name="dark_theme">Темная тема</string>
-    <string name="home_screen">Главная</string>
+    <string name="home_screen">Текущая погода</string>
     <string name="settings_screen">Настройки</string>
     <string name="info_screen">Разработчики</string>
     <string name="developers_text">Версия приложения Погода 1.0\nCopyright @ Vadim Nikitenko Co., Ltd. 2020.\nВсе права защищены</string>
@@ -29,7 +29,7 @@
     <string name="apply_delete">Удалить</string>
     <string name="snackbar_enter_city_name">Введите название города</string>
     <string name="snackbar_sity_already_added">Город уже добавлен</string>
-    <string name="udpated_at_text">Обновлено: </string>
+    <string name="udpated_at_text">Обновлено в&#160;</string>
 
 
     <string name="nav_header_title">Android Studio</string>
@@ -46,4 +46,6 @@
     <string name="geo_msg">Чтобы показывать точный прогноз, приложению нужно знать, где вы находитесь</string>
     <string name="navigation_drawer_open" />
     <string name="navigation_drawer_close" />
+    <string name="history">История запросов</string>
+    <string name="sort">Сортировка:</string>
 </resources>

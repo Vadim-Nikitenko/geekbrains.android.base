@@ -16,5 +16,9 @@
             android:id="@+id/page_3"
             android:icon="@drawable/ic_baseline_info_24"
             android:title="@string/info_screen" />
+        <item
+            android:id="@+id/page_4"
+            android:icon="@drawable/ic_baseline_history_24"
+            android:title="@string/history" />
     </group>
 </menu>

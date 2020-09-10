@@ -36,6 +36,7 @@ import com.example.geekbrainsandroidweather.rest.entities.city.BodyCityRequest;
 import com.example.geekbrainsandroidweather.rest.entities.city.CityGeoData;
 import com.example.geekbrainsandroidweather.rest.entities.city.CityRequest;
 import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
+import com.example.geekbrainsandroidweather.room.TemperatureHistoryHelper;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -53,6 +54,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
     public ArrayList<CityGeoData> cities;
     private ProgressBar progressBar;
     private TextView emptyTextView;
+    private TemperatureHistoryHelper historyHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,7 +65,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViews(view);
+        init(view);
         setupRecyclerView();
         setOnAddCityInputEditorBehaviour(view);
         requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.INVISIBLE);
@@ -71,11 +73,12 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
     }
 
     //инициализация вьюх
-    private void initViews(View view) {
+    private void init(View view) {
         addCityInput = view.findViewById(R.id.addCityInput);
         recyclerCities = view.findViewById(R.id.recyclerCities);
         emptyTextView = view.findViewById(R.id.emptyCityTextView);
         progressBar = view.findViewById(R.id.progressBar);
+        historyHelper = new TemperatureHistoryHelper();
     }
 
     //сворачиваем клавиатуру при клике на ОК (IME_ACTION_DONE) keyboard
@@ -86,8 +89,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     View view = requireActivity().getCurrentFocus();
                     if (view != null) {
-                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                        hideKeyboard(view);
                     }
                 }
                 return true;
@@ -102,11 +104,13 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
         }
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager
                 (getContext());
-        DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
-                LinearLayoutManager.VERTICAL);
         recyclerDataAdapter = new RecyclerDataAdapter(cities, this, this);
         recyclerCities.setLayoutManager(linearLayoutManager);
-        recyclerCities.addItemDecoration(decorator);
+        if (recyclerCities.getItemDecorationCount() <= 0) {
+            DividerItemDecoration decorator = new DividerItemDecoration(requireContext(),
+                    LinearLayoutManager.VERTICAL);
+            recyclerCities.addItemDecoration(decorator);
+        }
         recyclerCities.setAdapter(recyclerDataAdapter);
     }
 
@@ -169,6 +173,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
 
                                 @Override
                                 public void onFailure(@NonNull Call<CityRequest> call, @NonNull Throwable t) {
+                                    //TODO
                                     Log.i("RV", "Ошибка");
                                 }
                             });
@@ -198,6 +203,8 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
                             replaceFragment(cityDetailsData);
                             NavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
                             navigationView.setCheckedItem(R.id.page_1);
+                            historyHelper.insertTemperature(cityDetailsData);
+                            hideKeyboard(view);
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.AlertDialogCustom);
                             builder.setTitle(R.string.error_message)
@@ -221,6 +228,11 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
                         progressBar.setVisibility(View.GONE);
                     }
                 });
+    }
+
+    private void hideKeyboard(@NonNull View view) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }

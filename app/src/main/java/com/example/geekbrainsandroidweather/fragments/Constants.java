@@ -6,4 +6,7 @@ public interface Constants {
     String IMAGE_FORMAT = "@2x.png";
     String LANG = "RU";
     String UNITS = "metric";
+    String keyPressure = "com.example.geekbrainsandroidweather.fragments.keyPressure";
+    String keyHumidity = "com.example.geekbrainsandroidweather.fragments.keyHumidity";
+    String keyWindSpeed = "com.example.geekbrainsandroidweather.fragments.keyWindSpeed";
 }

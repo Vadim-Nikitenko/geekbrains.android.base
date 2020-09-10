@@ -31,10 +31,12 @@ import com.example.geekbrainsandroidweather.fragments.AddCityFragment;
 import com.example.geekbrainsandroidweather.fragments.CitiesDetailsFragment;
 import com.example.geekbrainsandroidweather.fragments.Constants;
 import com.example.geekbrainsandroidweather.fragments.DevelopersInfoFragment;
+import com.example.geekbrainsandroidweather.fragments.HistoryFragment;
 import com.example.geekbrainsandroidweather.fragments.SettingsFragment;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
 import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
 import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
+import com.example.geekbrainsandroidweather.room.TemperatureHistoryHelper;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
@@ -53,23 +55,25 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private CityDetailsData cityDetailsData;
     private String lat;
     private String lon;
+    private TemperatureHistoryHelper historyHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initViews();
+        init();
         requestLocationPermission();
         setupActionBar();
         setOnClickForSideMenuItems();
     }
 
-    private void initViews() {
+    private void init() {
         drawer = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
         progressBar = findViewById(R.id.progressBar);
+        historyHelper = new TemperatureHistoryHelper();
     }
 
     private void setupActionBar() {
@@ -89,6 +93,10 @@ public class MainActivity extends AppCompatActivity implements Constants {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.page_4) {
+                    replaceFragment(new HistoryFragment(), R.id.fragmentContainer, true);
+                    drawer.close();
+                }
                 if (item.getItemId() == R.id.page_3) {
                     replaceFragment(new DevelopersInfoFragment(), R.id.fragmentContainer, true);
                     drawer.close();
@@ -121,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void setCityFragment() {
-        String defaultCity = "Moscow";
         OpenWeatherRepo.getInstance().getAPI().loadWeather(lat, lon,
                 BuildConfig.WEATHER_API_KEY, LANG, UNITS)
                 .enqueue(new Callback<WeatherRequest>() {
@@ -133,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
                             cityDetailsData = new CityDetailsData(response.body());
                             CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
                             replaceFragment(fragment, R.id.fragmentContainer, false);
+
+                            historyHelper.insertTemperature(cityDetailsData);
                         } else {
                             showAlert();
                         }
@@ -242,4 +251,5 @@ public class MainActivity extends AppCompatActivity implements Constants {
             finish();
         }
     }
+
 }
