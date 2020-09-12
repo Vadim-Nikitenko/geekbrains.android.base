@@ -1,6 +1,7 @@
 package com.example.geekbrainsandroidweather.fragments;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -37,9 +39,10 @@ import com.example.geekbrainsandroidweather.recycler_views.RecyclerHourlyDataAda
 import com.example.geekbrainsandroidweather.rest.OpenWeatherHelper;
 import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
 import com.example.geekbrainsandroidweather.rest.entities.forecast.ForecastRequest;
+import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
+import com.example.geekbrainsandroidweather.room.TemperatureHistoryHelper;
 import com.squareup.picasso.Picasso;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
@@ -101,9 +104,50 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                replaceFragment(CitiesDetailsFragment.create(cityDetailsData), R.id.fragmentContainer, false);
+                OpenWeatherRepo.getInstance().getAPI().loadWeather(cityDetailsData.getLat(), cityDetailsData.getLon(),
+                        BuildConfig.WEATHER_API_KEY, LANG, UNITS)
+                        .enqueue(new Callback<WeatherRequest>() {
+                            @SuppressLint("UseCompatLoadingForDrawables")
+                            @Override
+                            public void onResponse(@NonNull Call<WeatherRequest> call,
+                                                   @NonNull Response<WeatherRequest> response) {
+                                if (response.body() != null && response.isSuccessful()) {
+                                    cityDetailsData = new CityDetailsData(response.body(), cityDetailsData.getLat(), cityDetailsData.getLon());
+                                    CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
+                                    replaceFragment(fragment, R.id.fragmentContainer, false);
+
+                                    TemperatureHistoryHelper historyHelper = new TemperatureHistoryHelper();
+                                    historyHelper.insertTemperature(cityDetailsData);
+                                } else {
+                                    showAlert();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<WeatherRequest> call, @NonNull Throwable t) {
+                                //TODO
+                            }
+                        });
+                setCityParameters();
+                setupRecyclerView();
+                setupHourlyRecyclerView();
             }
         });
+    }
+
+    private void showAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext(), R.style.AlertDialogCustom);
+        builder.setTitle(R.string.error_message)
+                .setMessage(R.string.try_later)
+                .setIcon(R.drawable.ic_baseline_info_24)
+                .setPositiveButton(R.string.ok,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void replaceFragment(Fragment fragment, int containerId, boolean isAddedToBackStack) {
@@ -257,7 +301,8 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
                 drawer.setBackground(getResources().getDrawable(R.drawable.d01));
                 break;
             }
-            case "02n": {
+            case "02n":
+            case "04n": {
                 drawer.setBackground(getResources().getDrawable(R.drawable.n02));
                 break;
             }
@@ -276,10 +321,6 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
             }
             case "04d": {
                 drawer.setBackground(getResources().getDrawable(R.drawable.d04));
-                break;
-            }
-            case "04n": {
-                drawer.setBackground(getResources().getDrawable(R.drawable.n04));
                 break;
             }
             case "09d":

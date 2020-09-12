@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     public void onResponse(@NonNull Call<WeatherRequest> call,
                                            @NonNull Response<WeatherRequest> response) {
                         if (response.body() != null && response.isSuccessful()) {
-                            cityDetailsData = new CityDetailsData(response.body());
+                            cityDetailsData = new CityDetailsData(response.body(), lat, lon);
                             CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
                             replaceFragment(fragment, R.id.fragmentContainer, false);
 
@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     }
                 });
     }
+
 
     private void replaceFragment(Fragment fragment, int containerId, boolean isAddedToBackStack) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
