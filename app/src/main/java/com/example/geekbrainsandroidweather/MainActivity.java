@@ -2,11 +2,18 @@ package com.example.geekbrainsandroidweather;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,6 +33,12 @@ import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import com.example.geekbrainsandroidweather.fragments.AddCityFragment;
 import com.example.geekbrainsandroidweather.fragments.CitiesDetailsFragment;
@@ -41,6 +54,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private String lat;
     private String lon;
     private TemperatureHistoryHelper historyHelper;
+    private BroadcastReceiver networkReceiver = new NetworkChangeReceiver();
+    private static final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +81,30 @@ public class MainActivity extends AppCompatActivity implements Constants {
         requestLocationPermission();
         setupActionBar();
         setOnClickForSideMenuItems();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(networkReceiver, new IntentFilter(CONNECTIVITY_CHANGE));
+        initNotificationChannel();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(networkReceiver);
+    }
+
+    private void initNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("1", "networkStateChanges", importance);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     private void init() {

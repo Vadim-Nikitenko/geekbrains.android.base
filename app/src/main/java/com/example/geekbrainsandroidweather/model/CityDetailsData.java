@@ -72,7 +72,7 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public CityDetailsData withWindSpeed(float windSpeed) {
-        this.windSpeed = String.format(Locale.getDefault(), "%.0f", windSpeed) + " m.s.";
+        this.windSpeed = String.format(Locale.getDefault(), "%.0f", windSpeed) + " м.с.";
         return this;
     }
 

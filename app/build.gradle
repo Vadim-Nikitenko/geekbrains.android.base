@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.example.geekbrainsandroidweather"
@@ -21,11 +22,11 @@ android {
     buildTypes.each {
         Properties properties = new Properties()
         properties.load(project.rootProject.file("connection.properties").newDataInputStream())
-        def weatherApiKey  = properties.getProperty("WEATHER_API_KEY", "")
-        def baseUrl  = properties.getProperty("BASE_URL", "")
-        def baseDadataUrl  = properties.getProperty("BASE_URL_DADATA", "")
-        def dadataApiKey  = properties.getProperty("DADATA_API_KEY", "")
-        def dadataSecret  = properties.getProperty("DADATA_SECRET", "")
+        def weatherApiKey = properties.getProperty("WEATHER_API_KEY", "")
+        def baseUrl = properties.getProperty("BASE_URL", "")
+        def baseDadataUrl = properties.getProperty("BASE_URL_DADATA", "")
+        def dadataApiKey = properties.getProperty("DADATA_API_KEY", "")
+        def dadataSecret = properties.getProperty("DADATA_SECRET", "")
         it.buildConfigField "String", "WEATHER_API_KEY", weatherApiKey
         it.buildConfigField "String", "BASE_URL", baseUrl
         it.buildConfigField "String", "BASE_URL_DADATA", baseDadataUrl
@@ -33,9 +34,6 @@ android {
         it.buildConfigField "String", "DADATA_SECRET", dadataSecret
     }
 }
-
-
-
 
 
 dependencies {
@@ -58,7 +56,11 @@ dependencies {
 
     def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
     annotationProcessor "androidx.room:room-compiler:$room_version"
+
+    def work_version = "2.4.0"
+    implementation "androidx.work:work-runtime:$work_version"
 
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

@@ -68,7 +68,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
         init(view);
         setupRecyclerView();
         setOnAddCityInputEditorBehaviour(view);
-        requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.INVISIBLE);
+        hideNavigationBar();
         setOnCityEditTextChangeBehaviour();
     }
 
@@ -233,6 +233,10 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
     private void hideKeyboard(@NonNull View view) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    private void hideNavigationBar() {
+//        requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.INVISIBLE);
     }
 
 }

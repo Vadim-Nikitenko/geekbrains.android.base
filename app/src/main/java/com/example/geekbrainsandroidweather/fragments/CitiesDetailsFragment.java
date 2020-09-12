@@ -17,9 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.geekbrainsandroidweather.BuildConfig;
 import com.example.geekbrainsandroidweather.R;
@@ -64,6 +66,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private ThermometerView thermometerView;
     private CityDetailsData cityDetailsData;
     private DrawerLayout drawer;
+    private SwipeRefreshLayout swipeRefresh;
     private SharedPreferences sharedPref;
 
     public static CitiesDetailsFragment create(CityDetailsData cityDetails) {
@@ -91,6 +94,26 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         getSettingParameters();
         requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
         setBackground();
+        setSwipeRefreshBehaviour();
+    }
+
+    private void setSwipeRefreshBehaviour() {
+        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                replaceFragment(CitiesDetailsFragment.create(cityDetailsData), R.id.fragmentContainer, false);
+            }
+        });
+    }
+
+    private void replaceFragment(Fragment fragment, int containerId, boolean isAddedToBackStack) {
+        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+        fragmentTransaction.replace(containerId, fragment);
+        if (isAddedToBackStack) {
+            fragmentTransaction.addToBackStack(null);
+        }
+        getParentFragmentManager().popBackStack();
+        fragmentTransaction.commit();
     }
 
     private void init(@NonNull View view) {
@@ -109,6 +132,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         humidityCustomView = view.findViewById(R.id.humidityCustomView);
         windCustomView = view.findViewById(R.id.windCustomView);
         pressureCustomView = view.findViewById(R.id.pressureCustomView);
+        swipeRefresh = view.findViewById(R.id.swipeRefresh);
         drawer = requireActivity().findViewById(R.id.drawer_layout);
         cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
