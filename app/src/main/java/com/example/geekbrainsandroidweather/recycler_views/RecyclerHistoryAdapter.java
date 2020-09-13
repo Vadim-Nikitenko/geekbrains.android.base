@@ -37,7 +37,7 @@ public class RecyclerHistoryAdapter extends RecyclerView.Adapter<RecyclerHistory
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.setupViews(historyList.get(position).date,
                 historyList.get(position).city,
-                historyList.get(position).temperature);
+                historyList.get(position).temperature + "°");
     }
 
     // возвращает количество элементов в массиве
