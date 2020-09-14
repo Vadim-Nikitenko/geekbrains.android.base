@@ -52,6 +52,8 @@ import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest
 import com.example.geekbrainsandroidweather.room.TemperatureHistoryHelper;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +83,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
         requestLocationPermission();
         setupActionBar();
         setOnClickForSideMenuItems();
+        firebaseSunc();
+    }
+
+    private void firebaseSunc() {
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId("geekbrainsandroidweather") // Required for Analytics.
+                .setProjectId("741764694385") // Required for Firebase Installations.
+                .setApiKey("AIzaSyAjDNVU_EUcjJDGi2-ZzbFLIrws082qdxw") // Required for Auth.
+                .build();
+        FirebaseApp.initializeApp(this, options, "com.example.geekbrainsandroidweather");
     }
 
     @Override
