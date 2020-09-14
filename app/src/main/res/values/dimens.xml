@@ -28,4 +28,5 @@
     <dimen name="thermometer_width">20dp</dimen>
     <dimen name="thermometer_height">35dp</dimen>
     <dimen name="spinner_padding">10dp</dimen>
+    <dimen name="top_nav_bar_margin">80dp</dimen>
 </resources>
