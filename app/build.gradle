@@ -27,11 +27,21 @@ android {
         def baseDadataUrl = properties.getProperty("BASE_URL_DADATA", "")
         def dadataApiKey = properties.getProperty("DADATA_API_KEY", "")
         def dadataSecret = properties.getProperty("DADATA_SECRET", "")
+
+        def fbAppId = properties.getProperty("FIREBASE_APP_ID", "")
+        def fbProjectId = properties.getProperty("FIREBASE_PROJECT_ID", "")
+        def fbApiKey = properties.getProperty("FIREBASE_API_KEY", "")
+        def fbAppName = properties.getProperty("FIREBASE_APP_NAME", "")
         it.buildConfigField "String", "WEATHER_API_KEY", weatherApiKey
         it.buildConfigField "String", "BASE_URL", baseUrl
         it.buildConfigField "String", "BASE_URL_DADATA", baseDadataUrl
         it.buildConfigField "String", "DADATA_API_KEY", dadataApiKey
         it.buildConfigField "String", "DADATA_SECRET", dadataSecret
+
+        it.buildConfigField "String", "FIREBASE_APP_ID", fbAppId
+        it.buildConfigField "String", "FIREBASE_PROJECT_ID", fbProjectId
+        it.buildConfigField "String", "FIREBASE_API_KEY", fbApiKey
+        it.buildConfigField "String", "FIREBASE_APP_NAME", fbAppName
     }
 }
 

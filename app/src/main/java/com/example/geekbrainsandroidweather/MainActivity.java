@@ -7,11 +7,9 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,12 +31,6 @@ import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
 
 import com.example.geekbrainsandroidweather.fragments.AddCityFragment;
 import com.example.geekbrainsandroidweather.fragments.CitiesDetailsFragment;
@@ -57,7 +49,6 @@ import com.google.firebase.FirebaseOptions;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -84,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         requestLocationPermission();
         setupActionBar();
         setOnClickForSideMenuItems();
-        firebaseSunc();
+        firebaseSync();
     }
 
     @Override
@@ -280,14 +271,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
     }
 
-//    private LocationListener locationListener = new LocationListener() {
-//        @Override
-//        public void onLocationChanged(@NonNull Location location) {
-//            lon = String.valueOf(location.getLongitude());
-//            lat = String.valueOf(location.getLatitude());
-//        }
-//    };
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -304,13 +287,14 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
     }
 
-    private void firebaseSunc() {
+    //debug
+    private void firebaseSync() {
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId("geekbrainsandroidweather")
-                .setProjectId("741764694385")
-                .setApiKey("AIzaSyAjDNVU_EUcjJDGi2-ZzbFLIrws082qdxw")
+                .setApplicationId(BuildConfig.FIREBASE_APP_ID)
+                .setProjectId(BuildConfig.FIREBASE_PROJECT_ID)
+                .setApiKey(BuildConfig.FIREBASE_API_KEY)
                 .build();
-        FirebaseApp.initializeApp(this, options, "com.example.geekbrainsandroidweather");
+        FirebaseApp.initializeApp(this, options, BuildConfig.FIREBASE_APP_NAME);
     }
 
 }
