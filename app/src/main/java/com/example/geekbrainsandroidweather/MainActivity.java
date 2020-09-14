@@ -85,16 +85,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         firebaseSync();
     }
 
-    private void checkSystemNavigation() {
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mainLayout.getLayoutParams();
-        boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
-        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-        if (!hasMenuKey && !hasBackKey) {
-            params.setMargins(0,0,0,0);
-            mainLayout.setLayoutParams(params);
-        }
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -312,6 +302,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 .setApiKey(BuildConfig.FIREBASE_API_KEY)
                 .build();
         FirebaseApp.initializeApp(this, options, BuildConfig.FIREBASE_APP_NAME);
+    }
+
+    private void checkSystemNavigation() {
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mainLayout.getLayoutParams();
+        boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+        if (!hasMenuKey && !hasBackKey) {
+            params.setMargins(0,0,0,0);
+            mainLayout.setLayoutParams(params);
+        }
     }
 
 }

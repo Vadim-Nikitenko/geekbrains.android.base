@@ -83,7 +83,7 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public CityDetailsData withPressure(int pressure) {
-        this.pressure = String.format(Locale.getDefault(), " %d", pressure) + " hPa";
+        this.pressure = String.format(Locale.getDefault(), " %.0f", pressure * 0.75) + " мм.рт.ст.";
         return this;
     }
 
