@@ -13,9 +13,13 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -25,6 +29,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
@@ -63,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private CityDetailsData cityDetailsData;
     private String lat;
     private String lon;
+    private ConstraintLayout mainLayout;
     private TemperatureHistoryHelper historyHelper;
     private BroadcastReceiver networkReceiver = new NetworkChangeReceiver();
     private static final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
@@ -72,10 +78,21 @@ public class MainActivity extends AppCompatActivity implements Constants {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        checkSystemNavigation();
         requestLocationPermission();
         setupActionBar();
         setOnClickForSideMenuItems();
         firebaseSync();
+    }
+
+    private void checkSystemNavigation() {
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mainLayout.getLayoutParams();
+        boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+        if (!hasMenuKey && !hasBackKey) {
+            params.setMargins(0,0,0,0);
+            mainLayout.setLayoutParams(params);
+        }
     }
 
     @Override
@@ -108,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
         progressBar = findViewById(R.id.progressBar);
+        mainLayout = findViewById(R.id.mainLayout);
         historyHelper = new TemperatureHistoryHelper();
     }
 
@@ -286,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
             finish();
         }
     }
-    
+
     private void firebaseSync() {
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApplicationId(BuildConfig.FIREBASE_APP_ID)
