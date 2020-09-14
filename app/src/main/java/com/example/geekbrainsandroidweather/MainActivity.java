@@ -55,6 +55,7 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -84,15 +85,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         setupActionBar();
         setOnClickForSideMenuItems();
         firebaseSunc();
-    }
-
-    private void firebaseSunc() {
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId("geekbrainsandroidweather") // Required for Analytics.
-                .setProjectId("741764694385") // Required for Firebase Installations.
-                .setApiKey("AIzaSyAjDNVU_EUcjJDGi2-ZzbFLIrws082qdxw") // Required for Auth.
-                .build();
-        FirebaseApp.initializeApp(this, options, "com.example.geekbrainsandroidweather");
     }
 
     @Override
@@ -268,26 +260,33 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void setCurrentCoordinates() {
-        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null) {
-            lon = String.valueOf(Objects.requireNonNull(location).getLongitude());
-            lat = String.valueOf(location.getLatitude());
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        LocationManager mLocationManager;
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                bestLocation = l;
+                lon = String.valueOf(Objects.requireNonNull(l).getLongitude());
+                lat = String.valueOf(l.getLatitude());
+            }
         }
     }
 
-    private LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(@NonNull Location location) {
-            lon = String.valueOf(location.getLongitude());
-            lat = String.valueOf(location.getLatitude());
-        }
-    };
+//    private LocationListener locationListener = new LocationListener() {
+//        @Override
+//        public void onLocationChanged(@NonNull Location location) {
+//            lon = String.valueOf(location.getLongitude());
+//            lat = String.valueOf(location.getLatitude());
+//        }
+//    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -303,6 +302,15 @@ public class MainActivity extends AppCompatActivity implements Constants {
         } else {
             finish();
         }
+    }
+
+    private void firebaseSunc() {
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId("geekbrainsandroidweather")
+                .setProjectId("741764694385")
+                .setApiKey("AIzaSyAjDNVU_EUcjJDGi2-ZzbFLIrws082qdxw")
+                .build();
+        FirebaseApp.initializeApp(this, options, "com.example.geekbrainsandroidweather");
     }
 
 }
