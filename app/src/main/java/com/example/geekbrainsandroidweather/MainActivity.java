@@ -286,8 +286,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
             finish();
         }
     }
-
-    //debug
+    
     private void firebaseSync() {
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApplicationId(BuildConfig.FIREBASE_APP_ID)
