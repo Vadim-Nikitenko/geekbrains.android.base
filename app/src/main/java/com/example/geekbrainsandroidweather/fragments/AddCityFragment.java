@@ -2,7 +2,9 @@ package com.example.geekbrainsandroidweather.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -55,6 +57,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
     private ProgressBar progressBar;
     private TextView emptyTextView;
     private TemperatureHistoryHelper historyHelper;
+    private SharedPreferences sharedPref;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +82,7 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
         emptyTextView = view.findViewById(R.id.emptyCityTextView);
         progressBar = view.findViewById(R.id.progressBar);
         historyHelper = new TemperatureHistoryHelper();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
     }
 
     //сворачиваем клавиатуру при клике на ОК (IME_ACTION_DONE) keyboard
@@ -199,12 +203,19 @@ public class AddCityFragment extends Fragment implements IRVOnItemClick, Constan
                     public void onResponse(@NonNull Call<WeatherRequest> call,
                                            @NonNull Response<WeatherRequest> response) {
                         if (response.body() != null && response.isSuccessful()) {
-                            CityDetailsData cityDetailsData = new CityDetailsData(response.body(), cities.get(position).getLat(), cities.get(position).getLon());
+                            String lat = cities.get(position).getLat();
+                            String lon = cities.get(position).getLon();
+                            CityDetailsData cityDetailsData = new CityDetailsData(response.body(), lat, lon);
                             replaceFragment(cityDetailsData);
                             NavigationView navigationView = requireActivity().findViewById(R.id.nav_view);
                             navigationView.setCheckedItem(R.id.page_1);
                             historyHelper.insertTemperature(cityDetailsData);
                             hideKeyboard(view);
+
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(KEY_CURRENT_CITY_LAT, lat);
+                            editor.putString(KEY_CURRENT_CITY_LON, lon);
+                            editor.apply();
                         } else {
                             AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity(), R.style.AlertDialogCustom);
                             builder.setTitle(R.string.error_message)

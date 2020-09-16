@@ -7,12 +7,16 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -25,13 +29,13 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -69,20 +73,30 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private String lat;
     private String lon;
     private ConstraintLayout mainLayout;
+
     private TemperatureHistoryHelper historyHelper;
     private BroadcastReceiver networkReceiver = new NetworkChangeReceiver();
-    private static final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+    private SharedPreferences sharedPref;
+    private LocationManager mLocManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
-        checkSystemNavigation();
         requestLocationPermission();
+        checkSystemNavigation();
         setupActionBar();
         setOnClickForSideMenuItems();
-        firebaseSync();
+//        firebaseSync();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            recreate();
+        }
     }
 
     @Override
@@ -117,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
         progressBar = findViewById(R.id.progressBar);
         mainLayout = findViewById(R.id.mainLayout);
         historyHelper = new TemperatureHistoryHelper();
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mLocManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
     }
 
     private void setupActionBar() {
@@ -149,7 +165,9 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     drawer.close();
                 }
                 if (item.getItemId() == R.id.page_1) {
-                    replaceFragment(CitiesDetailsFragment.create(cityDetailsData), R.id.fragmentContainer, false);
+                    setCurrentCoordinates();
+                    sharedPref.edit().remove(KEY_CURRENT_CITY_LAT).remove(KEY_CURRENT_CITY_LON).apply();
+                    setCityFragment();
                     drawer.close();
                 }
                 return true;
@@ -172,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void setCityFragment() {
+        String lat = sharedPref.getString(KEY_CURRENT_CITY_LAT, this.lat);
+        String lon = sharedPref.getString(KEY_CURRENT_CITY_LON, this.lon);
+
         OpenWeatherRepo.getInstance().getAPI().loadWeather(lat, lon,
                 BuildConfig.WEATHER_API_KEY, LANG, UNITS)
                 .enqueue(new Callback<WeatherRequest>() {
@@ -222,8 +243,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void showAlert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext(), R.style.AlertDialogCustom);
-        builder.setTitle(R.string.error_message)
+        new AlertDialog.Builder(getApplicationContext(), R.style.AlertDialogCustom)
+                .setTitle(R.string.error_message)
                 .setMessage(R.string.try_later)
                 .setIcon(R.drawable.ic_baseline_info_24)
                 .setPositiveButton(R.string.ok,
@@ -231,9 +252,9 @@ public class MainActivity extends AppCompatActivity implements Constants {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
                             }
-                        });
-        AlertDialog alert = builder.create();
-        alert.show();
+                        })
+                .create()
+                .show();
     }
 
     private void requestLocationPermission() {
@@ -247,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             ActivityCompat.requestPermissions(MainActivity.this,
                                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    99);
+                                    100);
                         }
                     })
                     .create()
@@ -259,15 +280,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void setCurrentCoordinates() {
-        LocationManager mLocationManager;
-        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-        List<String> providers = mLocationManager.getProviders(true);
+        List<String> providers = mLocManager.getProviders(true);
         Location bestLocation = null;
+        if (providers.size() == 0) {
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
         for (String provider : providers) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            Location l = mLocationManager.getLastKnownLocation(provider);
+            Location l = mLocManager.getLastKnownLocation(provider);
             if (l == null) {
                 continue;
             }
@@ -280,20 +302,24 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)
-                    == PackageManager.PERMISSION_GRANTED) {
-                setCurrentCoordinates();
-                setCityFragment();
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == 100) {
+            boolean permissionsGranted = true;
+            for (int grantResult : grantResults) {
+                if (grantResult != PackageManager.PERMISSION_GRANTED) {
+                    permissionsGranted = false;
+                    break;
+                }
             }
-        } else {
-            finish();
+            if (!permissionsGranted) {
+                recreate();
+            } else {
+                requestLocationPermission();
+            }
         }
     }
+
 
     private void firebaseSync() {
         FirebaseOptions options = new FirebaseOptions.Builder()
@@ -309,9 +335,14 @@ public class MainActivity extends AppCompatActivity implements Constants {
         boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
         boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
         if (!hasMenuKey && !hasBackKey) {
-            params.setMargins(0,0,0,0);
+            params.setMargins(0, 0, 0, 0);
             mainLayout.setLayoutParams(params);
         }
+    }
+
+    private boolean isGeoDisabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
 }

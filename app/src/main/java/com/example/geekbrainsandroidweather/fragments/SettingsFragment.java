@@ -43,9 +43,9 @@ public class SettingsFragment extends Fragment implements Constants {
         windSpeedCheckbox = view.findViewById(R.id.windSpeedCheckbox);
         humidityCheckbox = view.findViewById(R.id.humidityCheckbox);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        isPressureChecked = sharedPref.getBoolean(keyPressure, true);
-        isHumidityChecked = sharedPref.getBoolean(keyHumidity, true);
-        isWindSpeedChecked = sharedPref.getBoolean(keyWindSpeed, true);
+        isPressureChecked = sharedPref.getBoolean(KEY_PRESSURE, true);
+        isHumidityChecked = sharedPref.getBoolean(KEY_HUMIDITY, true);
+        isWindSpeedChecked = sharedPref.getBoolean(KEY_WIND_SPEED, true);
     }
 
     private void setCheckBoxesBehaviour() {
@@ -57,21 +57,21 @@ public class SettingsFragment extends Fragment implements Constants {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isPressureChecked = b;
-                saveToPreferences(keyPressure, isPressureChecked);
+                saveToPreferences(KEY_PRESSURE, isPressureChecked);
             }
         });
         windSpeedCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isWindSpeedChecked = b;
-                saveToPreferences(keyWindSpeed, isWindSpeedChecked);
+                saveToPreferences(KEY_WIND_SPEED, isWindSpeedChecked);
             }
         });
         humidityCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isHumidityChecked = b;
-                saveToPreferences(keyHumidity, isHumidityChecked);
+                saveToPreferences(KEY_HUMIDITY, isHumidityChecked);
             }
         });
     }

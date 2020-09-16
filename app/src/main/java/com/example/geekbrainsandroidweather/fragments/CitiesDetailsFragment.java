@@ -246,9 +246,9 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     }
 
     private void getSettingParameters() {
-        setParameterVisibility(sharedPref.getBoolean(keyPressure, true), pressureCustomView);
-        setParameterVisibility(sharedPref.getBoolean(keyHumidity, true), humidityCustomView);
-        setParameterVisibility(sharedPref.getBoolean(keyWindSpeed, true), windCustomView);
+        setParameterVisibility(sharedPref.getBoolean(KEY_PRESSURE, true), pressureCustomView);
+        setParameterVisibility(sharedPref.getBoolean(KEY_HUMIDITY, true), humidityCustomView);
+        setParameterVisibility(sharedPref.getBoolean(KEY_WIND_SPEED, true), windCustomView);
     }
 
     @Override
