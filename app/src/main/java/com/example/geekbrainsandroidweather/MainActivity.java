@@ -12,6 +12,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private BroadcastReceiver networkReceiver = new NetworkChangeReceiver();
     private SharedPreferences sharedPref;
     private LocationManager mLocManager = null;
+    private LocListener mLocListener = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         historyHelper = new TemperatureHistoryHelper();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mLocManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        mLocListener = new LocListener();
     }
 
     private void setupActionBar() {
@@ -192,31 +195,32 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private void setCityFragment() {
         String lat = sharedPref.getString(KEY_CURRENT_CITY_LAT, this.lat);
         String lon = sharedPref.getString(KEY_CURRENT_CITY_LON, this.lon);
+        if (lat != null && lon != null) {
+            OpenWeatherRepo.getInstance().getAPI().loadWeather(lat, lon,
+                    BuildConfig.WEATHER_API_KEY, LANG, UNITS)
+                    .enqueue(new Callback<WeatherRequest>() {
+                        @SuppressLint("UseCompatLoadingForDrawables")
+                        @Override
+                        public void onResponse(@NonNull Call<WeatherRequest> call,
+                                               @NonNull Response<WeatherRequest> response) {
+                            if (response.body() != null && response.isSuccessful()) {
+                                cityDetailsData = new CityDetailsData(response.body(), lat, lon);
+                                CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
+                                replaceFragment(fragment, R.id.fragmentContainer, false);
 
-        OpenWeatherRepo.getInstance().getAPI().loadWeather(lat, lon,
-                BuildConfig.WEATHER_API_KEY, LANG, UNITS)
-                .enqueue(new Callback<WeatherRequest>() {
-                    @SuppressLint("UseCompatLoadingForDrawables")
-                    @Override
-                    public void onResponse(@NonNull Call<WeatherRequest> call,
-                                           @NonNull Response<WeatherRequest> response) {
-                        if (response.body() != null && response.isSuccessful()) {
-                            cityDetailsData = new CityDetailsData(response.body(), lat, lon);
-                            CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
-                            replaceFragment(fragment, R.id.fragmentContainer, false);
-
-                            historyHelper.insertTemperature(cityDetailsData);
-                        } else {
-                            showAlert();
+                                historyHelper.insertTemperature(cityDetailsData);
+                            } else {
+                                showAlert();
+                            }
+                            progressBar.setVisibility(View.GONE);
                         }
-                        progressBar.setVisibility(View.GONE);
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<WeatherRequest> call, @NonNull Throwable t) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+                        @Override
+                        public void onFailure(@NonNull Call<WeatherRequest> call, @NonNull Throwable t) {
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    });
+        }
     }
 
 
@@ -258,6 +262,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void requestLocationPermission() {
+        if (!isGeoEnabled()) {
+        }
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             new AlertDialog.Builder(this)
@@ -282,9 +288,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private void setCurrentCoordinates() {
         List<String> providers = mLocManager.getProviders(true);
         Location bestLocation = null;
-        if (providers.size() == 0) {
-            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-        }
         for (String provider : providers) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
@@ -301,6 +304,25 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mLocListener == null) mLocListener = new LocListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                3000L, 1000.0F, mLocListener);
+    }
+
+    @Override
+    protected void onPause() {
+        if (mLocListener != null) mLocManager.removeUpdates(mLocListener);
+        super.onPause();
+
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -312,10 +334,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     break;
                 }
             }
-            if (!permissionsGranted) {
+            if (!permissionsGranted && !isGeoEnabled()) {
                 recreate();
-            } else {
-                requestLocationPermission();
             }
         }
     }
@@ -340,9 +360,36 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
     }
 
-    private boolean isGeoDisabled() {
+    private boolean isGeoEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    private final class LocListener implements LocationListener {
+
+        @Override
+        public void onLocationChanged(Location location) {
+            lon = String.valueOf(Objects.requireNonNull(location).getLongitude());
+            lat = String.valueOf(location.getLatitude());
+            setCityFragment();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) { /* Empty */ }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+            @SuppressLint("MissingPermission")
+            Location l = mLocManager.getLastKnownLocation(provider);
+            lon = String.valueOf(Objects.requireNonNull(l).getLongitude());
+            lat = String.valueOf(l.getLatitude());
+            setCityFragment();
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
     }
 
 }
