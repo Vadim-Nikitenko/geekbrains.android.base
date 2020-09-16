@@ -13,7 +13,7 @@
     <dimen name="weather_for_the_week_text_size">14sp</dimen>
     <dimen name="double_default_text_size">40sp</dimen>
     <dimen name="bottom_bar_padding">50dp</dimen>
-    <dimen name="navigation_bar_height">60dp</dimen>
+    <dimen name="navigation_bar_height">50dp</dimen>
     <dimen name="navigation_status_bar_height">30dp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -28,4 +28,5 @@
     <dimen name="thermometer_width">20dp</dimen>
     <dimen name="thermometer_height">35dp</dimen>
     <dimen name="spinner_padding">10dp</dimen>
+    <dimen name="top_nav_bar_padding">80dp</dimen>
 </resources>

@@ -14,7 +14,7 @@ import java.util.Date;
         unique = true)})
 public class History {
 
-    public History(String city, String temperature, String  date) {
+    public History(String city, int temperature, String  date) {
         this.city = city;
         this.temperature = temperature;
         this.date = date;
@@ -24,7 +24,7 @@ public class History {
     public long id;
 
     public String city;
-    public String temperature;
+    public int temperature;
     public String date;
 
 

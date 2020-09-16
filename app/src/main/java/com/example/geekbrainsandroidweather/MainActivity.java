@@ -2,15 +2,24 @@ package com.example.geekbrainsandroidweather;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyCharacterMap;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
@@ -20,6 +29,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
@@ -39,7 +49,10 @@ import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest
 import com.example.geekbrainsandroidweather.room.TemperatureHistoryHelper;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -55,16 +68,45 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private CityDetailsData cityDetailsData;
     private String lat;
     private String lon;
+    private ConstraintLayout mainLayout;
     private TemperatureHistoryHelper historyHelper;
+    private BroadcastReceiver networkReceiver = new NetworkChangeReceiver();
+    private static final String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        checkSystemNavigation();
         requestLocationPermission();
         setupActionBar();
         setOnClickForSideMenuItems();
+        firebaseSync();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerReceiver(networkReceiver, new IntentFilter(CONNECTIVITY_CHANGE));
+        initNotificationChannel();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(networkReceiver);
+    }
+
+    private void initNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            int importance = NotificationManager.IMPORTANCE_LOW;
+            NotificationChannel channel = new NotificationChannel("1", "networkStateChanges", importance);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
     }
 
     private void init() {
@@ -73,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         toolbar = findViewById(R.id.toolbar);
         appBarLayout = findViewById(R.id.appBarLayout);
         progressBar = findViewById(R.id.progressBar);
+        mainLayout = findViewById(R.id.mainLayout);
         historyHelper = new TemperatureHistoryHelper();
     }
 
@@ -137,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     public void onResponse(@NonNull Call<WeatherRequest> call,
                                            @NonNull Response<WeatherRequest> response) {
                         if (response.body() != null && response.isSuccessful()) {
-                            cityDetailsData = new CityDetailsData(response.body());
+                            cityDetailsData = new CityDetailsData(response.body(), lat, lon);
                             CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
                             replaceFragment(fragment, R.id.fragmentContainer, false);
 
@@ -154,6 +197,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     }
                 });
     }
+
 
     private void replaceFragment(Fragment fragment, int containerId, boolean isAddedToBackStack) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -215,26 +259,25 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void setCurrentCoordinates() {
-        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location location = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null) {
-            lon = String.valueOf(Objects.requireNonNull(location).getLongitude());
-            lat = String.valueOf(location.getLatitude());
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        LocationManager mLocationManager;
+        mLocationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = mLocationManager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            Location l = mLocationManager.getLastKnownLocation(provider);
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                bestLocation = l;
+                lon = String.valueOf(Objects.requireNonNull(l).getLongitude());
+                lat = String.valueOf(l.getLatitude());
+            }
         }
     }
-
-    private LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(@NonNull Location location) {
-            lon = String.valueOf(location.getLongitude());
-            lat = String.valueOf(location.getLatitude());
-        }
-    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -249,6 +292,25 @@ public class MainActivity extends AppCompatActivity implements Constants {
             }
         } else {
             finish();
+        }
+    }
+
+    private void firebaseSync() {
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId(BuildConfig.FIREBASE_APP_ID)
+                .setProjectId(BuildConfig.FIREBASE_PROJECT_ID)
+                .setApiKey(BuildConfig.FIREBASE_API_KEY)
+                .build();
+        FirebaseApp.initializeApp(this, options, BuildConfig.FIREBASE_APP_NAME);
+    }
+
+    private void checkSystemNavigation() {
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) mainLayout.getLayoutParams();
+        boolean hasMenuKey = ViewConfiguration.get(getApplicationContext()).hasPermanentMenuKey();
+        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
+        if (!hasMenuKey && !hasBackKey) {
+            params.setMargins(0,0,0,0);
+            mainLayout.setLayoutParams(params);
         }
     }
 

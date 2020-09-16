@@ -11,7 +11,7 @@ public class TemperatureHistoryHelper {
     public void insertTemperature(CityDetailsData cityDetailsData) {
         new Thread(() -> {
             History history = new History(cityDetailsData.getCityName(),
-                    cityDetailsData.getTemperature(),
+                    Integer.parseInt(cityDetailsData.getTemperature().replace("°", "")),
                     OpenWeatherHelper.parseDate(System.currentTimeMillis()));
             App.getInstance().getEducationDao().insertHistory(history);
         }).start();

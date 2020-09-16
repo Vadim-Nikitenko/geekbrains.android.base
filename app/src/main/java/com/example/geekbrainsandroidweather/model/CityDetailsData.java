@@ -25,9 +25,11 @@ public class CityDetailsData implements Serializable, Constants {
     private String sunriseAndSunset;
     private String windDegrees;
     private String defaultIcon;
+    private String lat;
+    private String lon;
 
-    public CityDetailsData(WeatherRequest weatherRequest) {
-                this
+    public CityDetailsData(WeatherRequest weatherRequest, String lat, String lon) {
+        this
                 .withCityName(weatherRequest.getName())
                 .withTemperature(weatherRequest.getMain().getTemp())
                 .withPressure(weatherRequest.getMain().getPressure())
@@ -39,8 +41,27 @@ public class CityDetailsData implements Serializable, Constants {
                 .withCloudy(weatherRequest.getClouds().getAll())
                 .withWindDegrees(weatherRequest.getWind().getDeg())
                 .withSunriseAndSunset(weatherRequest.getSys().getSunrise(), weatherRequest.getSys().getSunset())
-                .withWeatherMainState(weatherRequest.getWeather().get(0).getMain());
-                setDefaultIcon(weatherRequest.getWeather().get(0).getIcon());
+                .withWeatherMainState(weatherRequest.getWeather().get(0).getMain())
+                .withLat(lat).withLon(lon);
+        setDefaultIcon(weatherRequest.getWeather().get(0).getIcon());
+    }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public CityDetailsData withLat(String lat) {
+        this.lat = lat;
+        return this;
+    }
+
+    public String getLon() {
+        return lon;
+    }
+
+    public CityDetailsData withLon(String lon) {
+        this.lon = lon;
+        return this;
     }
 
     public String getDefaultIcon() {
@@ -62,17 +83,18 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public CityDetailsData withPressure(int pressure) {
-        this.pressure = String.format(Locale.getDefault(), " %d", pressure) + " hPa";
+        this.pressure = String.format(Locale.getDefault(), " %.0f", pressure * 0.75) + " мм.рт.ст.";
         return this;
     }
 
     public CityDetailsData withHumidity(int humidity) {
-        this.humidity = String.format(Locale.getDefault(), " %d", humidity) + "%";;
+        this.humidity = String.format(Locale.getDefault(), " %d", humidity) + "%";
+        ;
         return this;
     }
 
     public CityDetailsData withWindSpeed(float windSpeed) {
-        this.windSpeed = String.format(Locale.getDefault(), "%.0f", windSpeed) + " m.s.";
+        this.windSpeed = String.format(Locale.getDefault(), "%.0f", windSpeed) + " м.с.";
         return this;
     }
 
@@ -112,8 +134,8 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public CityDetailsData withSunriseAndSunset(long sunrise, long sunset) {
-        Date dateSunrise = new Date(sunrise*1000L);
-        Date dateSunset = new Date(sunset*1000L);
+        Date dateSunrise = new Date(sunrise * 1000L);
+        Date dateSunset = new Date(sunset * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         sdf.setTimeZone(TimeZone.getTimeZone("UTC+3"));
         String rise = sdf.format(dateSunrise);
@@ -149,7 +171,7 @@ public class CityDetailsData implements Serializable, Constants {
     }
 
     public String getWindSpeed() {
-        return "Скорость ветра: " +windSpeed;
+        return "Скорость ветра: " + windSpeed;
     }
 
     public String getCityName() {
