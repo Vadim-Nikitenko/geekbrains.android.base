@@ -20,5 +20,9 @@
             android:id="@+id/page_4"
             android:icon="@drawable/ic_baseline_history_24"
             android:title="@string/history" />
+        <item
+            android:id="@+id/page_5"
+            android:icon="@drawable/ic_baseline_location_on_24"
+            android:title="@string/map" />
     </group>
 </menu>

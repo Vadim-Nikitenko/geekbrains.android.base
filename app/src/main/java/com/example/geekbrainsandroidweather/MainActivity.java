@@ -30,7 +30,6 @@ import android.view.WindowManager;
 import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -46,6 +45,7 @@ import com.example.geekbrainsandroidweather.fragments.AddCityFragment;
 import com.example.geekbrainsandroidweather.fragments.CitiesDetailsFragment;
 import com.example.geekbrainsandroidweather.fragments.Constants;
 import com.example.geekbrainsandroidweather.fragments.DevelopersInfoFragment;
+import com.example.geekbrainsandroidweather.fragments.GoogleMapFragment;
 import com.example.geekbrainsandroidweather.fragments.HistoryFragment;
 import com.example.geekbrainsandroidweather.fragments.SettingsFragment;
 import com.example.geekbrainsandroidweather.model.CityDetailsData;
@@ -94,14 +94,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            recreate();
-        }
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         registerReceiver(networkReceiver, new IntentFilter(CONNECTIVITY_CHANGE));
@@ -138,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         mLocListener = new LocListener();
     }
 
+    // настройка прозрачного бара
     private void setupActionBar() {
         setSupportActionBar(toolbar);
         appBarLayout.setOutlineProvider(null);
@@ -151,10 +144,15 @@ public class MainActivity extends AppCompatActivity implements Constants {
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
     }
 
+    // клики по пунктам меню drawer
     private void setOnClickForSideMenuItems() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.page_5) {
+                    replaceFragment(new GoogleMapFragment(), R.id.fragmentContainer, true);
+                    drawer.close();
+                }
                 if (item.getItemId() == R.id.page_4) {
                     replaceFragment(new HistoryFragment(), R.id.fragmentContainer, true);
                     drawer.close();
@@ -199,7 +197,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
             OpenWeatherRepo.getInstance().getAPI().loadWeather(lat, lon,
                     BuildConfig.WEATHER_API_KEY, LANG, UNITS)
                     .enqueue(new Callback<WeatherRequest>() {
-                        @SuppressLint("UseCompatLoadingForDrawables")
                         @Override
                         public void onResponse(@NonNull Call<WeatherRequest> call,
                                                @NonNull Response<WeatherRequest> response) {
@@ -217,12 +214,12 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
                         @Override
                         public void onFailure(@NonNull Call<WeatherRequest> call, @NonNull Throwable t) {
+                            t.printStackTrace();
                             progressBar.setVisibility(View.GONE);
                         }
                     });
         }
     }
-
 
     private void replaceFragment(Fragment fragment, int containerId, boolean isAddedToBackStack) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -262,10 +259,11 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     private void requestLocationPermission() {
-        if (!isGeoEnabled()) {
-        }
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.geo_msg)
                     .setCancelable(false)
@@ -281,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     .show();
         } else {
             setCurrentCoordinates();
-            setCityFragment();
         }
     }
 
@@ -304,12 +301,14 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         if (mLocListener == null) mLocListener = new LocListener();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mLocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -340,7 +339,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
     }
 
-
     private void firebaseSync() {
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApplicationId(BuildConfig.FIREBASE_APP_ID)
@@ -365,6 +363,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 
+    // внутренни класс слушатель изменения локации
     private final class LocListener implements LocationListener {
 
         @Override
@@ -375,7 +374,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
         }
 
         @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) { /* Empty */ }
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
 
         @Override
         public void onProviderEnabled(String provider) {
@@ -391,5 +391,4 @@ public class MainActivity extends AppCompatActivity implements Constants {
             startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
         }
     }
-
 }
