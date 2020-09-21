@@ -7,6 +7,8 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.geekbrainsandroidweather.model.CityDetailsData;
+import com.example.geekbrainsandroidweather.room.model.Favorites;
 import com.example.geekbrainsandroidweather.room.model.History;
 
 import java.util.List;
@@ -25,6 +27,18 @@ public interface TemperatureHistoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertHistory(History history);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertFavorites(Favorites favorites);
+
+    @Query("DELETE FROM history")
+    void deleteAllHistory();
+
+    @Update
+    void updateFavorites(Favorites favorites);
+
+    @Delete
+    void deleteFavorites(Favorites favorites);
+
     // Метод для замены данных студента
     @Update
     void updateHistory(History history);
@@ -33,7 +47,12 @@ public interface TemperatureHistoryDao {
     @Delete
     void deleteHistory(History history);
 
-    // Удалим данные студента, просто зная ключ
+    @Query("DELETE FROM favorites where city = :city")
+    void deleteFavorites(String city);
+
+    @Query("SELECT * FROM favorites order by city")
+    List<Favorites> selectFavorites();
+
     @Query("SELECT * FROM history order by date desc LIMIT 30")
     List<History> selectHistoryByDate();
 

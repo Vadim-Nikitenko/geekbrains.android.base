@@ -5,11 +5,14 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,11 +44,15 @@ import com.example.geekbrainsandroidweather.rest.OpenWeatherHelper;
 import com.example.geekbrainsandroidweather.rest.OpenWeatherRepo;
 import com.example.geekbrainsandroidweather.rest.entities.forecast.ForecastRequest;
 import com.example.geekbrainsandroidweather.rest.entities.weather.WeatherRequest;
-import com.example.geekbrainsandroidweather.room.TemperatureHistoryHelper;
+import com.example.geekbrainsandroidweather.room.App;
+import com.example.geekbrainsandroidweather.room.RoomHelper;
+import com.example.geekbrainsandroidweather.room.model.Favorites;
+import com.example.geekbrainsandroidweather.room.model.History;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -71,10 +79,10 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     private DrawerLayout drawer;
     private SwipeRefreshLayout swipeRefresh;
     private SharedPreferences sharedPref;
+    private AppCompatCheckBox addToFavorite;
 
-    public static CitiesDetailsFragment create(CityDetailsData cityDetails) {
+    public static CitiesDetailsFragment create(CityDetailsData cityDetails, Bundle bundle) {
         CitiesDetailsFragment citiesDetailsFragment = new CitiesDetailsFragment();
-        Bundle bundle = new Bundle();
         bundle.putSerializable(CITIES_DETAILS_INDEX, cityDetails);
         citiesDetailsFragment.setArguments(bundle);
         return citiesDetailsFragment;
@@ -98,6 +106,42 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         requireActivity().findViewById(R.id.appBarLayout).setVisibility(View.VISIBLE);
         setBackground();
         setSwipeRefreshBehaviour();
+        setOnAddToFavoritesClickBehaviour();
+    }
+
+
+    private void setOnAddToFavoritesClickBehaviour() {
+        RoomHelper roomHelper = new RoomHelper();
+        addToFavorite.setOnCheckedChangeListener((compoundButton, b) -> addToFavorite.setOnClickListener(view -> {
+            if (b) {
+                roomHelper.insertFavorite(cityDetailsData);
+            } else {
+                roomHelper.deleteFavorite(cityDetailsData.getCityName());
+            }
+        }));
+    }
+
+
+    private void setCheckBoxVisibility() {
+        Handler handler = new Handler();
+        new Thread(() -> {
+            List<Favorites> favoritesList = App.getInstance().getEducationDao().selectFavorites();
+            handler.post(() -> {
+                for (Favorites f: favoritesList) {
+                    if (cityDetailsData.getCityName().equals(f.city)) {
+                        addToFavorite.setChecked(true);
+                    } else {
+                        addToFavorite.setChecked(false);
+                    }
+                }
+//                if (requireArguments().getBoolean(KEY_CHECKBOX_VISIBILITY)) {
+//                    addToFavorite.setVisibility(View.INVISIBLE);
+//                } else {
+//                    addToFavorite.setVisibility(View.VISIBLE);
+//                }
+                if (favoritesList.size() == 0) addToFavorite.setChecked(false);
+            });
+        }).start();
     }
 
     private void setSwipeRefreshBehaviour() {
@@ -111,12 +155,13 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
                             @Override
                             public void onResponse(@NonNull Call<WeatherRequest> call,
                                                    @NonNull Response<WeatherRequest> response) {
+                                Log.i("loadWeather", "Response " + response.code());
                                 if (response.body() != null && response.isSuccessful()) {
                                     cityDetailsData = new CityDetailsData(response.body(), cityDetailsData.getLat(), cityDetailsData.getLon());
-                                    CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData);
+                                    CitiesDetailsFragment fragment = CitiesDetailsFragment.create(cityDetailsData, new Bundle());
                                     replaceFragment(fragment, R.id.fragmentContainer, false);
 
-                                    TemperatureHistoryHelper historyHelper = new TemperatureHistoryHelper();
+                                    RoomHelper historyHelper = new RoomHelper();
                                     historyHelper.insertTemperature(cityDetailsData);
                                 } else {
                                     showAlert();
@@ -177,6 +222,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
         windCustomView = view.findViewById(R.id.windCustomView);
         pressureCustomView = view.findViewById(R.id.pressureCustomView);
         swipeRefresh = view.findViewById(R.id.swipeRefresh);
+        addToFavorite = view.findViewById(R.id.addToFavorite);
         drawer = requireActivity().findViewById(R.id.drawer_layout);
         cityDetailsData = (CityDetailsData) requireArguments().getSerializable(CITIES_DETAILS_INDEX);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
@@ -197,6 +243,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
                     @Override
                     public void onResponse(@NonNull Call<ForecastRequest> call,
                                            @NonNull Response<ForecastRequest> response) {
+                        Log.i("loadForecast", "Response " + response.code());
                         if (response.body() != null && response.isSuccessful()) {
                             OpenWeatherHelper openWeatherHelper = new OpenWeatherHelper();
                             ArrayList<ForecastDayData> forecastDayData = openWeatherHelper.setForecastData(response.body());
@@ -226,6 +273,7 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
                     @Override
                     public void onResponse(@NonNull Call<ForecastRequest> call,
                                            @NonNull Response<ForecastRequest> response) {
+                        Log.i("loadForecast", "Response " + response.code());
                         if (response.body() != null && response.isSuccessful()) {
                             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
                             linearLayoutManager.setOrientation(RecyclerView.HORIZONTAL);
@@ -255,6 +303,12 @@ public class CitiesDetailsFragment extends Fragment implements Constants {
     public void onResume() {
         super.onResume();
         getSettingParameters();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setCheckBoxVisibility();
     }
 
     private void setCityParameters() {

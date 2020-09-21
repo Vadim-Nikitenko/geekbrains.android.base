@@ -27,6 +27,17 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Москва" />
 
+        <CheckBox
+            android:id="@+id/addToFavorite"
+            android:buttonTint="@color/colorYellow"
+            app:buttonCompat="@drawable/custom_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_vertical_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/add_to_favorite" />
+
         <com.example.geekbrainsandroidweather.custom_views.ThermometerView
             android:id="@+id/thermometerView"
             android:layout_width="@dimen/thermometer_width"

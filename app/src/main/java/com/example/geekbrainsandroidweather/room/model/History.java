@@ -10,11 +10,11 @@ import java.util.Date;
 // связана по полям id со стороны таблицы student и
 // student_id со стороны таблицы email (внешний ключ)
 // При удалении студента, и все почтовые адреса тоже удаляются (CASCADE)
-@Entity(indices = {@Index(value = {"city", "date"},
+@Entity(indices = {@Index(value = {"city", "temperature"},
         unique = true)})
 public class History {
 
-    public History(String city, int temperature, String  date) {
+    public History(String city, int temperature, long date) {
         this.city = city;
         this.temperature = temperature;
         this.date = date;
@@ -22,10 +22,9 @@ public class History {
 
     @PrimaryKey(autoGenerate = true)
     public long id;
-
     public String city;
     public int temperature;
-    public String date;
+    public long date;
 
 
 }

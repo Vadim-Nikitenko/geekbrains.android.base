@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.room.Room;
 
 import com.example.geekbrainsandroidweather.room.dao.TemperatureHistoryDao;
+import com.example.geekbrainsandroidweather.room.model.Favorites;
 
 public class App extends Application {
 

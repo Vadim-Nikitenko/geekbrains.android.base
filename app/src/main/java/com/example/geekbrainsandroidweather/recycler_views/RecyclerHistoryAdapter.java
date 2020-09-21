@@ -12,7 +12,11 @@ import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.rest.OpenWeatherHelper;
 import com.example.geekbrainsandroidweather.room.model.History;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class RecyclerHistoryAdapter extends RecyclerView.Adapter<RecyclerHistoryAdapter.ViewHolder> {
     private List<History> historyList;
@@ -35,9 +39,15 @@ public class RecyclerHistoryAdapter extends RecyclerView.Adapter<RecyclerHistory
     // Отображение даннных в view ViewHolder-а
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.setupViews(historyList.get(position).date,
+        holder.setupViews(parseDate(historyList.get(position).date),
                 historyList.get(position).city,
                 historyList.get(position).temperature + "°");
+    }
+
+    private String parseDate(long time) {
+        Date date = new Date(time);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM HH:mm", Locale.getDefault());
+        return sdf.format(date);
     }
 
     // возвращает количество элементов в массиве
@@ -59,10 +69,10 @@ public class RecyclerHistoryAdapter extends RecyclerView.Adapter<RecyclerHistory
             historyTemp = itemView.findViewById(R.id.historyTemp);
         }
 
-        void setupViews(String day, String temperature, String state) {
+        void setupViews(String day, String city, String temp) {
             historyDay.setText(day);
-            historyCity.setText(temperature);
-            historyTemp.setText(state);
+            historyCity.setText(city);
+            historyTemp.setText(temp);
         }
 
     }

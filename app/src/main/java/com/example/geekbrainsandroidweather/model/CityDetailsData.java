@@ -27,6 +27,7 @@ public class CityDetailsData implements Serializable, Constants {
     private String defaultIcon;
     private String lat;
     private String lon;
+    private long shift;
 
     public CityDetailsData(WeatherRequest weatherRequest, String lat, String lon) {
         this
@@ -42,8 +43,17 @@ public class CityDetailsData implements Serializable, Constants {
                 .withWindDegrees(weatherRequest.getWind().getDeg())
                 .withSunriseAndSunset(weatherRequest.getSys().getSunrise(), weatherRequest.getSys().getSunset())
                 .withWeatherMainState(weatherRequest.getWeather().get(0).getMain())
-                .withLat(lat).withLon(lon);
-        setDefaultIcon(weatherRequest.getWeather().get(0).getIcon());
+                .withLat(lat).withLon(lon)
+                .withShift(weatherRequest.getTimezone())
+                .withDefaultIcon(weatherRequest.getWeather().get(0).getIcon());
+    }
+
+    public CityDetailsData(String city, float temperature, String bg, String icon) {
+        this
+                .withCityName(city)
+                .withTemperature(temperature)
+                .withDefaultIcon(bg)
+                .withIcon(icon);
     }
 
     public String getLat() {
@@ -68,8 +78,9 @@ public class CityDetailsData implements Serializable, Constants {
         return defaultIcon;
     }
 
-    public void setDefaultIcon(String defaultIcon) {
+    public CityDetailsData withDefaultIcon(String defaultIcon) {
         this.defaultIcon = defaultIcon;
+        return this;
     }
 
     public CityDetailsData withCityName(String cityName) {
@@ -137,7 +148,6 @@ public class CityDetailsData implements Serializable, Constants {
         Date dateSunrise = new Date(sunrise * 1000L);
         Date dateSunset = new Date(sunset * 1000L);
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC+3"));
         String rise = sdf.format(dateSunrise);
         String set = sdf.format(dateSunset);
         String sunriseAndSunset = "Восход: " + rise + " / " + "Закат: " + set;
@@ -147,6 +157,15 @@ public class CityDetailsData implements Serializable, Constants {
 
     public CityDetailsData withWindDegrees(int windDegrees) {
         this.windDegrees = "Направление " + String.format(Locale.getDefault(), "%s", windDegrees) + "°";
+        return this;
+    }
+
+    public long getShift() {
+        return shift;
+    }
+
+    public CityDetailsData withShift(long shift) {
+        this.shift = shift;
         return this;
     }
 

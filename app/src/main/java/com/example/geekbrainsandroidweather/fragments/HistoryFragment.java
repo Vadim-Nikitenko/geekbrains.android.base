@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.geekbrainsandroidweather.R;
 import com.example.geekbrainsandroidweather.recycler_views.RecyclerHistoryAdapter;
 import com.example.geekbrainsandroidweather.room.App;
-import com.example.geekbrainsandroidweather.room.TemperatureHistoryHelper;
+import com.example.geekbrainsandroidweather.room.RoomHelper;
 import com.example.geekbrainsandroidweather.room.model.History;
 
 import java.util.List;
@@ -27,8 +28,9 @@ import java.util.List;
 public class HistoryFragment extends Fragment {
     private RecyclerHistoryAdapter recyclerHistoryAdapter;
     private RecyclerView historyList;
-    private TemperatureHistoryHelper historyHelper;
+    private RoomHelper historyHelper;
     private Spinner spinner;
+    private ImageButton deleteHistoryImageButton;
     private List<History> cities;
 
     @Override
@@ -41,9 +43,23 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init(view);
-        setHistoryByDate();
         setupRecyclerView();
         setupSpinner();
+        setOnDeleteHistoryClickBehaviour();
+    }
+
+    private void setOnDeleteHistoryClickBehaviour() {
+        deleteHistoryImageButton.setOnClickListener(view -> {
+            Handler handler = new Handler();
+            RoomHelper roomHelper = new RoomHelper();
+            new Thread(() -> {
+                roomHelper.deleteAllHistory();
+                handler.post(() -> {
+                    setHistoryByDate();
+                    setupRecyclerView();
+                });
+            }).start();
+        });
     }
 
 
@@ -83,7 +99,8 @@ public class HistoryFragment extends Fragment {
     private void init(@NonNull View view) {
         historyList = view.findViewById(R.id.historyList);
         spinner = view.findViewById(R.id.spinnerSort);
-        historyHelper = new TemperatureHistoryHelper();
+        deleteHistoryImageButton = view.findViewById(R.id.deleteHistoryImageButton);
+        historyHelper = new RoomHelper();
     }
 
 

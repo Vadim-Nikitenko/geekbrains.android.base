@@ -12,4 +12,8 @@ public interface Constants {
     String KEY_CURRENT_CITY_LAT = "com.example.geekbrainsandroidweather.fragments.kyeLat";
     String KEY_CURRENT_CITY_LON = "com.example.geekbrainsandroidweather.fragments.keyLon";
     String CONNECTIVITY_CHANGE = "android.net.conn.CONNECTIVITY_CHANGE";
+    int RC_SIGN_IN = 40404;
+    String TAG_AUTH = "GoogleAuth";
+    String KEY_CHECKBOX_VISIBILITY= "com.example.geekbrainsandroidweather.visibilityCheckbox";
+    String KEY_CITY_NAME = "com.example.geekbrainsandroidweather.recycler_views.CityName";
 }

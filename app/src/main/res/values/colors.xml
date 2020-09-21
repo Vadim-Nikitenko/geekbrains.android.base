@@ -8,6 +8,7 @@
     <color name="colorShapeWhite">#FFFFFF</color>
     <color name="colorBlack">#000000</color>
     <color name="colorBlue">#00aafd</color>
-    <color name="colorYellow">#fdbb3e</color>
+    <color name="colorYellow">#FDDD09</color>
     <color name="colorToolbarTop">#10394d</color>
+    <color name="colorCheckBox">#03BFAE</color>
 </resources>
