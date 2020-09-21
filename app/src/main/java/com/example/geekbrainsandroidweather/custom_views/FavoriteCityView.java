@@ -73,8 +73,9 @@ public class FavoriteCityView extends ConstraintLayout {
 
     private String parseTime(long shift) {
         Calendar currentTime = Calendar.getInstance();
+        TimeZone timeZone = TimeZone.getDefault();
         currentTime.add(Calendar.SECOND, (int) shift);
-        currentTime.add(Calendar.HOUR, -3);
+        currentTime.add(Calendar.MILLISECOND, -timeZone.getRawOffset());
         Date date = currentTime.getTime();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
         return sdf.format(date);
