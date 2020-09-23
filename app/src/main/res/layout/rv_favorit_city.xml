@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.example.geekbrainsandroidweather.custom_views.FavoriteCityView
+    <ru.kiradev.weather.custom_views.FavoriteCityView
         android:id="@+id/favoriteCityView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

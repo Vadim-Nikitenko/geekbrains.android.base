@@ -2,14 +2,30 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Tools\\Android\\app.jks')
+            storePassword 'Nikagw_2425'
+            keyAlias 'weather'
+            keyPassword 'Nikagw_2425!@'
+        }
+        debug {
+            storeFile file('C:\\Tools\\Android\\app.jks')
+            storePassword 'Nikagw_2425'
+            keyAlias 'weather'
+            keyPassword 'Nikagw_2425!@'
+        }
+    }
+
+    ndkVersion "21.3.6528147"
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.geekbrainsandroidweather"
+        applicationId "ru.kiradev.weather"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
+        versionCode 3
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -73,7 +89,6 @@ dependencies {
 
     def room_version = "2.2.5"
     implementation "androidx.room:room-runtime:$room_version"
-    implementation 'com.google.firebase:firebase-messaging:20.2.4'
     annotationProcessor "androidx.room:room-compiler:$room_version"
 
     def work_version = "2.4.0"

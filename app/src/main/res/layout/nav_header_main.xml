@@ -10,7 +10,7 @@
     android:paddingTop="60dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <com.example.geekbrainsandroidweather.custom_views.CurrentCityView
+    <ru.kiradev.weather.custom_views.CurrentCityView
         android:id="@+id/favoriteCurrentCity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

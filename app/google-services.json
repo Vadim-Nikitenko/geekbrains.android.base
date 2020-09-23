@@ -1,42 +1,42 @@
 {
   "project_info": {
-    "project_number": "741764694385",
-    "firebase_url": "https://geekbrainsandroidweather.firebaseio.com",
-    "project_id": "geekbrainsandroidweather",
-    "storage_bucket": "geekbrainsandroidweather.appspot.com"
+    "project_number": "346185211439",
+    "firebase_url": "https://weather-cc00a.firebaseio.com",
+    "project_id": "weather-cc00a",
+    "storage_bucket": "weather-cc00a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:741764694385:android:3d7816dde39e8cb57536d0",
+        "mobilesdk_app_id": "1:346185211439:android:8ac44633b3e67e8fe030da",
         "android_client_info": {
-          "package_name": "com.example.geekbrainsandroidweather"
+          "package_name": "ru.kiradev.weather"
         }
       },
       "oauth_client": [
         {
-          "client_id": "741764694385-he7sdq19ue845qo6lut8di8526qhrhr5.apps.googleusercontent.com",
+          "client_id": "346185211439-oh3506ln1nuu1j67u27v5hb4pstovi8q.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.geekbrainsandroidweather",
-            "certificate_hash": "a7c04518ae42bfc7f095e2baa98515e973d85950"
+            "package_name": "ru.kiradev.weather",
+            "certificate_hash": "86663868d103c6c1c66eeabc8496c0830464c97f"
           }
         },
         {
-          "client_id": "741764694385-qikn63g6rgq6e93vnk8k3nkr3mutpch3.apps.googleusercontent.com",
+          "client_id": "346185211439-rm34psi6l4hloose04056l83c5s3hbbd.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAjDNVU_EUcjJDGi2-ZzbFLIrws082qdxw"
+          "current_key": "AIzaSyDByfr8Q23pNctC9WgQfKJOfuSCwRPn-W0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "741764694385-qikn63g6rgq6e93vnk8k3nkr3mutpch3.apps.googleusercontent.com",
+              "client_id": "346185211439-rm34psi6l4hloose04056l83c5s3hbbd.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
