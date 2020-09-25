@@ -5,20 +5,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/page_1"
-            android:icon="@drawable/ic_home_black_24dp"
-            android:title="@string/home_screen"/>
-        <item
             android:id="@+id/page_2"
             android:icon="@drawable/ic_baseline_settings_24"
             android:title="@string/settings_screen" />
         <item
-            android:id="@+id/page_3"
-            android:icon="@drawable/ic_baseline_info_24"
-            android:title="@string/info_screen" />
-        <item
             android:id="@+id/page_4"
             android:icon="@drawable/ic_baseline_history_24"
             android:title="@string/history" />
+        <item
+            android:id="@+id/page_5"
+            android:icon="@drawable/ic_baseline_location_on_24"
+            android:title="@string/map" />
+
+        <item
+            android:id="@+id/page_3"
+            android:icon="@drawable/ic_baseline_info_24"
+            android:title="@string/info_screen" />
     </group>
 </menu>

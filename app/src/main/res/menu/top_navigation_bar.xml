@@ -5,6 +5,6 @@
         android:id="@+id/addCity"
         android:enabled="true"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_baseline_add_24"
+        android:icon="@drawable/ic_baseline_search_24"
         android:title="@string/add_city"/>
 </menu>

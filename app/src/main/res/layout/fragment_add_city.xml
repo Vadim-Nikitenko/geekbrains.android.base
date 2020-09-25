@@ -44,6 +44,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/addCityInputLayout" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerFavoriteCity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/default_vertical_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerCities" />
+
     <TextView
         android:id="@+id/emptyCityTextView"
         android:layout_width="wrap_content"

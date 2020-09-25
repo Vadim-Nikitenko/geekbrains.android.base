@@ -11,7 +11,7 @@
     app:layout_constraintTop_toTopOf="parent"
     android:fitsSystemWindows="true"
     android:layout_marginBottom="@dimen/navigation_bar_height"
-    tools:context=".MainActivity">
+    tools:context="ru.kiradev.weather.MainActivity">
 
     <FrameLayout
         android:id="@+id/fragmentContainer"

@@ -15,7 +15,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".fragments.CitiesDetailsFragment">
+        tools:context="ru.kiradev.weather.fragments.CitiesDetailsFragment">
 
         <TextView
             android:id="@+id/city"
@@ -27,7 +27,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Москва" />
 
-        <com.example.geekbrainsandroidweather.custom_views.ThermometerView
+        <CheckBox
+            android:id="@+id/addToFavorite"
+            android:buttonTint="@color/colorYellow"
+            app:buttonCompat="@drawable/custom_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/default_vertical_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/add_to_favorite" />
+
+        <ru.kiradev.weather.custom_views.ThermometerView
             android:id="@+id/thermometerView"
             android:layout_width="@dimen/thermometer_width"
             android:layout_height="@dimen/thermometer_height"
@@ -123,21 +134,21 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerHourlyView" />
             
-        <com.example.geekbrainsandroidweather.custom_views.HumidityView
+        <ru.kiradev.weather.custom_views.HumidityView
             android:id="@+id/humidityCustomView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerForecastView"/>
 
-        <com.example.geekbrainsandroidweather.custom_views.WindView
+        <ru.kiradev.weather.custom_views.WindView
             android:id="@+id/windCustomView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/humidityCustomView" />
 
-        <com.example.geekbrainsandroidweather.custom_views.PressureView
+        <ru.kiradev.weather.custom_views.PressureView
             android:id="@+id/pressureCustomView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
